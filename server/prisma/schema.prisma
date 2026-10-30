@@ -1,0 +1,20 @@
+// Prisma schema for Odoo Hackathon Full-Stack App
+// In Prisma 7+, connection URLs are managed in prisma.config.ts
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Starter User model
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("user")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
