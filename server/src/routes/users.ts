@@ -32,7 +32,7 @@ usersRouter.get('/', async (_req: Request, res: Response) => {
     })
 
     // Format dates to ISO string to strictly match contract
-    const formatted = users.map((u) => ({
+    const formatted = users.map((u: any) => ({
       ...u,
       createdAt: u.createdAt.toISOString(),
       updatedAt: u.updatedAt.toISOString(),
