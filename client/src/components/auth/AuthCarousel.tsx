@@ -8,14 +8,15 @@ import {
   CreditCard,
   Clock,
   CheckCircle2,
+  ShieldCheck,
 } from 'lucide-react'
 
 export const AuthCarousel: React.FC = React.memo(() => {
   const { currentConfig } = useTheme()
   const isDark = currentConfig.isDark
 
-  // Card items matching the 280x160px spec, dynamically styled for light/dark themes
-  const cards = [
+  // 6 Enterprise Card items matching the 280x160px spec
+  const baseCards = [
     {
       id: 'mrr-card',
       title: 'Monthly MRR',
@@ -43,10 +44,11 @@ export const AuthCarousel: React.FC = React.memo(() => {
       icon: <FileText className="w-3.5 h-3.5 text-indigo-500" />,
       contentBox: (
         <div
-          className={`p-2 rounded-lg text-xs space-y-0.5 font-mono ${isDark
+          className={`p-2 rounded-lg text-xs space-y-0.5 font-mono ${
+            isDark
               ? 'bg-black/30 border border-white/10 text-slate-300'
               : 'bg-slate-50 border border-slate-200/80 text-slate-700'
-            }`}
+          }`}
         >
           <div className="flex justify-between text-[11px]">
             <span>Base Subtotal:</span>
@@ -65,8 +67,11 @@ export const AuthCarousel: React.FC = React.memo(() => {
       ),
       footerRight: (
         <span
-          className={`font-bold px-1.5 py-0.5 rounded ${isDark ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-800'
-            }`}
+          className={`font-bold px-1.5 py-0.5 rounded ${
+            isDark
+              ? 'bg-emerald-500/20 text-emerald-400'
+              : 'bg-emerald-100 text-emerald-800'
+          }`}
         >
           Settled $1,250.80
         </span>
@@ -84,7 +89,9 @@ export const AuthCarousel: React.FC = React.memo(() => {
       metricUnit: '/ seat',
       subtext: 'Enterprise Cloud Engine + Odoo Sync',
       footerLeft: '5 User Licenses',
-      footerRight: <span className="text-purple-500 font-medium">Auto-Renew Active</span>,
+      footerRight: (
+        <span className="text-purple-500 font-medium">Auto-Renew Active</span>
+      ),
     },
     {
       id: 'volume-tier-card',
@@ -97,7 +104,9 @@ export const AuthCarousel: React.FC = React.memo(() => {
       metric: 'SEATS10PLUS',
       subtext: 'Volume coupon applied automatically',
       footerLeft: 'Min 3 Seats Required',
-      footerRight: <span className="text-amber-500 font-mono font-medium">Auto-Applied</span>,
+      footerRight: (
+        <span className="text-amber-500 font-mono font-medium">Auto-Applied</span>
+      ),
     },
     {
       id: 'settlement-ledger-card',
@@ -117,13 +126,182 @@ export const AuthCarousel: React.FC = React.memo(() => {
         </span>
       ),
     },
+    {
+      id: 'dunning-recovery-card',
+      title: 'Dunning Recovery',
+      badge: '99.4% SAVED',
+      badgeColor: isDark
+        ? 'bg-rose-500/20 text-rose-300 border-rose-400/30'
+        : 'bg-rose-50 text-rose-700 border-rose-200',
+      icon: <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />,
+      metric: '$4,280',
+      metricUnit: 'recovered',
+      subtext: 'Auto Smart-Retry via Stripe & Odoo',
+      footerLeft: 'Zero Involuntary Churn',
+      footerRight: (
+        <span className="text-emerald-500 font-semibold flex items-center gap-1">
+          <CheckCircle2 className="w-2.5 h-2.5" /> Auto-Synced
+        </span>
+      ),
+    },
   ]
 
   // Dynamic theme-derived colors for borders, cards, and dashed line
   const cardBg = isDark ? currentConfig.surfaceColor : '#ffffff'
   const cardBorder = isDark ? 'border-white/15' : 'border-slate-200/90'
-  const cardShadow = isDark ? 'shadow-xl shadow-black/50' : 'shadow-xl shadow-slate-300/40'
-  const dashedLineColor = isDark ? 'rgba(255, 255, 255, 0.2)' : 'rgba(99, 102, 241, 0.35)'
+  const cardShadow = isDark
+    ? 'shadow-xl shadow-black/50'
+    : 'shadow-xl shadow-slate-300/40'
+  // Crisp, high-contrast dashed line color so connections are unmistakable
+  const dashedLineColor = isDark ? '#818cf8' : '#4f46e5'
+
+  // Right column: standard sequence [0, 1, 2, 3, 4, 5]
+  const rightColumnCards = baseCards
+  // Left column: offset by 3 cards [3, 4, 5, 0, 1, 2].
+  // When a card finishes going down in the right column, it appears in the left column!
+  const leftColumnCards = [
+    ...baseCards.slice(3),
+    ...baseCards.slice(0, 3),
+  ]
+
+  // Helper to render an individual card with guaranteed top & bottom connector lines
+  const renderCard = (card: (typeof baseCards)[0], key: string) => (
+    <div
+      key={key}
+      className={`relative z-10 w-[280px] h-[160px] p-3.5 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border transition-colors duration-300`}
+      style={{ backgroundColor: cardBg }}
+    >
+      {/* Dedicated top connecting dashed line segment bridging the 40px gap above */}
+      <div
+        className="absolute left-1/2 -top-[40px] h-[40px] -translate-x-1/2 w-0 pointer-events-none -z-10"
+        style={{
+          borderLeft: `2px dashed ${dashedLineColor}`,
+        }}
+      />
+
+      {/* Top connector node dot */}
+      <div
+        className="absolute -top-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full border border-indigo-500 bg-white dark:bg-slate-900 z-20 shadow-xs"
+        style={{ borderColor: dashedLineColor }}
+      />
+
+      {/* Card Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-1.5">
+          <div
+            className={`p-1.5 rounded-lg ${
+              isDark ? 'bg-white/10' : 'bg-slate-100'
+            }`}
+          >
+            {card.icon}
+          </div>
+          <span
+            className={`text-xs font-bold ${
+              isDark ? 'text-white' : 'text-slate-900'
+            }`}
+          >
+            {card.title}
+          </span>
+        </div>
+        <span
+          className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${card.badgeColor}`}
+        >
+          {card.badge}
+        </span>
+      </div>
+
+      {/* Card Body */}
+      {card.contentBox ? (
+        card.contentBox
+      ) : (
+        <div>
+          <div
+            className={`text-xl font-black tracking-tight ${
+              card.metricClass
+                ? card.metricClass
+                : isDark
+                ? 'text-white'
+                : 'text-slate-900'
+            }`}
+          >
+            {card.metric}{' '}
+            {card.metricUnit && (
+              <span
+                className={`text-xs font-normal ${
+                  isDark ? 'text-slate-400' : 'text-slate-500'
+                }`}
+              >
+                {card.metricUnit}
+              </span>
+            )}
+          </div>
+          {card.subtext && (
+            <p
+              className={`text-[11px] mt-0.5 ${
+                isDark ? 'text-slate-400' : 'text-slate-500'
+              }`}
+            >
+              {card.subtext}
+            </p>
+          )}
+        </div>
+      )}
+
+      {/* Card Footer */}
+      <div
+        className={`flex items-center justify-between text-[10px] pt-1.5 border-t ${
+          isDark
+            ? 'text-slate-400 border-white/10'
+            : 'text-slate-500 border-slate-100'
+        }`}
+      >
+        <span>{card.footerLeft}</span>
+        {card.footerRight}
+      </div>
+
+      {/* Bottom connector node dot */}
+      <div
+        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rounded-full border border-indigo-500 bg-white dark:bg-slate-900 z-20 shadow-xs"
+        style={{ borderColor: dashedLineColor }}
+      />
+
+      {/* Dedicated bottom connecting dashed line segment bridging the 40px gap below */}
+      <div
+        className="absolute left-1/2 -bottom-[40px] h-[40px] -translate-x-1/2 w-0 pointer-events-none -z-10"
+        style={{
+          borderLeft: `2px dashed ${dashedLineColor}`,
+        }}
+      />
+    </div>
+  )
+
+  // Helper to render a complete moving card track with duplicated card stacks
+  const renderCardColumn = (cardsList: typeof baseCards, columnId: string) => (
+    <div className="relative flex flex-col items-center animate-infinite-column w-[280px]">
+      {/* Continuous background vertical dashed line running the full length + buffer */}
+      <div
+        className="absolute left-1/2 -top-[1200px] -bottom-[1200px] -translate-x-1/2 w-0 pointer-events-none -z-20"
+        style={{
+          height: 'calc(100% + 2400px)',
+          borderLeft: `2px dashed ${dashedLineColor}`,
+        }}
+      />
+
+      {/* List 1: Original Card Stack with 40px gap and 40px bottom padding */}
+      <div className="flex flex-col gap-[40px] pb-[40px]">
+        {cardsList.map((card, idx) =>
+          renderCard(card, `${columnId}-list1-${card.id}-${idx}`)
+        )}
+      </div>
+
+      {/* List 2: Duplicate Card Stack for mathematically seamless translateY(-50%) to 0 loop */}
+      <div className="flex flex-col gap-[40px] pb-[40px]">
+        {cardsList.map((card, idx) =>
+          renderCard(card, `${columnId}-list2-${card.id}-${idx}`)
+        )}
+      </div>
+    </div>
+  )
 
   return (
     <div
@@ -131,201 +309,74 @@ export const AuthCarousel: React.FC = React.memo(() => {
       style={{ backgroundColor: currentConfig.bgColor }}
     >
       {/*
-        SPEC COMPLIANT WRAPPER:
-        - One centered column of cards stacked vertically with a fixed gap (40px).
-        - The ENTIRE column (cards + connecting line) is wrapped in ONE container with transform: rotate(-8deg).
-        - Rotate the wrapper, NOT individual cards.
+        SPEC COMPLIANT 2-COLUMN WRAPPER:
+        - Two centered columns of cards (Left column & Right column) with fixed 40px vertical gaps.
+        - The ENTIRE dual-column system is wrapped in ONE container with transform: rotate(-8deg).
+        - Rotate the wrapper, NOT individual cards, keeping the tilt and connecting lines aligned.
         - Fixed height with overflow: hidden so cards appear to fall through a window.
       */}
       <div
-        className="relative w-[320px] h-[640px] sm:h-[720px] overflow-hidden flex justify-center [transform:rotate(-8deg)]"
+        className="relative w-[600px] sm:w-[640px] xl:w-[680px] h-[680px] sm:h-[760px] overflow-hidden flex justify-center items-center [transform:rotate(-8deg)]"
         style={{ willChange: 'transform' }}
       >
         {/*
-          SPEC COMPLIANT MOVING INNER TRACK:
-          - Single inner track containing the card list DUPLICATED twice.
-          - Animated with CSS keyframes from translateY(-50%) to translateY(0) (continuous TOP to BOTTOM).
-          - No pausing, no easing: linear, infinite.
+          Top Connecting Crossover Line:
+          Curved dashed bridge connecting the top of the Left Column to the Right Column.
         */}
-        <div className="relative flex flex-col items-center animate-infinite-column">
-          {/*
-            SPEC COMPLIANT CONNECTING LINE:
-            - Dashed vertical line runs through the center of the cards.
-            - Lives INSIDE the moving track (scrolls together with cards).
-            - z-index: 0 (behind cards).
-            - Cards have solid background so line is only visible in the 40px gaps.
-          */}
-          <div
-            className="absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-0 pointer-events-none"
-            style={{
-              height: '100%',
-              zIndex: 0,
-              borderLeft: `2px dashed ${dashedLineColor}`,
-            }}
+        <svg
+          className="absolute -top-4 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-0"
+          viewBox="0 0 340 48"
+        >
+          <path
+            d="M 16 48 C 16 8, 324 8, 324 48"
+            fill="none"
+            stroke={dashedLineColor}
+            strokeWidth="2"
+            strokeDasharray="4 4"
+            strokeLinecap="round"
           />
+          <circle cx="16" cy="48" r="3" fill={dashedLineColor} />
+          <circle cx="324" cy="48" r="3" fill={dashedLineColor} />
+        </svg>
 
-          {/* List 1: Original Card Stack with 40px gap and 40px bottom padding */}
-          <div className="flex flex-col gap-[40px] pb-[40px]">
-            {cards.map((card, idx) => (
-              <div
-                key={`col1-${card.id}-${idx}`}
-                className={`relative z-10 w-[280px] h-[160px] p-3.5 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
-                style={{ backgroundColor: cardBg }}
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <div
-                      className={`p-1.5 rounded-lg ${isDark ? 'bg-white/10' : 'bg-slate-100'
-                        }`}
-                    >
-                      {card.icon}
-                    </div>
-                    <span
-                      className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'
-                        }`}
-                    >
-                      {card.title}
-                    </span>
-                  </div>
-                  <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${card.badgeColor}`}
-                  >
-                    {card.badge}
-                  </span>
-                </div>
+        {/* Dual Columns Container with gap between them */}
+        <div className="relative flex items-center gap-7 sm:gap-8 z-10">
+          {/*
+            Left Column: Appears to the left of the existing carousel.
+            When cards in the right carousel go down, they appear here!
+          */}
+          {renderCardColumn(leftColumnCards, 'col-left')}
 
-                {/* Body */}
-                {card.contentBox ? (
-                  card.contentBox
-                ) : (
-                  <div>
-                    <div
-                      className={`text-xl font-black tracking-tight ${card.metricClass
-                          ? card.metricClass
-                          : isDark
-                            ? 'text-white'
-                            : 'text-slate-900'
-                        }`}
-                    >
-                      {card.metric}{' '}
-                      {card.metricUnit && (
-                        <span
-                          className={`text-xs font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'
-                            }`}
-                        >
-                          {card.metricUnit}
-                        </span>
-                      )}
-                    </div>
-                    {card.subtext && (
-                      <p
-                        className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'
-                          }`}
-                      >
-                        {card.subtext}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* Footer */}
-                <div
-                  className={`flex items-center justify-between text-[10px] pt-1.5 border-t ${isDark
-                      ? 'text-slate-400 border-white/10'
-                      : 'text-slate-500 border-slate-100'
-                    }`}
-                >
-                  <span>{card.footerLeft}</span>
-                  {card.footerRight}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* List 2: Duplicate Card Stack for mathematically seamless translateY(-50%) to 0 loop */}
-          <div className="flex flex-col gap-[40px] pb-[40px]">
-            {cards.map((card, idx) => (
-              <div
-                key={`col2-${card.id}-${idx}`}
-                className={`relative z-10 w-[280px] h-[160px] p-3.5 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
-                style={{ backgroundColor: cardBg }}
-              >
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <div
-                      className={`p-1.5 rounded-lg ${isDark ? 'bg-white/10' : 'bg-slate-100'
-                        }`}
-                    >
-                      {card.icon}
-                    </div>
-                    <span
-                      className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'
-                        }`}
-                    >
-                      {card.title}
-                    </span>
-                  </div>
-                  <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-semibold border ${card.badgeColor}`}
-                  >
-                    {card.badge}
-                  </span>
-                </div>
-
-                {/* Body */}
-                {card.contentBox ? (
-                  card.contentBox
-                ) : (
-                  <div>
-                    <div
-                      className={`text-xl font-black tracking-tight ${card.metricClass
-                          ? card.metricClass
-                          : isDark
-                            ? 'text-white'
-                            : 'text-slate-900'
-                        }`}
-                    >
-                      {card.metric}{' '}
-                      {card.metricUnit && (
-                        <span
-                          className={`text-xs font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'
-                            }`}
-                        >
-                          {card.metricUnit}
-                        </span>
-                      )}
-                    </div>
-                    {card.subtext && (
-                      <p
-                        className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'
-                          }`}
-                      >
-                        {card.subtext}
-                      </p>
-                    )}
-                  </div>
-                )}
-
-                {/* Footer */}
-                <div
-                  className={`flex items-center justify-between text-[10px] pt-1.5 border-t ${isDark
-                      ? 'text-slate-400 border-white/10'
-                      : 'text-slate-500 border-slate-100'
-                    }`}
-                >
-                  <span>{card.footerLeft}</span>
-                  {card.footerRight}
-                </div>
-              </div>
-            ))}
-          </div>
+          {/*
+            Right Column: Existing carousel column moving top to bottom.
+          */}
+          {renderCardColumn(rightColumnCards, 'col-right')}
         </div>
+
+        {/*
+          Bottom Connecting Crossover Line:
+          Curved dashed bridge connecting the bottom of the Right Column over to the Left Column.
+          "after going it down make that thing appear left to the existing carousel so two will there."
+        */}
+        <svg
+          className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-0"
+          viewBox="0 0 340 48"
+        >
+          <path
+            d="M 324 0 C 324 40, 16 40, 16 0"
+            fill="none"
+            stroke={dashedLineColor}
+            strokeWidth="2"
+            strokeDasharray="4 4"
+            strokeLinecap="round"
+          />
+          <circle cx="324" cy="0" r="3" fill={dashedLineColor} />
+          <circle cx="16" cy="0" r="3" fill={dashedLineColor} />
+        </svg>
 
         {/* Top Fade Gradient Mask using current theme background */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-24 z-20"
+          className="pointer-events-none absolute inset-x-0 top-0 h-28 z-20"
           style={{
             background: `linear-gradient(to bottom, ${currentConfig.bgColor}, transparent)`,
           }}
@@ -333,7 +384,7 @@ export const AuthCarousel: React.FC = React.memo(() => {
 
         {/* Bottom Fade Gradient Mask using current theme background */}
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 z-20"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-28 z-20"
           style={{
             background: `linear-gradient(to top, ${currentConfig.bgColor}, transparent)`,
           }}
