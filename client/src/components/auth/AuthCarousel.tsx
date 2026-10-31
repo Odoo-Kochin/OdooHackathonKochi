@@ -10,7 +10,7 @@ import {
   CheckCircle2,
 } from 'lucide-react'
 
-export const AuthCarousel: React.FC = () => {
+export const AuthCarousel: React.FC = React.memo(() => {
   const { currentConfig } = useTheme()
   const isDark = currentConfig.isDark
 
@@ -43,11 +43,10 @@ export const AuthCarousel: React.FC = () => {
       icon: <FileText className="w-3.5 h-3.5 text-indigo-500" />,
       contentBox: (
         <div
-          className={`p-2 rounded-lg text-xs space-y-0.5 font-mono ${
-            isDark
+          className={`p-2 rounded-lg text-xs space-y-0.5 font-mono ${isDark
               ? 'bg-black/30 border border-white/10 text-slate-300'
               : 'bg-slate-50 border border-slate-200/80 text-slate-700'
-          }`}
+            }`}
         >
           <div className="flex justify-between text-[11px]">
             <span>Base Subtotal:</span>
@@ -66,9 +65,8 @@ export const AuthCarousel: React.FC = () => {
       ),
       footerRight: (
         <span
-          className={`font-bold px-1.5 py-0.5 rounded ${
-            isDark ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-800'
-          }`}
+          className={`font-bold px-1.5 py-0.5 rounded ${isDark ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-800'
+            }`}
         >
           Settled $1,250.80
         </span>
@@ -129,25 +127,18 @@ export const AuthCarousel: React.FC = () => {
 
   return (
     <div
-      className="relative w-full h-full flex items-center justify-center overflow-hidden select-none bg-transparent"
-      style={{
-        maskImage:
-          'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-        WebkitMaskImage:
-          'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
-      }}
+      className="relative w-full h-full min-h-screen flex items-center justify-center overflow-hidden select-none transition-colors duration-500"
+      style={{ backgroundColor: currentConfig.bgColor }}
     >
-      {/* Left Edge Blend: Fades carousel into root background with no visible seam */}
-      <div className="absolute left-0 top-0 bottom-0 w-[120px] z-30 pointer-events-none bg-gradient-to-r from-[#F5F7FB] dark:from-slate-950 to-transparent" />
-
       {/*
         SPEC COMPLIANT WRAPPER:
-        - Tilted card column ~440px wide, height 140vh, transform: rotate(-8deg).
-        - Bleeds off the top, bottom, and right edges of the screen.
-        - Rotated wrapper taller than viewport (140vh) so no empty corners show.
+        - One centered column of cards stacked vertically with a fixed gap (40px).
+        - The ENTIRE column (cards + connecting line) is wrapped in ONE container with transform: rotate(-8deg).
+        - Rotate the wrapper, NOT individual cards.
+        - Fixed height with overflow: hidden so cards appear to fall through a window.
       */}
       <div
-        className="relative w-[440px] h-[140vh] overflow-hidden flex justify-center [transform:rotate(-8deg)]"
+        className="relative w-[320px] h-[640px] sm:h-[720px] overflow-hidden flex justify-center [transform:rotate(-8deg)]"
         style={{ willChange: 'transform' }}
       >
         {/*
@@ -178,23 +169,21 @@ export const AuthCarousel: React.FC = () => {
             {cards.map((card, idx) => (
               <div
                 key={`col1-${card.id}-${idx}`}
-                className={`relative z-10 w-[330px] h-[175px] p-4 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
+                className={`relative z-10 w-[280px] h-[160px] p-3.5 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
                 style={{ backgroundColor: cardBg }}
               >
                 {/* Header */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <div
-                      className={`p-1.5 rounded-lg ${
-                        isDark ? 'bg-white/10' : 'bg-slate-100'
-                      }`}
+                      className={`p-1.5 rounded-lg ${isDark ? 'bg-white/10' : 'bg-slate-100'
+                        }`}
                     >
                       {card.icon}
                     </div>
                     <span
-                      className={`text-xs font-bold ${
-                        isDark ? 'text-white' : 'text-slate-900'
-                      }`}
+                      className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'
+                        }`}
                     >
                       {card.title}
                     </span>
@@ -212,20 +201,18 @@ export const AuthCarousel: React.FC = () => {
                 ) : (
                   <div>
                     <div
-                      className={`text-xl font-black tracking-tight ${
-                        card.metricClass
+                      className={`text-xl font-black tracking-tight ${card.metricClass
                           ? card.metricClass
                           : isDark
-                          ? 'text-white'
-                          : 'text-slate-900'
-                      }`}
+                            ? 'text-white'
+                            : 'text-slate-900'
+                        }`}
                     >
                       {card.metric}{' '}
                       {card.metricUnit && (
                         <span
-                          className={`text-xs font-normal ${
-                            isDark ? 'text-slate-400' : 'text-slate-500'
-                          }`}
+                          className={`text-xs font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'
+                            }`}
                         >
                           {card.metricUnit}
                         </span>
@@ -233,9 +220,8 @@ export const AuthCarousel: React.FC = () => {
                     </div>
                     {card.subtext && (
                       <p
-                        className={`text-[11px] mt-0.5 ${
-                          isDark ? 'text-slate-400' : 'text-slate-500'
-                        }`}
+                        className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'
+                          }`}
                       >
                         {card.subtext}
                       </p>
@@ -245,11 +231,10 @@ export const AuthCarousel: React.FC = () => {
 
                 {/* Footer */}
                 <div
-                  className={`flex items-center justify-between text-[10px] pt-1.5 border-t ${
-                    isDark
+                  className={`flex items-center justify-between text-[10px] pt-1.5 border-t ${isDark
                       ? 'text-slate-400 border-white/10'
                       : 'text-slate-500 border-slate-100'
-                  }`}
+                    }`}
                 >
                   <span>{card.footerLeft}</span>
                   {card.footerRight}
@@ -263,23 +248,21 @@ export const AuthCarousel: React.FC = () => {
             {cards.map((card, idx) => (
               <div
                 key={`col2-${card.id}-${idx}`}
-                className={`relative z-10 w-[330px] h-[175px] p-4 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
+                className={`relative z-10 w-[280px] h-[160px] p-3.5 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
                 style={{ backgroundColor: cardBg }}
               >
                 {/* Header */}
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-1.5">
                     <div
-                      className={`p-1.5 rounded-lg ${
-                        isDark ? 'bg-white/10' : 'bg-slate-100'
-                      }`}
+                      className={`p-1.5 rounded-lg ${isDark ? 'bg-white/10' : 'bg-slate-100'
+                        }`}
                     >
                       {card.icon}
                     </div>
                     <span
-                      className={`text-xs font-bold ${
-                        isDark ? 'text-white' : 'text-slate-900'
-                      }`}
+                      className={`text-xs font-bold ${isDark ? 'text-white' : 'text-slate-900'
+                        }`}
                     >
                       {card.title}
                     </span>
@@ -297,20 +280,18 @@ export const AuthCarousel: React.FC = () => {
                 ) : (
                   <div>
                     <div
-                      className={`text-xl font-black tracking-tight ${
-                        card.metricClass
+                      className={`text-xl font-black tracking-tight ${card.metricClass
                           ? card.metricClass
                           : isDark
-                          ? 'text-white'
-                          : 'text-slate-900'
-                      }`}
+                            ? 'text-white'
+                            : 'text-slate-900'
+                        }`}
                     >
                       {card.metric}{' '}
                       {card.metricUnit && (
                         <span
-                          className={`text-xs font-normal ${
-                            isDark ? 'text-slate-400' : 'text-slate-500'
-                          }`}
+                          className={`text-xs font-normal ${isDark ? 'text-slate-400' : 'text-slate-500'
+                            }`}
                         >
                           {card.metricUnit}
                         </span>
@@ -318,9 +299,8 @@ export const AuthCarousel: React.FC = () => {
                     </div>
                     {card.subtext && (
                       <p
-                        className={`text-[11px] mt-0.5 ${
-                          isDark ? 'text-slate-400' : 'text-slate-500'
-                        }`}
+                        className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-500'
+                          }`}
                       >
                         {card.subtext}
                       </p>
@@ -330,11 +310,10 @@ export const AuthCarousel: React.FC = () => {
 
                 {/* Footer */}
                 <div
-                  className={`flex items-center justify-between text-[10px] pt-1.5 border-t ${
-                    isDark
+                  className={`flex items-center justify-between text-[10px] pt-1.5 border-t ${isDark
                       ? 'text-slate-400 border-white/10'
                       : 'text-slate-500 border-slate-100'
-                  }`}
+                    }`}
                 >
                   <span>{card.footerLeft}</span>
                   {card.footerRight}
@@ -343,7 +322,25 @@ export const AuthCarousel: React.FC = () => {
             ))}
           </div>
         </div>
+
+        {/* Top Fade Gradient Mask using current theme background */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-24 z-20"
+          style={{
+            background: `linear-gradient(to bottom, ${currentConfig.bgColor}, transparent)`,
+          }}
+        />
+
+        {/* Bottom Fade Gradient Mask using current theme background */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 z-20"
+          style={{
+            background: `linear-gradient(to top, ${currentConfig.bgColor}, transparent)`,
+          }}
+        />
       </div>
     </div>
   )
-}
+})
+
+AuthCarousel.displayName = 'AuthCarousel'
