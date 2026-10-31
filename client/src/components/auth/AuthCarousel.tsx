@@ -127,7 +127,7 @@ export const AuthCarousel: React.FC = React.memo(() => {
 
   return (
     <div
-      className="relative w-full h-full min-h-screen flex items-center justify-center overflow-hidden select-none transition-colors duration-500"
+      className="relative w-full h-full flex items-center justify-center overflow-hidden select-none transition-colors duration-500"
       style={{ backgroundColor: currentConfig.bgColor }}
     >
       {/*
