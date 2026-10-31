@@ -123,7 +123,7 @@ export const AppLayout: React.FC = () => {
       {/* Mobile Backdrop */}
       {mobileMenuOpen && (
         <div
-          className="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs lg:hidden"
+          className="fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-xs lg:hidden"
           onClick={() => setMobileMenuOpen(false)}
         />
       )}
@@ -132,7 +132,7 @@ export const AppLayout: React.FC = () => {
       {/* COLLAPSIBLE SIDEBAR                                                  */}
       {/* ==================================================================== */}
       <aside
-        className={`fixed lg:static inset-y-0 left-0 z-50 flex flex-col justify-between border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all duration-200 ease-in-out ${
+        className={`fixed lg:static inset-y-0 left-0 z-40 lg:z-10 flex flex-col justify-between border-r border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 transition-all duration-200 ease-in-out ${
           collapsed ? 'w-16' : 'w-60'
         } ${mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}
       >

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 import { AlertCircle, AlertTriangle, Info, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -25,6 +26,26 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
   variant = 'primary',
   isLoading = false,
 }) => {
+  // Prevent background scrolling and handle Escape key while confirm dialog is open
+  useEffect(() => {
+    if (!isOpen) return
+
+    const originalOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !isLoading) {
+        onClose()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = originalOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [isOpen, isLoading, onClose])
+
   if (!isOpen) return null
 
   const getIcon = () => {
@@ -55,22 +76,31 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
     return 'default'
   }
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto">
-      {/* Backdrop */}
+  return createPortal(
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+      {/* Full Viewport Backdrop (covers sidebar, topbar, and page content) */}
       <div
-        className="fixed inset-0 bg-slate-950/60 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-slate-950/70 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
         onClick={() => {
           if (!isLoading) onClose()
         }}
+        aria-hidden="true"
       />
 
       {/* Dialog Body */}
-      <div className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 z-10 transition-all transform animate-in fade-in zoom-in-95 duration-150">
+      <div
+        className="relative w-full max-w-md bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 z-10 transition-all transform animate-in fade-in zoom-in-95 duration-150"
+        role="alertdialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+      >
         <div className="flex items-start gap-4">
           <div className="shrink-0">{getIcon()}</div>
           <div className="flex-1 min-w-0">
-            <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+            <h3
+              id="confirm-dialog-title"
+              className="text-base font-semibold text-slate-900 dark:text-slate-100"
+            >
               {title}
             </h3>
             {description && (
@@ -109,6 +139,7 @@ export const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
           </Button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
