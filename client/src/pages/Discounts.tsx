@@ -372,7 +372,7 @@ export const Discounts: React.FC = () => {
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:bg-slate-100"
+              className="modal-cancel-btn px-3.5 py-1.5 rounded-md text-xs font-semibold bg-red-600 hover:bg-red-700 active:bg-red-800 text-white shadow-xs transition-colors"
             >
               Cancel
             </button>

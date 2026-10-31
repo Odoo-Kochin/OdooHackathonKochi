@@ -986,3 +986,17 @@ html:not([data-theme='white']) .topbar-role-inactive:hover {
   box-shadow: none !important;
 }
 
+/* Modal Cancel Button: High-visibility crisp red button across all themes */
+.modal-cancel-btn {
+  background-color: #dc2626 !important;
+  color: #ffffff !important;
+  border: 1px solid #b91c1c !important;
+}
+.modal-cancel-btn:hover {
+  background-color: #b91c1c !important;
+  color: #ffffff !important;
+}
+.modal-cancel-btn:active {
+  background-color: #991b1b !important;
+}
+
