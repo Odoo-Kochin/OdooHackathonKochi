@@ -295,8 +295,8 @@ export const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Side: Full-Screen Slanted Merry-Go-Round Carousel */}
-      <div className="hidden lg:flex flex-1 min-h-screen relative overflow-hidden bg-slate-950">
+      {/* Right Side: Full-Screen Slanted Card Column */}
+      <div className="hidden lg:flex flex-1 min-h-screen relative overflow-hidden">
         <AuthCarousel />
       </div>
 
