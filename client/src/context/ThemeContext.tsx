@@ -18,14 +18,14 @@ export interface ThemeConfig {
 export const PREDEFINED_THEMES: ThemeConfig[] = [
   {
     id: 'white',
-    name: 'Snow White',
-    bgName: 'Clean Slate (#f8fafc)',
+    name: 'Vibrant White',
+    bgName: 'Slate Canvas (#f1f5f9)',
     surfaceName: 'Pure White (#ffffff)',
-    accentName: 'Royal Indigo (#4f46e5)',
-    bgColor: '#f8fafc',
+    accentName: 'Electric Cobalt (#2563eb)',
+    bgColor: '#f1f5f9',
     surfaceColor: '#ffffff',
-    accentColor: '#4f46e5',
-    textColor: '#0f172a',
+    accentColor: '#2563eb',
+    textColor: '#020617',
     isDark: false,
   },
   {
