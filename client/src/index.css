@@ -128,7 +128,21 @@ body {
   will-change: transform;
 }
 
-/* Continuous vertical merry-go-round dropping stream (slanted waterfall) */
+/* Continuous vertical infinite-scrolling card column (top to bottom) */
+@keyframes scrollDown {
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-infinite-column {
+  animation: scrollDown 20s linear infinite;
+  will-change: transform;
+}
+
 @keyframes continuousDrop {
   0% {
     transform: translateY(-50%);

@@ -9,11 +9,10 @@ import {
   Zap,
   ShieldCheck,
   Activity,
-  CheckCircle2,
-  Sparkles,
   ArrowUpRight,
   Clock,
-  RefreshCw,
+  Sparkles,
+  CheckCircle2,
 } from 'lucide-react'
 
 // ─── Theme visual tokens ──────────────────────────────────────────────────────
@@ -29,6 +28,7 @@ const themeStyles: Record<
     cardBorderHover: string
     fadeTop: string
     fadeBottom: string
+    dashedLine: string
   }
 > = {
   white: {
@@ -41,6 +41,7 @@ const themeStyles: Record<
     cardBorderHover: 'hover:border-blue-400/50',
     fadeTop: 'from-slate-900 via-slate-900/90 to-transparent',
     fadeBottom: 'from-slate-900 via-slate-900/90 to-transparent',
+    dashedLine: 'border-blue-400/50',
   },
   black: {
     containerBg: 'bg-gradient-to-br from-zinc-950 via-black to-zinc-900',
@@ -52,6 +53,7 @@ const themeStyles: Record<
     cardBorderHover: 'hover:border-zinc-400/50',
     fadeTop: 'from-black via-black/90 to-transparent',
     fadeBottom: 'from-black via-black/90 to-transparent',
+    dashedLine: 'border-zinc-500/50',
   },
   emerald: {
     containerBg: 'bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950',
@@ -63,6 +65,7 @@ const themeStyles: Record<
     cardBorderHover: 'hover:border-emerald-400/50',
     fadeTop: 'from-emerald-950 via-emerald-950/90 to-transparent',
     fadeBottom: 'from-emerald-950 via-emerald-950/90 to-transparent',
+    dashedLine: 'border-emerald-400/50',
   },
   violet: {
     containerBg: 'bg-gradient-to-br from-purple-950 via-violet-950 to-slate-950',
@@ -74,6 +77,7 @@ const themeStyles: Record<
     cardBorderHover: 'hover:border-purple-400/50',
     fadeTop: 'from-purple-950 via-purple-950/90 to-transparent',
     fadeBottom: 'from-purple-950 via-purple-950/90 to-transparent',
+    dashedLine: 'border-purple-400/50',
   },
   ocean: {
     containerBg: 'bg-gradient-to-br from-cyan-950 via-sky-950 to-slate-950',
@@ -85,6 +89,7 @@ const themeStyles: Record<
     cardBorderHover: 'hover:border-sky-400/50',
     fadeTop: 'from-cyan-950 via-cyan-950/90 to-transparent',
     fadeBottom: 'from-cyan-950 via-cyan-950/90 to-transparent',
+    dashedLine: 'border-cyan-400/50',
   },
   amber: {
     containerBg: 'bg-gradient-to-br from-amber-950 via-orange-950 to-slate-950',
@@ -96,6 +101,7 @@ const themeStyles: Record<
     cardBorderHover: 'hover:border-amber-400/50',
     fadeTop: 'from-amber-950 via-amber-950/90 to-transparent',
     fadeBottom: 'from-amber-950 via-amber-950/90 to-transparent',
+    dashedLine: 'border-amber-400/50',
   },
   rose: {
     containerBg: 'bg-gradient-to-br from-rose-950 via-pink-950 to-slate-950',
@@ -107,16 +113,22 @@ const themeStyles: Record<
     cardBorderHover: 'hover:border-rose-400/50',
     fadeTop: 'from-rose-950 via-rose-950/90 to-transparent',
     fadeBottom: 'from-rose-950 via-rose-950/90 to-transparent',
+    dashedLine: 'border-rose-400/50',
   },
 }
 
-// ─── Column 1 Cards (Rich Visual Screenshots / Modules) ───────────────────────
-const COLUMN_1_CARDS = [
+// ─── Standardized Card Definitions (Exact 280x160px with Solid Background) ───
+export interface CarouselCardItem {
+  id: string
+  render: () => React.ReactNode
+}
+
+export const CARDS_DATA: CarouselCardItem[] = [
   {
     id: 'mrr-card',
     render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
+      <div className="w-[280px] h-[160px] p-3.5 rounded-2xl bg-slate-900 border border-white/15 shadow-xl shadow-black/40 text-white flex flex-col justify-between shrink-0 relative z-10 box-border">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400">
               <TrendingUp className="w-3.5 h-3.5" />
@@ -127,35 +139,17 @@ const COLUMN_1_CARDS = [
             <ArrowUpRight className="w-2.5 h-2.5" /> +18.4%
           </span>
         </div>
-        <div className="mb-2">
-          <span className="text-lg font-black tracking-tight text-white">$34,820</span>
-          <span className="text-[10px] text-white/60 ml-1.5 font-medium">ARR $417.8k</span>
+
+        <div>
+          <div className="text-xl font-black tracking-tight text-white">$18,450</div>
+          <div className="text-[10px] text-slate-400 font-mono mt-0.5">Annualized ARR: $221,400</div>
         </div>
-        {/* Visual Sparkline Area Chart */}
-        <div className="h-9 w-full overflow-hidden rounded-md bg-white/5 p-1 flex items-end">
-          <svg className="w-full h-7 overflow-visible" viewBox="0 0 100 30" preserveAspectRatio="none">
-            <defs>
-              <linearGradient id="mrrGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#10b981" stopOpacity="0.45" />
-                <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M0 25 Q 15 22, 30 18 T 60 14 T 85 8 L 100 4 L 100 30 L 0 30 Z"
-              fill="url(#mrrGrad)"
-            />
-            <path
-              d="M0 25 Q 15 22, 30 18 T 60 14 T 85 8 L 100 4"
-              fill="none"
-              stroke="#34d399"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] text-white/60 pt-1.5 border-t border-white/10">
-          <span>142 Active Contracts</span>
-          <span className="text-emerald-300 font-semibold">0.0% Churn</span>
+
+        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-white/10">
+          <span>Active Contracts</span>
+          <span className="text-emerald-300 font-semibold flex items-center gap-1">
+            <CheckCircle2 className="w-2.5 h-2.5" /> 100% Retained
+          </span>
         </div>
       </div>
     ),
@@ -163,40 +157,65 @@ const COLUMN_1_CARDS = [
   {
     id: 'tax-invoice-card',
     render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
+      <div className="w-[280px] h-[160px] p-3.5 rounded-2xl bg-slate-900 border border-white/15 shadow-xl shadow-black/40 text-white flex flex-col justify-between shrink-0 relative z-10 box-border">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <div className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
               <FileText className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold text-white">Automated Tax (18%)</span>
+            <span className="text-xs font-bold text-white">Automated Tax Invoice</span>
           </div>
           <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-indigo-500/25 text-indigo-200 border border-indigo-400/30">
-            INV-2026-009
+            INV-2026-1042
           </span>
         </div>
-        {/* Invoice Mini Breakdown */}
-        <div className="p-2 rounded-lg bg-black/40 border border-white/10 text-xs space-y-1 font-mono">
-          <div className="flex justify-between text-[11px] text-white/80">
-            <span>Enterprise Base:</span>
-            <span>$1,200.00</span>
+
+        <div className="p-2 rounded-lg bg-black/40 border border-white/10 text-xs space-y-0.5 font-mono">
+          <div className="flex justify-between text-[11px] text-slate-300">
+            <span>Base Subtotal:</span>
+            <span>$1,060.00</span>
           </div>
           <div className="flex justify-between text-[11px] text-indigo-300">
-            <span>Regional GST (18%):</span>
-            <span>+$216.00</span>
-          </div>
-          <div className="flex justify-between text-xs font-bold text-emerald-300 pt-1 border-t border-white/10">
-            <span>Total Collected:</span>
-            <span>$1,416.00</span>
+            <span>GST Statutory (18%):</span>
+            <span>+$190.80</span>
           </div>
         </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] text-white/70">
+
+        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-white/10">
           <span className="flex items-center gap-1">
-            <Clock className="w-3 h-3 text-indigo-400" /> Daily Run: 00:00 UTC
+            <Clock className="w-3 h-3 text-indigo-400" /> Billed Net 15
           </span>
           <span className="text-emerald-400 font-bold bg-emerald-500/20 px-1.5 py-0.5 rounded">
-            PDF Dispatched
+            Settled $1,250.80
           </span>
+        </div>
+      </div>
+    ),
+  },
+  {
+    id: 'plan-seats-card',
+    render: () => (
+      <div className="w-[280px] h-[160px] p-3.5 rounded-2xl bg-slate-900 border border-white/15 shadow-xl shadow-black/40 text-white flex flex-col justify-between shrink-0 relative z-10 box-border">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-1.5">
+            <div className="p-1.5 rounded-lg bg-purple-500/20 text-purple-400">
+              <Layers className="w-3.5 h-3.5" />
+            </div>
+            <span className="text-xs font-bold text-white">Growth Pro Plan</span>
+          </div>
+          <span className="px-2 py-0.5 rounded text-[10px] font-semibold uppercase bg-purple-500/25 text-purple-200 border border-purple-400/30">
+            Monthly
+          </span>
+        </div>
+
+        <div>
+          <div className="text-xl font-black text-white">$450 <span className="text-xs font-normal text-slate-400">/ seat</span></div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Enterprise Cloud Engine + Odoo Sync</p>
+        </div>
+
+        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-white/10">
+          <span>5 User Licenses</span>
+          <span className="text-purple-300 font-medium">Auto-Renew Active</span>
         </div>
       </div>
     ),
@@ -204,232 +223,71 @@ const COLUMN_1_CARDS = [
   {
     id: 'volume-tier-card',
     render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
+      <div className="w-[280px] h-[160px] p-3.5 rounded-2xl bg-slate-900 border border-white/15 shadow-xl shadow-black/40 text-white flex flex-col justify-between shrink-0 relative z-10 box-border">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400">
               <Tag className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold text-white">Tiered Seat Rules</span>
+            <span className="text-xs font-bold text-white">Volume Voucher</span>
           </div>
           <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-500/25 text-amber-300 border border-amber-400/30">
             15% OFF
           </span>
         </div>
-        <div className="flex items-center justify-between text-[11px] text-white/80 mb-1.5">
-          <span className="font-mono text-amber-300 font-bold">SEATS10PLUS</span>
-          <span className="text-[10px] text-white/60">Min 5 Seats Required</span>
-        </div>
-        {/* Progress Quota Bar */}
-        <div className="space-y-1">
-          <div className="flex justify-between text-[10px] text-white/70">
-            <span>Quota Usage</span>
-            <span className="font-bold text-amber-300 font-mono">24 / 50 claimed</span>
-          </div>
-          <div className="w-full h-2 rounded-full bg-white/15 overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-amber-500 to-orange-400 rounded-full"
-              style={{ width: '48%' }}
-            />
-          </div>
-        </div>
-        <div className="mt-2.5 flex items-center justify-between text-[10px] text-white/60 pt-1.5 border-t border-white/10">
-          <span>Applies to Quotations</span>
-          <span className="text-emerald-300 font-semibold">Auto-Applied</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 'self-service-card',
-    render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <div className="p-1.5 rounded-lg bg-cyan-500/20 text-cyan-400">
-              <Zap className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-xs font-bold text-white">Self-Service Addon</span>
-          </div>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 font-bold">
-            Instant
-          </span>
-        </div>
-        <div className="p-2 rounded-lg bg-black/40 border border-white/10 flex items-center justify-between">
-          <div>
-            <p className="text-xs font-semibold text-white">Odoo Connector Pack</p>
-            <p className="text-[10px] text-white/60">+5 External Stores</p>
-          </div>
-          <span className="text-xs font-bold text-emerald-400 font-mono">+$180/mo</span>
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] text-white/60 pt-1 border-t border-white/10">
-          <span className="flex items-center gap-1 text-cyan-300">
-            <CheckCircle2 className="w-3 h-3 text-cyan-400" /> Auto-Prorated Billing
-          </span>
-          <span className="text-white/80 font-mono">Zero Tickets</span>
-        </div>
-      </div>
-    ),
-  },
-]
 
-// ─── Column 2 Cards (Rich Visual Screenshots / Modules) ───────────────────────
-const COLUMN_2_CARDS = [
-  {
-    id: 'pipeline-card',
-    render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <div className="p-1.5 rounded-lg bg-violet-500/20 text-violet-400">
-              <Layers className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-xs font-bold text-white">Lifecycle Pipeline</span>
-          </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-violet-500/25 text-violet-200 border border-violet-400/30">
-            SUB-9021
-          </span>
+        <div>
+          <span className="font-mono text-amber-300 font-bold text-xs">SEATS10PLUS</span>
+          <p className="text-[11px] text-slate-300 mt-0.5">Volume coupon applied to invoice</p>
         </div>
-        {/* 3 Step Pipeline Graphic */}
-        <div className="grid grid-cols-3 gap-1 text-center text-[10px] mb-2">
-          <div className="py-1 rounded bg-white/10 text-white/60">1. Draft</div>
-          <div className="py-1 rounded bg-white/10 text-white/60">2. Quoted</div>
-          <div className="py-1 rounded bg-emerald-500/30 text-emerald-300 font-bold border border-emerald-400/40 flex items-center justify-center gap-0.5">
-            <CheckCircle2 className="w-2.5 h-2.5" /> Active
-          </div>
-        </div>
-        <div className="p-1.5 rounded bg-black/40 border border-white/10 flex items-center justify-between text-xs">
-          <span className="text-white/80 text-[11px]">Acme Global Corp</span>
-          <span className="font-bold text-white font-mono">$4,200/mo</span>
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] text-white/60 pt-1 border-t border-white/10">
-          <span>Auto-Renew: On</span>
-          <span className="text-emerald-300 font-semibold">15th Monthly</span>
+
+        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-white/10">
+          <span>Min 3 Seats Required</span>
+          <span className="text-amber-300 font-mono font-medium">Auto-Applied</span>
         </div>
       </div>
     ),
   },
   {
-    id: 'payment-rails-card',
+    id: 'settlement-ledger-card',
     render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
+      <div className="w-[280px] h-[160px] p-3.5 rounded-2xl bg-slate-900 border border-white/15 shadow-xl shadow-black/40 text-white flex flex-col justify-between shrink-0 relative z-10 box-border">
+        <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
             <div className="p-1.5 rounded-lg bg-sky-500/20 text-sky-400">
               <CreditCard className="w-3.5 h-3.5" />
             </div>
-            <span className="text-xs font-bold text-white">Multi-Gateway Rails</span>
+            <span className="text-xs font-bold text-white">Bank Settlement</span>
           </div>
-          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
-            99.8% Settle
+          <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-sky-500/25 text-sky-200 border border-sky-400/30">
+            PAY-2026-089
           </span>
         </div>
-        {/* Gateway Row Status */}
-        <div className="grid grid-cols-2 gap-1.5 text-center text-[10px] mb-2 font-mono">
-          <div className="p-1.5 rounded-lg bg-black/40 border border-white/10">
-            <span className="block text-white/60 text-[9px]">Stripe Webhook</span>
-            <span className="text-emerald-400 font-bold">200 OK • 1.8s</span>
-          </div>
-          <div className="p-1.5 rounded-lg bg-black/40 border border-white/10">
-            <span className="block text-white/60 text-[9px]">Razorpay Rail</span>
-            <span className="text-sky-300 font-bold">Connected</span>
-          </div>
+
+        <div>
+          <div className="text-xl font-black text-emerald-400">+$5,310.00</div>
+          <p className="text-[11px] text-slate-300 mt-0.5">Kavala Nordic Tech • Wire Transfer</p>
         </div>
-        <div className="p-1.5 rounded bg-white/5 border border-white/10 flex items-center justify-between text-[11px] font-mono">
-          <span className="text-white/70">evt_charge.succeeded</span>
-          <span className="text-emerald-300 font-bold">+$850.00</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 'smart-dunning-card',
-    render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <div className="p-1.5 rounded-lg bg-rose-500/20 text-rose-400">
-              <ShieldCheck className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-xs font-bold text-white">Smart Dunning & Retry</span>
-          </div>
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-400/30 font-bold">
-            Auto-Heal
+
+        <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1.5 border-t border-white/10">
+          <span>Bank Ledger Match</span>
+          <span className="text-emerald-300 font-bold flex items-center gap-1">
+            <CheckCircle2 className="w-2.5 h-2.5" /> Reconciled 100%
           </span>
-        </div>
-        {/* Recovery Step Graphic */}
-        <div className="space-y-1.5 text-[11px] text-white/80 p-2 rounded-lg bg-black/40 border border-white/10 font-mono">
-          <div className="flex items-center justify-between text-white/60 text-[10px]">
-            <span>Retry 1 (Card expired)</span>
-            <span className="text-rose-400">Soft Fail</span>
-          </div>
-          <div className="flex items-center justify-between text-emerald-300 font-bold">
-            <span className="flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Retry 2 (Backup Card)
-            </span>
-            <span>$920 Collected</span>
-          </div>
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] text-white/60 pt-1 border-t border-white/10">
-          <span>Grace Period: 3 Days</span>
-          <span className="text-emerald-300 font-semibold">96.5% Saved</span>
-        </div>
-      </div>
-    ),
-  },
-  {
-    id: 'audit-stream-card',
-    render: () => (
-      <div className="p-3.5 rounded-2xl bg-slate-900/85 backdrop-blur-md border border-white/15 shadow-xl shadow-black/25 text-white transition-all duration-300 hover:scale-[1.02]">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-1.5">
-            <div className="p-1.5 rounded-lg bg-teal-500/20 text-teal-400">
-              <Activity className="w-3.5 h-3.5" />
-            </div>
-            <span className="text-xs font-bold text-white">Real-Time Audit Stream</span>
-          </div>
-          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-teal-500/25 text-teal-200 border border-teal-400/30 flex items-center gap-1">
-            <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
-            Live
-          </span>
-        </div>
-        {/* Log Lines */}
-        <div className="space-y-1 p-2 rounded-lg bg-black/50 border border-white/10 font-mono text-[10px]">
-          <p className="text-emerald-400 truncate">00:00:01 • Cron: Billing cycle initiated</p>
-          <p className="text-white/80 truncate">00:00:02 • 142 Invoices PDF generated</p>
-          <p className="text-sky-300 truncate">00:00:03 • Webhooks pushed to Odoo ERP</p>
-        </div>
-        <div className="mt-2 flex items-center justify-between text-[10px] text-white/60 pt-1 border-t border-white/10">
-          <span>All Engines Operational</span>
-          <span className="text-teal-300 font-mono font-bold">99.99% Up</span>
         </div>
       </div>
     ),
   },
 ]
 
-// ─── Main AuthCarousel Component (Slanted Vertical Merry-Go-Round) ────────────
+// ─── Main AuthCarousel Component ──────────────────────────────────────────────
 export const AuthCarousel: React.FC = () => {
   const { theme, currentConfig } = useTheme()
   const ts = themeStyles[theme] || themeStyles.white
 
-  // Duplicate cards so the vertical dropping marquee loops seamlessly
-  const col1Stream = [...COLUMN_1_CARDS, ...COLUMN_1_CARDS]
-  const col2Stream = [...COLUMN_2_CARDS, ...COLUMN_2_CARDS]
-  const col3Stream = [
-    COLUMN_2_CARDS[2],
-    COLUMN_1_CARDS[0],
-    COLUMN_2_CARDS[1],
-    COLUMN_1_CARDS[3],
-    COLUMN_2_CARDS[2],
-    COLUMN_1_CARDS[0],
-    COLUMN_2_CARDS[1],
-    COLUMN_1_CARDS[3],
-  ]
-
   return (
     <div
-      className={`group-merry-go-round relative w-full h-full min-h-screen flex flex-col justify-between overflow-hidden ${ts.containerBg} text-white select-none transition-all duration-500`}
+      className={`relative w-full h-full min-h-screen flex flex-col justify-between overflow-hidden ${ts.containerBg} text-white select-none transition-all duration-500`}
     >
       {/* Dynamic Ambient Background Glow Blobs */}
       <div
@@ -453,51 +311,70 @@ export const AuthCarousel: React.FC = () => {
 
         <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-[11px] font-mono text-white/80 shadow-xl">
           <Sparkles className="w-3 h-3 text-amber-300" />
-          <span>Live Merry-Go-Round</span>
+          <span>Infinite Stream</span>
         </div>
       </div>
 
-      {/* ── Slanted Dropping Stream Viewport ── */}
-      <div className="relative z-10 flex-1 overflow-hidden flex items-center justify-center">
-        {/* Slanted Rotated Wrapper: Tilted at -12deg so cards drop along a slanted diagonal path */}
-        <div className="absolute -inset-x-28 -inset-y-56 flex justify-center gap-5 [transform:rotate(-12deg)]">
-          {/* Column 1: Drops continuously from top to bottom (speed: 32s) */}
-          <div className="w-[250px] sm:w-[260px] xl:w-[280px] flex-shrink-0 flex flex-col gap-4 animate-drop-continuous-slow">
-            {col1Stream.map((card, idx) => (
-              <div key={`col1-${card.id}-${idx}`} className="flex-shrink-0">
-                {card.render()}
-              </div>
-            ))}
+      {/* ── Slanted Dropping Stream Viewport Window ── */}
+      <div className="relative z-10 flex-1 flex items-center justify-center overflow-hidden">
+        {/*
+          SPEC COMPLIANT WRAPPER:
+          - ENTIRE column (cards + connecting line) is wrapped in ONE container with transform: rotate(-8deg).
+          - Rotate the wrapper, NOT individual cards.
+          - Fixed height with overflow: hidden so cards appear to fall through a window.
+        */}
+        <div
+          className="relative w-[340px] h-[640px] sm:h-[720px] overflow-hidden flex justify-center [transform:rotate(-8deg)]"
+          style={{ willChange: 'transform' }}
+        >
+          {/*
+            SPEC COMPLIANT MOVING INNER TRACK:
+            - Single inner track containing the card list DUPLICATED twice.
+            - Animated with keyframes from translateY(-50%) to translateY(0).
+            - Linear, infinite, no pausing.
+          */}
+          <div className="relative flex flex-col items-center animate-infinite-column">
+            {/*
+              SPEC COMPLIANT CONNECTING LINE:
+              - Dashed vertical line runs through the center of the cards.
+              - Lives INSIDE the moving track (scrolls together with cards).
+              - z-index: 0 (behind cards).
+              - Cards have solid bg (bg-slate-900) so line is only visible in the 40px gaps.
+            */}
+            <div
+              className={`absolute left-1/2 top-0 bottom-0 -translate-x-1/2 w-0 border-l-2 border-dashed ${ts.dashedLine} pointer-events-none`}
+              style={{ height: '100%', zIndex: 0 }}
+            />
+
+            {/* List 1 (Original Card Stack) */}
+            <div className="flex flex-col gap-[40px] pb-[40px]">
+              {CARDS_DATA.map((card, idx) => (
+                <div key={`col-copy1-${card.id}-${idx}`}>
+                  {card.render()}
+                </div>
+              ))}
+            </div>
+
+            {/* List 2 (Identical Duplicate Card Stack for seamless translateY(-50%) to 0 loop) */}
+            <div className="flex flex-col gap-[40px] pb-[40px]">
+              {CARDS_DATA.map((card, idx) => (
+                <div key={`col-copy2-${card.id}-${idx}`}>
+                  {card.render()}
+                </div>
+              ))}
+            </div>
           </div>
 
-          {/* Column 2: Drops continuously from top to bottom (speed: 24s) */}
-          <div className="w-[250px] sm:w-[260px] xl:w-[280px] flex-shrink-0 flex flex-col gap-4 animate-drop-continuous-fast">
-            {col2Stream.map((card, idx) => (
-              <div key={`col2-${card.id}-${idx}`} className="flex-shrink-0">
-                {card.render()}
-              </div>
-            ))}
-          </div>
+          {/* Top Fade Gradient Mask for smooth window clipping */}
+          <div
+            className={`pointer-events-none absolute inset-x-0 top-0 h-28 bg-gradient-to-b ${ts.fadeTop} z-20`}
+          />
 
-          {/* Column 3: Drops continuously from top to bottom (speed: 28s) */}
-          <div className="w-[250px] sm:w-[260px] xl:w-[280px] flex-shrink-0 hidden xl:flex flex-col gap-4 animate-drop-continuous-mid">
-            {col3Stream.map((card, idx) => (
-              <div key={`col3-${card.id}-${idx}`} className="flex-shrink-0">
-                {card.render()}
-              </div>
-            ))}
-          </div>
+          {/* Bottom Fade Gradient Mask for smooth window clipping */}
+          <div
+            className={`pointer-events-none absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t ${ts.fadeBottom} z-20`}
+          />
         </div>
-
-        {/* Top Fade Gradient Mask */}
-        <div
-          className={`pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b ${ts.fadeTop} z-20`}
-        />
-
-        {/* Bottom Fade Gradient Mask */}
-        <div
-          className={`pointer-events-none absolute inset-x-0 bottom-0 h-36 bg-gradient-to-t ${ts.fadeBottom} z-20`}
-        />
       </div>
 
       {/* ── Bottom Floating Feature Footer Bar ── */}
@@ -515,8 +392,8 @@ export const AuthCarousel: React.FC = () => {
         </div>
 
         <div className="text-[10px] text-white/70 bg-slate-950/80 backdrop-blur-md px-2.5 py-1.5 rounded-lg border border-white/15 shadow-lg flex items-center gap-1.5">
-          <RefreshCw className="w-2.5 h-2.5 text-cyan-300 animate-spin" />
-          <span>Hover to pause</span>
+          <Activity className="w-2.5 h-2.5 text-emerald-400" />
+          <span>Continuous Waterfall</span>
         </div>
       </div>
     </div>
