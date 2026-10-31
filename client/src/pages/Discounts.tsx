@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import type { DiscountRule, Product } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
+import { useToast } from '@/context/ToastContext'
 import { Plus } from 'lucide-react'
 import axios from 'axios'
 
 export const Discounts: React.FC = () => {
+  const toast = useToast()
   const [discounts, setDiscounts] = useState<DiscountRule[]>([])
   const [products, setProducts] = useState<Product[]>([])
   const [modalOpen, setModalOpen] = useState<boolean>(false)
@@ -68,9 +70,13 @@ export const Discounts: React.FC = () => {
       setModalOpen(false)
       setCode('')
       setDescription('')
+      toast.success(
+        'Discount Rule Created',
+        `Promotional rule "${code}" (${value}${type === 'percentage' ? '%' : '$'} off) is now active.`
+      )
       fetchDiscounts()
     } catch (err) {
-      console.error(err)
+      toast.error('Creation Failed', 'Could not save discount rule.')
     }
   }
 

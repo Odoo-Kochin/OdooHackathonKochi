@@ -81,6 +81,31 @@ subscriptionsRouter.post('/plans', (req: Request, res: Response) => {
   res.status(201).json({ success: true, data: newPlan })
 })
 
+subscriptionsRouter.get('/plans/:id', (req: Request, res: Response) => {
+  const plan = plansStore.find((p) => p.id === req.params.id)
+  if (!plan) {
+    res.status(404).json({ success: false, message: 'Plan not found' })
+    return
+  }
+  res.json({ success: true, data: plan })
+})
+
+subscriptionsRouter.put('/plans/:id', (req: Request, res: Response) => {
+  const index = plansStore.findIndex((p) => p.id === req.params.id)
+  if (index === -1) {
+    res.status(404).json({ success: false, message: 'Plan not found' })
+    return
+  }
+  const existing = plansStore[index]
+  const updated: SubscriptionPlan = {
+    ...existing,
+    ...req.body,
+    id: existing.id,
+  }
+  plansStore[index] = updated
+  res.json({ success: true, data: updated })
+})
+
 // ============================================================================
 // QUOTATIONS & SUBSCRIPTIONS (Scene 3)
 // ============================================================================
@@ -160,6 +185,41 @@ subscriptionsRouter.post('/subscriptions', (req: Request, res: Response) => {
 
   subsStore.unshift(newSub)
   res.status(201).json({ success: true, data: newSub })
+})
+
+// Update subscription details (Multi-step edit)
+subscriptionsRouter.put('/subscriptions/:id', (req: Request, res: Response) => {
+  const index = subsStore.findIndex((s) => s.id === req.params.id)
+  if (index === -1) {
+    res.status(404).json({ success: false, message: 'Subscription not found' })
+    return
+  }
+
+  const existing = subsStore[index]
+  const lineItems = req.body.lineItems || existing.lineItems
+  const subtotal = lineItems.reduce((acc: number, item: any) => acc + (Number(item.subtotal) || 0), 0)
+  const taxTotal = lineItems.reduce(
+    (acc: number, item: any) => acc + ((Number(item.subtotal) * Number(item.taxRatePercent || 18)) / 100),
+    0
+  )
+  const discountTotal = lineItems.reduce((acc: number, item: any) => acc + (Number(item.discountAmount) || 0), 0)
+  const grandTotal = subtotal + taxTotal - discountTotal
+
+  const updated: Subscription = {
+    ...existing,
+    ...req.body,
+    id: existing.id,
+    subscriptionNumber: existing.subscriptionNumber,
+    lineItems,
+    subtotal,
+    taxTotal: Math.round(taxTotal * 100) / 100,
+    discountTotal,
+    grandTotal: Math.round(grandTotal * 100) / 100,
+    updatedAt: new Date().toISOString(),
+  }
+
+  subsStore[index] = updated
+  res.json({ success: true, data: updated })
 })
 
 // Transition lifecycle state: Draft -> Quotation -> Confirmed -> Active -> Closed

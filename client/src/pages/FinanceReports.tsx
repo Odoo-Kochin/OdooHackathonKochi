@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react'
 import type { FinanceSummary, Invoice } from '@shared/contracts/subscriptions.js'
 import { Clock, Download } from 'lucide-react'
 import axios from 'axios'
+import { useToast } from '@/context/ToastContext'
 
 export const FinanceReports: React.FC = () => {
+  const toast = useToast()
   const [summary, setSummary] = useState<FinanceSummary | null>(null)
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [responseTimeMs, setResponseTimeMs] = useState<number>(38)
@@ -46,7 +48,9 @@ export const FinanceReports: React.FC = () => {
         </div>
 
         <button
-          onClick={() => alert('Financial snapshot report exported as CSV.')}
+          onClick={() =>
+            toast.success('Report Exported', 'Financial snapshot report exported as CSV.')
+          }
           className="px-3.5 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-1.5 transition-colors"
         >
           <Download className="w-3.5 h-3.5" />

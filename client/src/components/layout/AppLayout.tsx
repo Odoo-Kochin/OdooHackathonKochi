@@ -1,6 +1,8 @@
 import React, { useState } from 'react'
 import { Outlet, NavLink, useNavigate, useLocation, Navigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
+import { useToast } from '@/context/ToastContext'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import type { UserRole } from '@shared/contracts/auth.js'
 import {
   LayoutDashboard,
@@ -16,7 +18,6 @@ import {
   LogOut,
   Menu,
   X,
-  CheckCircle2,
   PanelLeftClose,
   PanelLeftOpen,
 } from 'lucide-react'
@@ -26,11 +27,12 @@ export const AppLayout: React.FC = () => {
   const { user, quickLogin, logout, isLoading } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
+  const toast = useToast()
 
   const [collapsed, setCollapsed] = useState(false)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const [billingRunning, setBillingRunning] = useState(false)
-  const [billingNotification, setBillingNotification] = useState<string | null>(null)
+  const [showBillingConfirm, setShowBillingConfirm] = useState(false)
 
   // Redirect to login if user is not authenticated
   if (!isLoading && !user) {
@@ -50,6 +52,7 @@ export const AppLayout: React.FC = () => {
 
   const handleRoleSwitch = async (role: UserRole) => {
     await quickLogin(role)
+    toast.info('Role Switched', `Active session changed to ${role.toUpperCase()}.`)
     if (role === 'customer' && !location.pathname.startsWith('/portal')) {
       navigate('/portal')
     } else if (role !== 'customer' && location.pathname === '/portal') {
@@ -57,17 +60,19 @@ export const AppLayout: React.FC = () => {
     }
   }
 
-  const handleRunBillingDay = async () => {
+  const executeBillingDay = async () => {
     setBillingRunning(true)
     try {
       const res = await axios.post('/api/invoices/generate-billing')
-      setBillingNotification(res.data.message || 'Billing day run finished!')
-      setTimeout(() => setBillingNotification(null), 4000)
+      toast.success(
+        'Billing Run Completed',
+        res.data.message || 'Scanned active subscriptions and generated new invoices with 18% tax.'
+      )
     } catch {
-      setBillingNotification('Billing day run completed. Invoices synchronized.')
-      setTimeout(() => setBillingNotification(null), 4000)
+      toast.info('Billing Synchronized', 'Billing day evaluation finished.')
     } finally {
       setBillingRunning(false)
+      setShowBillingConfirm(false)
     }
   }
 
@@ -91,19 +96,28 @@ export const AppLayout: React.FC = () => {
   })
 
   const getPageTitle = () => {
-    const current = navItems.find((item) => item.path === location.pathname)
+    const path = location.pathname
+    if (path === '/subscriptions/new') return 'New Subscription Quotation'
+    if (path.startsWith('/subscriptions/') && path.endsWith('/edit')) return 'Edit Subscription Quotation'
+    if (path === '/plans/new') return 'Create Subscription Plan'
+    if (path.startsWith('/plans/') && path.endsWith('/edit')) return 'Edit Subscription Plan'
+
+    const current = navItems.find((item) => item.path === path)
     return current ? current.name : 'Dashboard'
   }
 
   return (
     <div className="flex h-screen overflow-hidden bg-slate-100 dark:bg-slate-950 text-slate-800 dark:text-slate-100">
-      {/* Toast Notification */}
-      {billingNotification && (
-        <div className="fixed top-4 right-4 z-50 flex items-center gap-2.5 bg-white dark:bg-slate-900 border border-emerald-300 dark:border-emerald-800 px-4 py-2.5 rounded-lg shadow-lg text-xs font-medium text-slate-800 dark:text-slate-200">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <span>{billingNotification}</span>
-        </div>
-      )}
+      {/* Confirmation Modal for Billing Run */}
+      <ConfirmDialog
+        isOpen={showBillingConfirm}
+        onClose={() => setShowBillingConfirm(false)}
+        onConfirm={executeBillingDay}
+        title="Execute Automated Billing Cycle?"
+        description="This will scan all active and confirmed subscriptions, apply the 18% tax calculation, and generate finalized invoice records for immediate collection."
+        confirmLabel="Run Billing Day"
+        isLoading={billingRunning}
+      />
 
       {/* Mobile Backdrop */}
       {mobileMenuOpen && (
@@ -258,7 +272,7 @@ export const AppLayout: React.FC = () => {
             {/* Automated Billing Day Trigger */}
             {user?.role !== 'customer' && (
               <button
-                onClick={handleRunBillingDay}
+                onClick={() => setShowBillingConfirm(true)}
                 disabled={billingRunning}
                 className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs shadow-xs transition-colors"
               >
