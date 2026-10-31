@@ -21,8 +21,6 @@ import {
   UserPlus,
   LogIn,
   Sparkles,
-  ShieldCheck,
-  Globe,
 } from 'lucide-react'
 
 export const Register: React.FC = () => {
@@ -84,85 +82,86 @@ export const Register: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white dark:bg-slate-950 overflow-hidden">
-      {/* Left Side: Full-Height Auth Section (no card box) */}
-      <div className="w-full lg:w-[480px] xl:w-[540px] 2xl:w-[580px] flex-shrink-0 min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-12 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
-        <div className="max-w-md w-full mx-auto my-auto py-6">
+    <div className="h-screen w-full flex flex-col lg:flex-row bg-white dark:bg-slate-950 overflow-hidden">
+      {/* Left Side: 2/3rd Width Auth Section without vertical scrolling */}
+      <div className="w-full lg:w-2/3 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-20 py-4 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
+        <div className="max-w-xl w-full mx-auto my-auto py-2">
           {/* Brand Header */}
-            <div className="mb-6 text-left">
-              <div className="flex items-center justify-between mb-2.5">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>New Account Onboarding</span>
-                </div>
-                <ThemeSelector />
+          <div className="mb-3 text-left">
+            <div className="flex items-center justify-between mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>New Account Onboarding</span>
               </div>
-              <div className="flex items-center gap-2.5 mb-1.5">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                  Create Account
-                </h1>
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Join Brightloop Software Subscription Platform
-              </p>
+              <ThemeSelector />
             </div>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
+                <Layers className="w-4 h-4" />
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Create Account
+              </h1>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Join Brightloop Software Subscription Platform
+            </p>
+          </div>
 
-            {/* Navigation Tabs */}
-            <div className="mb-6 flex border-b border-slate-200 dark:border-slate-800">
+          {/* Navigation Tabs */}
+          <div className="mb-3 flex border-b border-slate-200 dark:border-slate-800">
             <Link
               to="/login"
-              className="pb-3 px-2 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors flex items-center gap-1.5"
+              className="pb-2.5 px-2 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors flex items-center gap-1.5"
             >
               <LogIn className="w-4 h-4" />
               <span>Sign In</span>
             </Link>
-            <span className="pb-3 px-4 border-b-2 border-indigo-600 text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+            <span className="pb-2.5 px-4 border-b-2 border-indigo-600 text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
               <UserPlus className="w-4 h-4 text-indigo-600" />
               <span>Create Account</span>
             </span>
           </div>
 
           {errorMessage && (
-            <div className="mb-4 p-3 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 flex items-center gap-2 text-xs text-red-700 dark:text-red-300">
+            <div className="mb-3 p-2.5 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 flex items-center gap-2 text-xs text-red-700 dark:text-red-300">
               <AlertCircle className="w-4 h-4 flex-shrink-0" />
               <span>{errorMessage}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Full Name */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
-                <User className="w-3.5 h-3.5 text-slate-400" />
-                <span>Full Name</span>
-              </label>
-              <input
-                type="text"
-                required
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Elena Rostova"
-                className="w-full px-3 py-2 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
-            </div>
+          <form onSubmit={handleSubmit} className="space-y-3">
+            {/* Full Name & Work Email in 2 columns */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Full Name</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Elena Rostova"
+                  className="w-full px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
 
-            {/* Work Email */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-slate-400" />
-                <span>Work Email Address</span>
-              </label>
-              <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="elena@company.com"
-                className="w-full px-3 py-2 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
-              />
+              <div>
+                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5 text-slate-400" />
+                  <span>Work Email Address</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="elena@company.com"
+                  className="w-full px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                />
+              </div>
             </div>
 
             {/* Company / Legal Entity */}
@@ -177,13 +176,13 @@ export const Register: React.FC = () => {
                 value={company}
                 onChange={(e) => setCompany(e.target.value)}
                 placeholder="Apex Retailers Ltd"
-                className="w-full px-3 py-2 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
 
             {/* Account Role Selector with Vector Badges */}
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5 flex items-center gap-1.5">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
                 <Briefcase className="w-3.5 h-3.5 text-slate-400" />
                 <span>Primary Account Role</span>
               </label>
@@ -251,7 +250,7 @@ export const Register: React.FC = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Create a strong password"
-                  className="w-full px-3 pr-10 py-2 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  className="w-full px-3 pr-10 py-1.5 text-sm rounded-lg bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 />
                 <button
                   type="button"
@@ -263,8 +262,8 @@ export const Register: React.FC = () => {
                 </button>
               </div>
 
-              {/* Password Checklist with Vector Status Icons */}
-              <div className="mt-2.5 p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 space-y-1.5 text-[11px]">
+              {/* Password Checklist in 2x2 grid */}
+              <div className="mt-2 p-2 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-1 text-[11px]">
                 <div
                   className={`flex items-center gap-1.5 ${
                     passwordChecks.length ? 'text-emerald-600 dark:text-emerald-400 font-medium' : 'text-slate-400'
@@ -275,7 +274,7 @@ export const Register: React.FC = () => {
                   ) : (
                     <XCircle className="w-3.5 h-3.5 flex-shrink-0" />
                   )}
-                  <span>At least 8 characters long</span>
+                  <span>At least 8 characters</span>
                 </div>
                 <div
                   className={`flex items-center gap-1.5 ${
@@ -287,7 +286,7 @@ export const Register: React.FC = () => {
                   ) : (
                     <XCircle className="w-3.5 h-3.5 flex-shrink-0" />
                   )}
-                  <span>Includes at least one uppercase letter (A-Z)</span>
+                  <span>One uppercase letter (A-Z)</span>
                 </div>
                 <div
                   className={`flex items-center gap-1.5 ${
@@ -299,7 +298,7 @@ export const Register: React.FC = () => {
                   ) : (
                     <XCircle className="w-3.5 h-3.5 flex-shrink-0" />
                   )}
-                  <span>Includes at least one lowercase letter (a-z)</span>
+                  <span>One lowercase letter (a-z)</span>
                 </div>
                 <div
                   className={`flex items-center gap-1.5 ${
@@ -311,7 +310,7 @@ export const Register: React.FC = () => {
                   ) : (
                     <XCircle className="w-3.5 h-3.5 flex-shrink-0" />
                   )}
-                  <span>Includes a special character (!@#$%^&*)</span>
+                  <span>Special character (!@#$%^&*)</span>
                 </div>
               </div>
             </div>
@@ -319,7 +318,7 @@ export const Register: React.FC = () => {
             <button
               type="submit"
               disabled={isLoading || !isPasswordValid}
-              className="w-full mt-2 py-2.5 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              className="w-full mt-2 py-2 px-4 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-sm flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
             >
               <UserPlus className="w-4 h-4" />
               <span>{isLoading ? 'Creating Account...' : 'Complete Registration'}</span>
@@ -327,7 +326,7 @@ export const Register: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center text-xs text-slate-500">
+          <div className="mt-4 text-center text-xs text-slate-500">
             Already have an account?{' '}
             <Link
               to="/login"
@@ -338,28 +337,10 @@ export const Register: React.FC = () => {
             </Link>
           </div>
         </div>
-
-        {/* Security Footer with Vector Icons */}
-        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-4 text-[11px] text-slate-400">
-          <div className="flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>Encrypted At Rest</span>
-          </div>
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Lock className="w-3.5 h-3.5 text-slate-400" />
-            <span>Strict Privacy</span>
-          </div>
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Globe className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Global Coverage</span>
-          </div>
-        </div>
       </div>
 
-      {/* Right Side: Full-Screen Slanted Card Column */}
-      <div className="hidden lg:flex flex-1 min-h-screen relative overflow-hidden">
+      {/* Right Side: 1/3rd Slanted Card Column */}
+      <div className="hidden lg:flex lg:w-1/3 h-full relative overflow-hidden">
         <AuthCarousel />
       </div>
     </div>
