@@ -10,11 +10,14 @@ export const AuthLayout: React.FC = () => {
 
   return (
     <div
-      className="h-screen w-full flex flex-col overflow-hidden transition-colors duration-500"
+      className="h-screen w-full relative overflow-hidden transition-colors duration-500 flex flex-col"
       style={{ backgroundColor: currentConfig.bgColor }}
     >
-      {/* Top Header: Logo on left, Theme selection in the right top */}
-      <header className="w-full flex items-center justify-between px-6 sm:px-10 lg:px-16 py-4 z-20 shrink-0">
+      {/* Top Header: Same color as rest of content, on top of z-axis (z-30) */}
+      <header
+        className="w-full flex items-center justify-between px-6 sm:px-10 lg:px-16 py-4 relative z-30 shrink-0 transition-colors duration-500"
+        style={{ backgroundColor: currentConfig.bgColor }}
+      >
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
             <Layers className="w-5 h-5" />
@@ -39,22 +42,25 @@ export const AuthLayout: React.FC = () => {
         <ThemeSelector />
       </header>
 
-      {/* Main Body Area UNDER the header */}
-      <div className="flex-1 w-full flex flex-col lg:flex-row overflow-hidden">
+      {/* Main Content Area */}
+      <div className="flex-1 w-full flex flex-col lg:flex-row overflow-hidden relative z-20">
         {/* Left Side: Form area that scrolls vertically when needed (e.g. Create Account) */}
-        <div className="flex-1 h-full overflow-y-auto px-6 sm:px-10 lg:px-16 py-4 flex flex-col items-start z-10">
+        <div className="flex-1 h-full overflow-y-auto px-6 sm:px-10 lg:px-16 py-4 flex flex-col items-start">
           <div className="w-full max-w-xl my-auto py-2">
             <Outlet />
           </div>
         </div>
 
-        {/* Right Side: Persistent Carousel UNDER the header */}
-        <div
-          className="hidden lg:flex w-[420px] xl:w-[480px] 2xl:w-[540px] shrink-0 h-full items-center justify-center overflow-hidden select-none transition-colors duration-500"
-          style={{ backgroundColor: currentConfig.bgColor }}
-        >
-          <AuthCarousel />
-        </div>
+        {/* Spacer for the right side so form layout respects the carousel area */}
+        <div className="hidden lg:block w-[420px] xl:w-[480px] 2xl:w-[540px] shrink-0" />
+      </div>
+
+      {/* Right Side: Persistent Carousel spanning full height top-0 to bottom-0, UNDER the header in z-axis (z-10) */}
+      <div
+        className="hidden lg:flex w-[420px] xl:w-[480px] 2xl:w-[540px] absolute top-0 right-0 h-screen z-10 items-center justify-center overflow-hidden select-none transition-colors duration-500"
+        style={{ backgroundColor: currentConfig.bgColor }}
+      >
+        <AuthCarousel />
       </div>
     </div>
   )
