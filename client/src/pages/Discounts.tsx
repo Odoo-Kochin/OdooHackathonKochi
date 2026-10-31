@@ -101,7 +101,18 @@ export const Discounts: React.FC = () => {
 
       {/* Rules Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {discounts.map((disc) => {
+        {discounts.length === 0 ? (
+          <div className="col-span-full py-12 text-center rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <Tag className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+            <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+              No discount rules found in database.
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Create a promotional voucher or volume discount rule to incentivize larger orders.
+            </p>
+          </div>
+        ) : (
+          discounts.map((disc) => {
           const usagePercent = Math.min(100, Math.round((disc.usageCount / disc.usageLimit) * 100))
 
           return (
@@ -194,7 +205,7 @@ export const Discounts: React.FC = () => {
               </div>
             </div>
           )
-        })}
+        }))}
       </div>
 
       {/* Modal */}

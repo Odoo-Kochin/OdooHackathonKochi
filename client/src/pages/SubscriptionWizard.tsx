@@ -20,6 +20,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { useToast } from '@/context/ToastContext'
+import { useAuth } from '@/context/AuthContext'
 import type { Subscription, SubscriptionPlan, Product, DiscountRule } from '@shared/contracts/subscriptions'
 
 const STEPS = [
@@ -54,6 +55,7 @@ export const SubscriptionWizard: React.FC = () => {
   const isEdit = Boolean(id)
   const navigate = useNavigate()
   const toast = useToast()
+  const { user } = useAuth()
 
   const [currentStep, setCurrentStep] = useState(1)
   const [loading, setLoading] = useState(false)
@@ -65,9 +67,9 @@ export const SubscriptionWizard: React.FC = () => {
   const [discounts, setDiscounts] = useState<DiscountRule[]>([])
 
   // Form State
-  const [customerName, setCustomerName] = useState('David Miller')
-  const [customerEmail, setCustomerEmail] = useState('david@acmeretail.com')
-  const [customerCompany, setCustomerCompany] = useState('Acme Retail Corp')
+  const [customerName, setCustomerName] = useState(user?.name || '')
+  const [customerEmail, setCustomerEmail] = useState(user?.email || '')
+  const [customerCompany, setCustomerCompany] = useState(user?.company || '')
   const [paymentTerms, setPaymentTerms] = useState('Immediate')
   const [billingCountry, setBillingCountry] = useState('India (IN)')
 
@@ -76,11 +78,11 @@ export const SubscriptionWizard: React.FC = () => {
   const [autoCloseOnEnd, setAutoCloseOnEnd] = useState(false)
   const [quotationValidityDays, setQuotationValidityDays] = useState(15)
 
-  const [seats, setSeats] = useState(5)
+  const [seats, setSeats] = useState(1)
   const [includeOdooSync, setIncludeOdooSync] = useState(false)
   const [discountCode, setDiscountCode] = useState('')
   const [appliedDiscount, setAppliedDiscount] = useState<DiscountRule | null>(null)
-  const [notes, setNotes] = useState('Standard enterprise subscription agreement.')
+  const [notes, setNotes] = useState('')
 
   // Fetch plans, products, discounts and prefill if edit mode
   useEffect(() => {
@@ -225,14 +227,19 @@ export const SubscriptionWizard: React.FC = () => {
 
   // Submit Handler
   const handleSubmit = async (targetStatus: 'Quotation' | 'Active') => {
+    if (!selectedPlan) {
+      toast.error('Validation Error', 'A valid subscription plan must be selected from the catalog.')
+      return
+    }
+
     setLoading(true)
 
     const lineItems = [
       {
         id: `sli-${Date.now()}-core`,
-        productId: selectedPlan?.productId || products[0]?.id || 'prod-01',
-        productName: `${selectedPlan?.productName || 'Brightloop Core'} (${seats} seats)`,
-        variantName: selectedPlan?.name,
+        productId: selectedPlan.productId || products[0]?.id || 'prod-custom',
+        productName: `${selectedPlan.productName || selectedPlan.name} (${seats} seats)`,
+        variantName: selectedPlan.name,
         quantity: seats,
         unitPrice: basePricePerSeat,
         taxRatePercent: 18,
@@ -243,9 +250,10 @@ export const SubscriptionWizard: React.FC = () => {
     ]
 
     if (includeOdooSync) {
+      const odooProd = products.find((p) => p.name.includes('Odoo') || p.code.includes('ODOO')) || products[0]
       lineItems.push({
         id: `sli-${Date.now()}-odoo`,
-        productId: 'prod-01',
+        productId: odooProd ? odooProd.id : 'prod-odoo',
         productName: 'Brightloop Core ERP (Odoo Edition Integration)',
         variantName: 'Odoo Edition',
         quantity: 1,
@@ -261,8 +269,8 @@ export const SubscriptionWizard: React.FC = () => {
       customerName,
       customerEmail,
       customerCompany,
-      planId: selectedPlan?.id || 'plan-monthly-pro',
-      planName: selectedPlan?.name || 'Growth Pro',
+      planId: selectedPlan.id,
+      planName: selectedPlan.name,
       billingFrequency,
       status: targetStatus,
       paymentTerms,

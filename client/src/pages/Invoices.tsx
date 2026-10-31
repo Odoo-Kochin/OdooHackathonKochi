@@ -266,6 +266,15 @@ export const Invoices: React.FC = () => {
                   </td>
                 </tr>
               ))}
+              {filteredInvoices.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-xs text-slate-400">
+                    {invoices.length === 0
+                      ? 'No invoices found in database.'
+                      : 'No invoices matching the filter.'}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

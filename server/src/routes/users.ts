@@ -40,11 +40,11 @@ usersRouter.get('/', async (_req: Request, res: Response) => {
 
     res.json({ success: true, data: formatted })
   } catch (error: any) {
-    console.warn('Database error encountered. Falling back to mock dataset:', error?.message)
-    res.json({
-      success: true,
-      data: mockStore,
-      message: 'Database query failed; served fallback mock data',
+    console.error('Database error fetching users:', error)
+    res.status(500).json({
+      success: false,
+      message: 'Failed to fetch users from database',
+      error: error?.message,
     })
   }
 })

@@ -146,14 +146,19 @@ export const PlanWizard: React.FC = () => {
   }
 
   const handleSubmit = async () => {
-    setLoading(true)
     const selectedProd = products.find((p) => p.id === productId) || products[0]
+    if (!selectedProd) {
+      toast.error('Product Required', 'Please ensure at least one catalog product exists and is selected.')
+      return
+    }
+
+    setLoading(true)
 
     const payload = {
       name,
       code,
-      productId: selectedProd ? selectedProd.id : 'prod-01',
-      productName: selectedProd ? selectedProd.name : 'Brightloop Core',
+      productId: selectedProd.id,
+      productName: selectedProd.name,
       price: Number(price),
       billingFrequency,
       minimumQuantity: Number(minimumQuantity),

@@ -44,7 +44,18 @@ export const Plans: React.FC = () => {
 
       {/* Plans List Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {plans.map((plan) => (
+        {plans.length === 0 ? (
+          <div className="col-span-full py-12 text-center rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <Layers className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+            <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+              No subscription plans found in database.
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Create a new plan to define billing cadences and pricing tiers.
+            </p>
+          </div>
+        ) : (
+          plans.map((plan) => (
           <div
             key={plan.id}
             className="p-5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition-colors"
@@ -124,7 +135,7 @@ export const Plans: React.FC = () => {
               </div>
             </div>
           </div>
-        ))}
+        )))}
       </div>
     </div>
   )
