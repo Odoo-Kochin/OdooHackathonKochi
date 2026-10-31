@@ -416,27 +416,37 @@ export const AuthCarousel: React.FC = () => {
   // Duplicate cards so the vertical dropping marquee loops seamlessly
   const col1Stream = [...COLUMN_1_CARDS, ...COLUMN_1_CARDS]
   const col2Stream = [...COLUMN_2_CARDS, ...COLUMN_2_CARDS]
+  const col3Stream = [
+    COLUMN_2_CARDS[2],
+    COLUMN_1_CARDS[0],
+    COLUMN_2_CARDS[1],
+    COLUMN_1_CARDS[3],
+    COLUMN_2_CARDS[2],
+    COLUMN_1_CARDS[0],
+    COLUMN_2_CARDS[1],
+    COLUMN_1_CARDS[3],
+  ]
 
   return (
     <div
-      className={`group-merry-go-round relative h-full min-h-[640px] flex flex-col justify-between overflow-hidden ${ts.containerBg} text-white rounded-3xl shadow-2xl border ${ts.outerBorder} select-none transition-all duration-500`}
+      className={`group-merry-go-round relative w-full h-full min-h-screen flex flex-col justify-between overflow-hidden ${ts.containerBg} text-white select-none transition-all duration-500`}
     >
       {/* Dynamic Ambient Background Glow Blobs */}
       <div
-        className={`absolute -top-16 -right-16 w-80 h-80 ${ts.glow1} rounded-full blur-3xl pointer-events-none transition-colors duration-500`}
+        className={`absolute -top-24 -right-24 w-96 h-96 ${ts.glow1} rounded-full blur-3xl pointer-events-none transition-colors duration-500`}
       />
       <div
-        className={`absolute -bottom-16 -left-16 w-80 h-80 ${ts.glow2} rounded-full blur-3xl pointer-events-none transition-colors duration-500`}
+        className={`absolute -bottom-24 -left-24 w-96 h-96 ${ts.glow2} rounded-full blur-3xl pointer-events-none transition-colors duration-500`}
       />
 
       {/* ── Top Floating Header Bar ── */}
-      <div className="relative z-30 flex items-center justify-between p-6 pb-2 pointer-events-none">
+      <div className="relative z-30 flex items-center justify-between p-8 pb-2 pointer-events-none">
         <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-950/80 backdrop-blur-md border border-white/20 text-white text-xs font-semibold shadow-xl">
           <span className="relative flex h-2 w-2">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
             <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
           </span>
-          <span className="tracking-tight">Brightloop OS</span>
+          <span className="tracking-tight font-bold">Brightloop OS</span>
           <span className="text-white/40">•</span>
           <span className={`text-[10px] font-mono ${ts.accent}`}>{currentConfig.name}</span>
         </div>
@@ -449,10 +459,10 @@ export const AuthCarousel: React.FC = () => {
 
       {/* ── Slanted Dropping Stream Viewport ── */}
       <div className="relative z-10 flex-1 overflow-hidden flex items-center justify-center">
-        {/* Slanted Rotated Wrapper: Tilted at -10deg so cards drop along a slanted diagonal path */}
-        <div className="absolute -inset-x-20 -inset-y-48 flex justify-center gap-4 [transform:rotate(-10deg)]">
+        {/* Slanted Rotated Wrapper: Tilted at -12deg so cards drop along a slanted diagonal path */}
+        <div className="absolute -inset-x-28 -inset-y-56 flex justify-center gap-5 [transform:rotate(-12deg)]">
           {/* Column 1: Drops continuously from top to bottom (speed: 32s) */}
-          <div className="w-[240px] sm:w-[250px] flex-shrink-0 flex flex-col gap-4 animate-drop-continuous-slow">
+          <div className="w-[250px] sm:w-[260px] xl:w-[280px] flex-shrink-0 flex flex-col gap-4 animate-drop-continuous-slow">
             {col1Stream.map((card, idx) => (
               <div key={`col1-${card.id}-${idx}`} className="flex-shrink-0">
                 {card.render()}
@@ -461,9 +471,18 @@ export const AuthCarousel: React.FC = () => {
           </div>
 
           {/* Column 2: Drops continuously from top to bottom (speed: 24s) */}
-          <div className="w-[240px] sm:w-[250px] flex-shrink-0 flex flex-col gap-4 animate-drop-continuous-fast">
+          <div className="w-[250px] sm:w-[260px] xl:w-[280px] flex-shrink-0 flex flex-col gap-4 animate-drop-continuous-fast">
             {col2Stream.map((card, idx) => (
               <div key={`col2-${card.id}-${idx}`} className="flex-shrink-0">
+                {card.render()}
+              </div>
+            ))}
+          </div>
+
+          {/* Column 3: Drops continuously from top to bottom (speed: 28s) */}
+          <div className="w-[250px] sm:w-[260px] xl:w-[280px] flex-shrink-0 hidden xl:flex flex-col gap-4 animate-drop-continuous-mid">
+            {col3Stream.map((card, idx) => (
+              <div key={`col3-${card.id}-${idx}`} className="flex-shrink-0">
                 {card.render()}
               </div>
             ))}
