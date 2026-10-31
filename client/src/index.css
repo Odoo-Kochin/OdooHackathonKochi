@@ -139,7 +139,22 @@ body {
 }
 
 .animate-infinite-column {
-  animation: scrollDown 20s linear infinite;
+  animation: scrollDown 24s linear infinite;
+  will-change: transform;
+}
+
+/* Continuous vertical infinite-scrolling card column (bottom to top for circular loop) */
+@keyframes scrollUp {
+  0% {
+    transform: translateY(0);
+  }
+  100% {
+    transform: translateY(-50%);
+  }
+}
+
+.animate-infinite-column-up {
+  animation: scrollUp 24s linear infinite;
   will-change: transform;
 }
 

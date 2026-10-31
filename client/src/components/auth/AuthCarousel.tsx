@@ -155,13 +155,18 @@ export const AuthCarousel: React.FC = React.memo(() => {
   // Crisp, high-contrast dashed line color so connections are unmistakable
   const dashedLineColor = isDark ? '#818cf8' : '#4f46e5'
 
-  // Right column: standard sequence [0, 1, 2, 3, 4, 5]
+  // Right column: standard sequence [0, 1, 2, 3, 4, 5] moving DOWN
   const rightColumnCards = baseCards
-  // Left column: offset by 3 cards [3, 4, 5, 0, 1, 2].
-  // When a card finishes going down in the right column, it appears in the left column!
+  // Left column: synchronized circular sequence [3, 2, 1, 0, 5, 4] moving back UP!
+  // When a card exits the bottom of the right column, the exact same card enters the bottom of the left column and travels back UP.
+  // When it reaches the top of the left column, it returns to the top of the right column and travels back DOWN.
   const leftColumnCards = [
-    ...baseCards.slice(3),
-    ...baseCards.slice(0, 3),
+    baseCards[3],
+    baseCards[2],
+    baseCards[1],
+    baseCards[0],
+    baseCards[5],
+    baseCards[4],
   ]
 
   // Helper to render an individual card with guaranteed top & bottom connector lines
@@ -276,8 +281,12 @@ export const AuthCarousel: React.FC = React.memo(() => {
   )
 
   // Helper to render a complete moving card track with duplicated card stacks
-  const renderCardColumn = (cardsList: typeof baseCards, columnId: string) => (
-    <div className="relative flex flex-col items-center animate-infinite-column w-[280px]">
+  const renderCardColumn = (
+    cardsList: typeof baseCards,
+    columnId: string,
+    animClass: string
+  ) => (
+    <div className={`relative flex flex-col items-center ${animClass} w-[280px]`}>
       {/* Continuous background vertical dashed line running the full length + buffer */}
       <div
         className="absolute left-1/2 -top-[1200px] -bottom-[1200px] -translate-x-1/2 w-0 pointer-events-none -z-20"
@@ -294,7 +303,7 @@ export const AuthCarousel: React.FC = React.memo(() => {
         )}
       </div>
 
-      {/* List 2: Duplicate Card Stack for mathematically seamless translateY(-50%) to 0 loop */}
+      {/* List 2: Duplicate Card Stack for mathematically seamless translateY(-50%) loop */}
       <div className="flex flex-col gap-[40px] pb-[40px]">
         {cardsList.map((card, idx) =>
           renderCard(card, `${columnId}-list2-${card.id}-${idx}`)
@@ -309,11 +318,13 @@ export const AuthCarousel: React.FC = React.memo(() => {
       style={{ backgroundColor: currentConfig.bgColor }}
     >
       {/*
-        SPEC COMPLIANT 2-COLUMN WRAPPER:
+        SPEC COMPLIANT CIRCULAR 2-COLUMN WRAPPER:
         - Two centered columns of cards (Left column & Right column) with fixed 40px vertical gaps.
-        - The ENTIRE dual-column system is wrapped in ONE container with transform: rotate(-8deg).
-        - Rotate the wrapper, NOT individual cards, keeping the tilt and connecting lines aligned.
-        - Fixed height with overflow: hidden so cards appear to fall through a window.
+        - Right Column: Cards travel DOWN (scrollDown animation).
+        - Left Column: Cards travel BACK UP (scrollUp animation).
+        - When a card reaches the bottom of the right column, it curves to the left and ascends up the left column.
+        - When a card reaches the top of the left column, it curves to the right and descends down the right column.
+        - The ENTIRE circular loop is wrapped in ONE container with transform: rotate(-8deg).
       */}
       <div
         className="relative w-[600px] sm:w-[640px] xl:w-[680px] h-[680px] sm:h-[760px] overflow-hidden flex justify-center items-center [transform:rotate(-8deg)]"
@@ -321,57 +332,62 @@ export const AuthCarousel: React.FC = React.memo(() => {
       >
         {/*
           Top Connecting Crossover Line:
-          Curved dashed bridge connecting the top of the Left Column to the Right Column.
+          Curved dashed bridge connecting the top of the Left Column (exiting UP)
+          over to the top of the Right Column (entering DOWN).
         */}
         <svg
-          className="absolute -top-4 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-0"
+          className="absolute -top-3 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-20"
           viewBox="0 0 340 48"
         >
           <path
-            d="M 16 48 C 16 8, 324 8, 324 48"
+            d="M 16 48 C 16 4, 324 4, 324 48"
             fill="none"
             stroke={dashedLineColor}
-            strokeWidth="2"
-            strokeDasharray="4 4"
+            strokeWidth="2.5"
+            strokeDasharray="5 5"
             strokeLinecap="round"
           />
-          <circle cx="16" cy="48" r="3" fill={dashedLineColor} />
-          <circle cx="324" cy="48" r="3" fill={dashedLineColor} />
+          {/* Directional arrow indicating motion from Left Column (UP) to Right Column (DOWN) */}
+          <polygon points="175,5 165,1 165,9" fill={dashedLineColor} />
+          <circle cx="16" cy="48" r="3.5" fill={dashedLineColor} />
+          <circle cx="324" cy="48" r="3.5" fill={dashedLineColor} />
         </svg>
 
         {/* Dual Columns Container with gap between them */}
         <div className="relative flex items-center gap-7 sm:gap-8 z-10">
           {/*
-            Left Column: Appears to the left of the existing carousel.
-            When cards in the right carousel go down, they appear here!
+            Left Column: Cards move BACK UP (animate-infinite-column-up).
+            When cards in the right carousel go down, they travel back up here!
           */}
-          {renderCardColumn(leftColumnCards, 'col-left')}
+          {renderCardColumn(leftColumnCards, 'col-left', 'animate-infinite-column-up')}
 
           {/*
-            Right Column: Existing carousel column moving top to bottom.
+            Right Column: Existing carousel column moving top to bottom (animate-infinite-column).
           */}
-          {renderCardColumn(rightColumnCards, 'col-right')}
+          {renderCardColumn(rightColumnCards, 'col-right', 'animate-infinite-column')}
         </div>
 
         {/*
           Bottom Connecting Crossover Line:
-          Curved dashed bridge connecting the bottom of the Right Column over to the Left Column.
-          "after going it down make that thing appear left to the existing carousel so two will there."
+          Curved dashed bridge connecting the bottom of the Right Column (exiting DOWN)
+          over to the bottom of the Left Column (entering UP).
         */}
         <svg
-          className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-0"
+          className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-20"
           viewBox="0 0 340 48"
         >
           <path
-            d="M 324 0 C 324 40, 16 40, 16 0"
+            d="M 324 0 C 324 44, 16 44, 16 0"
             fill="none"
             stroke={dashedLineColor}
-            strokeWidth="2"
-            strokeDasharray="4 4"
+            strokeWidth="2.5"
+            strokeDasharray="5 5"
             strokeLinecap="round"
           />
-          <circle cx="324" cy="0" r="3" fill={dashedLineColor} />
-          <circle cx="16" cy="0" r="3" fill={dashedLineColor} />
+          {/* Directional arrow indicating motion from Right Column (DOWN) to Left Column (UP) */}
+          <polygon points="165,43 175,47 175,39" fill={dashedLineColor} />
+          <circle cx="324" cy="0" r="3.5" fill={dashedLineColor} />
+          <circle cx="16" cy="0" r="3.5" fill={dashedLineColor} />
         </svg>
 
         {/* Top Fade Gradient Mask using current theme background */}
