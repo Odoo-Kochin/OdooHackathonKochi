@@ -83,10 +83,10 @@ export const Login: React.FC = () => {
   }
 
   return (
-    <div className="h-screen w-full flex flex-col lg:flex-row bg-white dark:bg-slate-950 overflow-hidden">
-      {/* Left Side: 2/3rd Width Auth Section without vertical scrolling */}
-      <div className="w-full lg:w-2/3 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-20 py-4 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
-        <div className="max-w-xl w-full mx-auto my-auto py-2">
+    <div className="min-h-screen w-full relative overflow-hidden bg-[#F5F7FB] dark:bg-slate-950">
+      {/* Left Side: Form Panel vertically centered, max-width ~480px, comfortable left padding 6-8vw */}
+      <div className="relative z-10 min-h-screen w-full lg:w-1/2 flex items-center px-6 sm:px-12 lg:pl-[7vw] lg:pr-8 py-8 bg-transparent">
+        <div className="w-full max-w-[480px] mx-auto lg:mx-0">
           {/* Brand Header */}
           <div className="mb-4 text-left">
             <div className="flex items-center justify-between mb-2">
@@ -185,7 +185,7 @@ export const Login: React.FC = () => {
               <div className="w-full border-t border-slate-200 dark:border-slate-800" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-white dark:bg-slate-900 px-2 text-slate-400 font-medium">
+              <span className="bg-[#F5F7FB] dark:bg-slate-950 px-2 text-slate-400 font-medium">
                 Or authenticate with credentials
               </span>
             </div>
@@ -275,8 +275,8 @@ export const Login: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Side: 1/3rd Slanted Card Column */}
-      <div className="hidden lg:flex lg:w-1/3 h-full relative overflow-hidden">
+      {/* Right Side: Carousel Panel filling entire right area edge to edge */}
+      <div className="hidden lg:block absolute top-0 right-0 bottom-0 w-[55%] pointer-events-none select-none overflow-hidden bg-transparent">
         <AuthCarousel />
       </div>
 
