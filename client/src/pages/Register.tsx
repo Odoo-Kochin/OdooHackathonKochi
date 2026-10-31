@@ -84,12 +84,11 @@ export const Register: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
-        {/* Left Side: Auth Card */}
-        <div className="lg:col-span-7 flex flex-col justify-center">
-          <div className="bg-white dark:bg-slate-900 py-7 px-6 sm:px-8 shadow-sm border border-slate-200 dark:border-slate-800 rounded-2xl">
-            {/* Brand Header */}
+    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white dark:bg-slate-950 overflow-hidden">
+      {/* Left Side: Full-Height Auth Section (no card box) */}
+      <div className="w-full lg:w-[480px] xl:w-[540px] 2xl:w-[580px] flex-shrink-0 min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-12 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
+        <div className="max-w-md w-full mx-auto my-auto py-6">
+          {/* Brand Header */}
             <div className="mb-6 text-left">
               <div className="flex items-center justify-between mb-2.5">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
@@ -341,7 +340,7 @@ export const Register: React.FC = () => {
         </div>
 
         {/* Security Footer with Vector Icons */}
-        <div className="mt-6 flex items-center justify-center gap-4 text-[11px] text-slate-400">
+        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-4 text-[11px] text-slate-400">
           <div className="flex items-center gap-1">
             <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
             <span>Encrypted At Rest</span>
@@ -359,11 +358,10 @@ export const Register: React.FC = () => {
         </div>
       </div>
 
-      {/* Right Side: Animated Feature Carousel */}
-      <div className="hidden lg:flex lg:col-span-5 flex-col">
+      {/* Right Side: Full-Screen Slanted Merry-Go-Round Carousel */}
+      <div className="hidden lg:flex flex-1 min-h-screen relative overflow-hidden bg-slate-950">
         <AuthCarousel />
       </div>
     </div>
-  </div>
   )
 }

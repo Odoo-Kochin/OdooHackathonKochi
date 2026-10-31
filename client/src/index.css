@@ -143,6 +143,11 @@ body {
   will-change: transform;
 }
 
+.animate-drop-continuous-mid {
+  animation: continuousDrop 28s linear infinite;
+  will-change: transform;
+}
+
 .animate-drop-continuous-fast {
   animation: continuousDrop 24s linear infinite;
   will-change: transform;
@@ -150,6 +155,7 @@ body {
 
 /* Pause merry-go-round dropping cards when hovering */
 .group-merry-go-round:hover .animate-drop-continuous-slow,
+.group-merry-go-round:hover .animate-drop-continuous-mid,
 .group-merry-go-round:hover .animate-drop-continuous-fast {
   animation-play-state: paused;
 }
