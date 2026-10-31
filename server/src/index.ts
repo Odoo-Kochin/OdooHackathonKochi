@@ -9,6 +9,8 @@ dotenv.config()
 
 import { healthRouter } from './routes/health.js'
 import { usersRouter } from './routes/users.js'
+import { authRouter } from './routes/auth.js'
+import { subscriptionsRouter } from './routes/subscriptions.js'
 
 const app = express()
 const PORT = process.env.PORT || 5000
@@ -25,6 +27,8 @@ app.use(express.json())
 // API Routes
 app.use('/api/health', healthRouter)
 app.use('/api/users', usersRouter)
+app.use('/api/auth', authRouter)
+app.use('/api', subscriptionsRouter)
 
 // 404 Handler
 app.use((_req: Request, res: Response) => {
