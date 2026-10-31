@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { Product, ProductVariant } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
-import {
-  Plus,
-  Trash2,
-} from 'lucide-react'
+import { Plus, Trash2 } from 'lucide-react'
 import axios from 'axios'
 
 export const Products: React.FC = () => {
@@ -19,7 +16,7 @@ export const Products: React.FC = () => {
   const [costPrice, setCostPrice] = useState<number>(70)
   const [notes, setNotes] = useState('')
 
-  // Variants (e.g. Odoo brand +$560 per problem statement)
+  // Variants (e.g. Odoo brand +$560)
   const [variants, setVariants] = useState<ProductVariant[]>([
     {
       id: 'var-demo-1',
@@ -83,34 +80,26 @@ export const Products: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60 dark:border-slate-800">
+    <div className="space-y-4">
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-              Scene 2: Catalog & Variants
-            </span>
-          </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Products & Add-Ons
-          </h2>
           <p className="text-xs text-slate-500">
-            Configure product catalog with multi-brand variants (e.g. Odoo brand adds +$560).
+            Catalog with multi-brand variant modifiers (e.g. Odoo Edition sync adds +$560).
           </p>
         </div>
 
         <button
           onClick={() => setModalOpen(true)}
-          className="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 self-start sm:self-auto transition-transform hover:scale-[1.02]"
+          className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs"
         >
-          <Plus className="w-4 h-4" />
-          <span>Launch New Product</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>Add Product</span>
         </button>
       </div>
 
       {/* Product Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {products.map((prod) => {
           const margin = prod.salesPrice - prod.costPrice
           const marginPercent = Math.round((margin / prod.salesPrice) * 100)
@@ -118,15 +107,15 @@ export const Products: React.FC = () => {
           return (
             <div
               key={prod.id}
-              className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 pill-card flex flex-col justify-between"
+              className="p-5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between"
             >
               <div>
-                <div className="flex items-start justify-between">
-                  <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-medium text-slate-400">
                     {prod.code}
                   </span>
                   <span
-                    className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase ${
+                    className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${
                       prod.type === 'software'
                         ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300'
                         : prod.type === 'service'
@@ -138,49 +127,47 @@ export const Products: React.FC = () => {
                   </span>
                 </div>
 
-                <h3 className="mt-3 text-lg font-bold text-slate-900 dark:text-white leading-snug">
+                <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white leading-snug">
                   {prod.name}
                 </h3>
                 {prod.notes && (
                   <p className="mt-1 text-xs text-slate-500 line-clamp-2">{prod.notes}</p>
                 )}
 
-                {/* Pricing & Margin info */}
-                <div className="mt-4 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/40 flex items-center justify-between text-xs">
+                {/* Pricing summary */}
+                <div className="mt-3 p-2.5 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-400 block uppercase font-bold">
-                      Base Sales Price
-                    </span>
-                    <span className="text-base font-black text-slate-900 dark:text-white">
+                    <span className="text-[10px] text-slate-400 block font-medium">Sales Price</span>
+                    <span className="text-base font-bold text-slate-900 dark:text-white">
                       ${prod.salesPrice}
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block uppercase font-bold">
-                      Cost / Margin
-                    </span>
-                    <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                      ${prod.costPrice} ({marginPercent}%)
+                    <span className="text-[10px] text-slate-400 block font-medium">Margin</span>
+                    <span className="text-xs font-semibold text-emerald-600">
+                      ${costPrice} ({marginPercent}%)
                     </span>
                   </div>
                 </div>
 
-                {/* Variants breakdown (Scene 2 spec) */}
-                <div className="mt-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-1.5">
-                    Configured Variants ({prod.variants.length})
+                {/* Variants breakdown */}
+                <div className="mt-3">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">
+                    Variants ({prod.variants.length})
                   </span>
                   {prod.variants.length === 0 ? (
-                    <span className="text-xs text-slate-400 italic">No variants attached</span>
+                    <span className="text-xs text-slate-400 italic">No variants</span>
                   ) : (
-                    <div className="space-y-1.5">
+                    <div className="space-y-1">
                       {prod.variants.map((v) => (
                         <div
                           key={v.id}
-                          className="flex items-center justify-between px-2.5 py-1.5 rounded-xl bg-indigo-50/60 dark:bg-indigo-950/30 text-xs text-indigo-950 dark:text-indigo-200"
+                          className="flex items-center justify-between px-2 py-1 rounded bg-slate-50 dark:bg-slate-800 text-xs"
                         >
-                          <span className="font-medium truncate">{v.name}</span>
-                          <span className="font-bold text-indigo-600 dark:text-indigo-400 ml-2">
+                          <span className="font-medium text-slate-700 dark:text-slate-300 truncate">
+                            {v.name}
+                          </span>
+                          <span className="font-semibold text-indigo-600 dark:text-indigo-400 text-xs ml-2">
                             {v.priceAdjustment >= 0
                               ? `+$${v.priceAdjustment}`
                               : `-$${Math.abs(v.priceAdjustment)}`}
@@ -192,27 +179,27 @@ export const Products: React.FC = () => {
                 </div>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+              <div className="mt-4 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
                 <span>Created {new Date(prod.createdAt).toLocaleDateString()}</span>
-                <span className="font-semibold text-emerald-600">Active in Catalog</span>
+                <span className="text-emerald-600 font-medium">Active</span>
               </div>
             </div>
           )
         })}
       </div>
 
-      {/* New Product Modal */}
+      {/* Modal */}
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Launch New Product & Variants"
-        description="Add a base product with sales price, cost price, and pricing variants."
+        title="Add Product & Variants"
+        description="Configure standard catalog product with multi-brand variant modifiers."
         maxWidth="lg"
       >
-        <form onSubmit={handleCreateProduct} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleCreateProduct} className="space-y-3.5">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Product Name
               </label>
               <input
@@ -220,34 +207,34 @@ export const Products: React.FC = () => {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Brightloop Cloud Storage Add-On"
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Brightloop Cloud Storage"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                Product Code / SKU
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Product SKU / Code
               </label>
               <input
                 type="text"
                 required
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="BL-STORE-09"
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="BL-STORE-01"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Type
               </label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               >
                 <option value="software">Software</option>
                 <option value="service">Service</option>
@@ -255,7 +242,7 @@ export const Products: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Sales Price ($)
               </label>
               <input
@@ -263,11 +250,11 @@ export const Products: React.FC = () => {
                 required
                 value={salesPrice}
                 onChange={(e) => setSalesPrice(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Cost Price ($)
               </label>
               <input
@@ -275,45 +262,42 @@ export const Products: React.FC = () => {
                 required
                 value={costPrice}
                 onChange={(e) => setCostPrice(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-              Internal Notes & Specs
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Internal Notes
             </label>
             <textarea
               rows={2}
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              placeholder="e.g. Requires enterprise license or API secret integration."
-              className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="Technical specifications or support notes."
+              className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
             />
           </div>
 
-          {/* Variants Builder (Scene 2: e.g. Odoo brand adds +560) */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700">
+          {/* Variants */}
+          <div className="p-3 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                Product Variants & Modifiers
+              <span className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Variants (e.g. Odoo brand +$560)
               </span>
               <button
                 type="button"
                 onClick={handleAddVariant}
-                className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-bold flex items-center gap-1"
+                className="text-xs text-indigo-600 hover:underline font-medium"
               >
-                <Plus className="w-3.5 h-3.5" /> Add Variant
+                + Add Variant
               </button>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {variants.map((v, idx) => (
-                <div
-                  key={v.id}
-                  className="flex items-center gap-2 p-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs"
-                >
+                <div key={v.id} className="flex items-center gap-2 text-xs">
                   <input
                     type="text"
                     value={v.name}
@@ -323,10 +307,10 @@ export const Products: React.FC = () => {
                       setVariants(updated)
                     }}
                     placeholder="Variant Name"
-                    className="flex-1 px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent"
+                    className="flex-1 px-2.5 py-1 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
                   />
                   <div className="flex items-center gap-1">
-                    <span className="text-slate-400">$+</span>
+                    <span className="text-slate-400">+$</span>
                     <input
                       type="number"
                       value={v.priceAdjustment}
@@ -335,7 +319,7 @@ export const Products: React.FC = () => {
                         updated[idx].priceAdjustment = Number(e.target.value)
                         setVariants(updated)
                       }}
-                      className="w-20 px-2 py-1 rounded-lg border border-slate-200 dark:border-slate-700 bg-transparent text-right font-bold"
+                      className="w-16 px-2 py-1 rounded border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-right font-medium"
                     />
                   </div>
                   <button
@@ -343,7 +327,7 @@ export const Products: React.FC = () => {
                     onClick={() => handleRemoveVariant(idx)}
                     className="p-1 text-slate-400 hover:text-red-500"
                   >
-                    <Trash2 className="w-4 h-4" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               ))}
@@ -354,15 +338,15 @@ export const Products: React.FC = () => {
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+              className="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:bg-slate-100"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow-md"
+              className="px-4 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-500"
             >
-              Save Product & Variants
+              Save Product
             </button>
           </div>
         </form>

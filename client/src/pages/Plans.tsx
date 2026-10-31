@@ -9,7 +9,7 @@ export const Plans: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([])
   const [modalOpen, setModalOpen] = useState<boolean>(false)
 
-  // Form state per Scene 2 Brightloop specification
+  // Form state
   const [name, setName] = useState('')
   const [code, setCode] = useState('')
   const [productId, setProductId] = useState('')
@@ -54,7 +54,7 @@ export const Plans: React.FC = () => {
         name,
         code,
         productId,
-        productName: selectedProd?.name || 'Standard Platform',
+        productName: selectedProd?.name || 'Standard Service',
         price: Number(price),
         billingFrequency,
         minimumQuantity: Number(minimumQuantity),
@@ -77,117 +77,104 @@ export const Plans: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60 dark:border-slate-800">
+    <div className="space-y-4">
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-              Scene 2: Recurring Plans
-            </span>
-          </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Subscription Plans & Schedules
-          </h2>
           <p className="text-xs text-slate-500">
-            Define billing frequency (daily, weekly, monthly, yearly), minimum quantities, and
-            auto-close / pause / renewal rules.
+            Define recurring frequencies (daily, weekly, monthly, yearly) and lifecycle termination rules.
           </p>
         </div>
 
         <button
           onClick={() => setModalOpen(true)}
-          className="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 self-start sm:self-auto transition-transform hover:scale-[1.02]"
+          className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs"
         >
-          <Plus className="w-4 h-4" />
-          <span>Configure New Plan</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>New Plan</span>
         </button>
       </div>
 
       {/* Plans List Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {plans.map((plan) => (
           <div
             key={plan.id}
-            className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 pill-card flex flex-col justify-between"
+            className="p-5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between"
           >
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-bold font-mono px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                <span className="text-[10px] font-mono font-medium text-slate-400">
                   {plan.code}
                 </span>
-                <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 uppercase">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded capitalize bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                   {plan.billingFrequency}
                 </span>
               </div>
 
-              <h3 className="mt-3 text-lg font-bold text-slate-900 dark:text-white leading-snug">
+              <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white leading-snug">
                 {plan.name}
               </h3>
-              <p className="text-xs text-slate-500 mt-1 font-medium">{plan.productName}</p>
+              <p className="text-xs text-slate-400 mt-0.5 font-medium">{plan.productName}</p>
 
               {plan.description && (
-                <p className="mt-2 text-xs text-slate-500 line-clamp-2">{plan.description}</p>
+                <p className="mt-1.5 text-xs text-slate-500 line-clamp-2">{plan.description}</p>
               )}
 
               {/* Price Banner */}
-              <div className="mt-4 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-800/40 flex items-baseline justify-between">
+              <div className="mt-3 p-2.5 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/60 flex items-baseline justify-between">
                 <div>
-                  <span className="text-2xl font-black text-slate-900 dark:text-white">
+                  <span className="text-xl font-bold text-slate-900 dark:text-white">
                     ${plan.price}
                   </span>
                   <span className="text-xs text-slate-400 ml-1">/{plan.billingFrequency}</span>
                 </div>
-                <span className="text-xs text-slate-500">Min {plan.minimumQuantity} seat(s)</span>
+                <span className="text-[11px] text-slate-500">Min {plan.minimumQuantity} seat(s)</span>
               </div>
 
-              {/* Lifecycle Rules Flags (Scene 2 Requirements) */}
-              <div className="mt-4 space-y-1.5 text-[11px]">
-                <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                  <span>Auto-close on expiration:</span>
-                  <span
-                    className={`font-bold ${
-                      plan.autoCloseOnEnd ? 'text-amber-600' : 'text-slate-500'
-                    }`}
-                  >
-                    {plan.autoCloseOnEnd ? 'Yes (Auto-close)' : 'No (Continuous)'}
+              {/* Lifecycle Rules Flags */}
+              <div className="mt-3 space-y-1 text-[11px] text-slate-600 dark:text-slate-400">
+                <div className="flex justify-between">
+                  <span>Auto-close on end:</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-200">
+                    {plan.autoCloseOnEnd ? 'Yes' : 'No'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                  <span>Early termination allowed:</span>
-                  <span className="font-bold text-emerald-600">
+                <div className="flex justify-between">
+                  <span>Early termination:</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-200">
                     {plan.canBeClosedEarly ? 'Allowed' : 'Locked'}
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-slate-600 dark:text-slate-400">
-                  <span>Pause & Resume support:</span>
-                  <span className="font-bold text-indigo-600">
-                    {plan.canBePaused ? 'Supported' : 'No'}
+                <div className="flex justify-between">
+                  <span>Pause & Resume:</span>
+                  <span className="font-medium text-slate-900 dark:text-slate-200">
+                    {plan.canBePaused ? 'Yes' : 'No'}
                   </span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
+            <div className="mt-4 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
               <span>Start: {plan.startDate}</span>
-              <span className="text-emerald-600 font-semibold">Active Plan</span>
+              <span className="text-emerald-600 font-medium">Active</span>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Create Plan Modal */}
+      {/* Modal */}
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Configure Subscription Plan"
+        title="Create Subscription Plan"
         description="Set billing frequency, minimum seat constraints, and lifecycle termination rules."
         maxWidth="lg"
       >
-        <form onSubmit={handleCreatePlan} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleCreatePlan} className="space-y-3.5">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Plan Name
               </label>
               <input
@@ -195,12 +182,12 @@ export const Plans: React.FC = () => {
                 required
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Enterprise Scaler - Monthly"
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Enterprise Growth - Monthly"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Plan Code
               </label>
               <input
@@ -208,21 +195,21 @@ export const Plans: React.FC = () => {
                 required
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="ENT-MO-01"
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="GROWTH-MO"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Base Product
               </label>
               <select
                 value={productId}
                 onChange={(e) => setProductId(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               >
                 {products.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -232,13 +219,13 @@ export const Plans: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Billing Frequency
               </label>
               <select
                 value={billingFrequency}
                 onChange={(e) => setBillingFrequency(e.target.value as BillingFrequency)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               >
                 <option value="daily">Daily</option>
                 <option value="weekly">Weekly</option>
@@ -247,7 +234,7 @@ export const Plans: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Price per Cycle ($)
               </label>
               <input
@@ -255,92 +242,85 @@ export const Plans: React.FC = () => {
                 required
                 value={price}
                 onChange={(e) => setPrice(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                Min Seats / Quantity
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Min Quantity (Seats)
               </label>
               <input
                 type="number"
                 min={1}
                 value={minimumQuantity}
                 onChange={(e) => setMinimumQuantity(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Start Date
               </label>
               <input
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 End Date (Optional)
               </label>
               <input
                 type="date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
           </div>
 
-          {/* Lifecycle Rules Toggles (Scene 2 spec) */}
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 block mb-2">
-              Plan Lifecycle Decisions
-            </span>
-
-            <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+          <div className="p-3 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-1.5 text-xs text-slate-700 dark:text-slate-300">
+            <span className="font-semibold block mb-1">Plan Decisions:</span>
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={autoCloseOnEnd}
                 onChange={(e) => setAutoCloseOnEnd(e.target.checked)}
-                className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                className="rounded border-slate-300"
               />
-              <span>Auto-close on expiration date (terminate automatically)</span>
+              <span>Auto-close on expiration date</span>
             </label>
-
-            <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={canBeClosedEarly}
                 onChange={(e) => setCanBeClosedEarly(e.target.checked)}
-                className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                className="rounded border-slate-300"
               />
               <span>Can be closed early by customer or staff</span>
             </label>
-
-            <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={canBePaused}
                 onChange={(e) => setCanBePaused(e.target.checked)}
-                className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                className="rounded border-slate-300"
               />
               <span>Can be paused and resumed later</span>
             </label>
-
-            <label className="flex items-center gap-2.5 text-xs text-slate-700 dark:text-slate-300 cursor-pointer">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
                 type="checkbox"
                 checked={canBeRenewed}
                 onChange={(e) => setCanBeRenewed(e.target.checked)}
-                className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500"
+                className="rounded border-slate-300"
               />
-              <span>Can be renewed upon contract end date</span>
+              <span>Can be renewed upon completion</span>
             </label>
           </div>
 
@@ -348,13 +328,13 @@ export const Plans: React.FC = () => {
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+              className="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:bg-slate-100"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow-md"
+              className="px-4 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-500"
             >
               Launch Plan
             </button>

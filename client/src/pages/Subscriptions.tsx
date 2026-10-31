@@ -6,11 +6,7 @@ import type {
   SubscriptionPlan,
 } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
-import {
-  Plus,
-  ArrowRight,
-  Eye,
-} from 'lucide-react'
+import { Plus, ArrowRight, Eye } from 'lucide-react'
 import axios from 'axios'
 
 export const Subscriptions: React.FC = () => {
@@ -23,7 +19,7 @@ export const Subscriptions: React.FC = () => {
   const [createModalOpen, setCreateModalOpen] = useState<boolean>(false)
   const [selectedSub, setSelectedSub] = useState<Subscription | null>(null)
 
-  // New Quote / Sub form states (Scene 3: Quotation Template)
+  // New Quote form states
   const [customerName, setCustomerName] = useState('Zenith Dynamics India')
   const [customerEmail, setCustomerEmail] = useState('billing@zenithdynamics.in')
   const [customerCompany, setCustomerCompany] = useState('Zenith Dynamics Technologies')
@@ -94,7 +90,7 @@ export const Subscriptions: React.FC = () => {
       {
         id: `li-${Date.now()}`,
         productId: prod?.id || 'prod-01',
-        productName: plan?.name || 'Brightloop Cloud ERP',
+        productName: plan?.name || 'Brightloop Core ERP',
         variantName: 'Standard Variant',
         quantity,
         unitPrice,
@@ -113,7 +109,7 @@ export const Subscriptions: React.FC = () => {
         planId: plan?.id,
         planName: plan?.name,
         billingFrequency: plan?.billingFrequency || 'monthly',
-        status: 'Quotation', // Starts from Quotation per Scene 3
+        status: 'Quotation',
         paymentTerms,
         quotationValidityDays: validityDays,
         lineItems,
@@ -149,120 +145,105 @@ export const Subscriptions: React.FC = () => {
   }
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60 dark:border-slate-800">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-              Scene 3: Subscription Engine
-            </span>
-          </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Subscriptions & Quotations
-          </h2>
-          <p className="text-xs text-slate-500">
-            Lifecycle stages: Draft ➔ Quotation ➔ Confirmed ➔ Active ➔ Closed.
-          </p>
+    <div className="space-y-4">
+      {/* Action Toolbar */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {['all', 'Draft', 'Quotation', 'Confirmed', 'Active', 'Closed'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setFilterStatus(tab)}
+              className={`px-3 py-1 rounded-md text-xs font-medium capitalize transition-colors ${
+                filterStatus === tab
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold'
+                  : 'bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400 hover:bg-slate-50'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
         </div>
 
         <button
           onClick={() => setCreateModalOpen(true)}
-          className="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 self-start sm:self-auto transition-transform hover:scale-[1.02]"
+          className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs self-start sm:self-auto"
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="w-3.5 h-3.5" />
           <span>New Quote from Template</span>
         </button>
       </div>
 
-      {/* Lifecycle Filter Tabs */}
-      <div className="flex flex-wrap items-center gap-2 p-1.5 bg-slate-100/70 dark:bg-slate-800/60 rounded-2xl w-fit">
-        {['all', 'Draft', 'Quotation', 'Confirmed', 'Active', 'Closed'].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setFilterStatus(tab)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold capitalize transition-all ${
-              filterStatus === tab
-                ? 'bg-white dark:bg-slate-900 text-indigo-600 dark:text-indigo-400 shadow-sm'
-                : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-            }`}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
       {/* Subscriptions Table Card */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-hidden">
+      <div className="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                <th className="pb-3 pl-2">Number</th>
-                <th className="pb-3">Customer</th>
-                <th className="pb-3">Plan / Frequency</th>
-                <th className="pb-3">Term & Validity</th>
-                <th className="pb-3">Status</th>
-                <th className="pb-3 text-right">Total</th>
-                <th className="pb-3 pr-2 text-right">Lifecycle Actions</th>
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold">
+              <tr>
+                <th className="py-2.5 px-4">Number</th>
+                <th className="py-2.5 px-4">Customer</th>
+                <th className="py-2.5 px-4">Plan / Billing</th>
+                <th className="py-2.5 px-4">Terms & Expiry</th>
+                <th className="py-2.5 px-4">Status</th>
+                <th className="py-2.5 px-4 text-right">Total</th>
+                <th className="py-2.5 px-4 text-right">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {filteredSubs.map((sub) => (
                 <tr
                   key={sub.id}
-                  className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
+                  className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <td className="py-4 pl-2 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                  <td className="py-3 px-4 font-mono font-medium text-indigo-600 dark:text-indigo-400">
                     {sub.subscriptionNumber}
                   </td>
-                  <td className="py-4">
-                    <p className="font-bold text-slate-900 dark:text-white">{sub.customerName}</p>
-                    <p className="text-[11px] text-slate-500">{sub.customerCompany}</p>
+                  <td className="py-3 px-4">
+                    <p className="font-semibold text-slate-900 dark:text-white">{sub.customerName}</p>
+                    <p className="text-[11px] text-slate-400">{sub.customerCompany}</p>
                   </td>
-                  <td className="py-4">
-                    <span className="font-semibold text-slate-800 dark:text-slate-200">
+                  <td className="py-3 px-4">
+                    <span className="font-medium text-slate-700 dark:text-slate-300">
                       {sub.planName}
                     </span>
-                    <span className="text-[11px] text-slate-400 block capitalize">
+                    <span className="text-[10px] text-slate-400 block capitalize">
                       {sub.billingFrequency}
                     </span>
                   </td>
-                  <td className="py-4 text-slate-600 dark:text-slate-400">
+                  <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
                     <p className="font-medium">{sub.paymentTerms}</p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="text-[10px] text-slate-400">
                       Expires {new Date(sub.expiryDate).toLocaleDateString()}
                     </p>
                   </td>
-                  <td className="py-4">
+                  <td className="py-3 px-4">
                     <span
-                      className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${getStatusBadge(
+                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-semibold uppercase ${getStatusBadge(
                         sub.status
                       )}`}
                     >
                       {sub.status}
                     </span>
                   </td>
-                  <td className="py-4 text-right font-black text-slate-900 dark:text-white">
+                  <td className="py-3 px-4 text-right font-bold text-slate-900 dark:text-white">
                     ${sub.grandTotal.toLocaleString()}
                   </td>
-                  <td className="py-4 pr-2 text-right">
-                    <div className="flex items-center justify-end gap-2">
+                  <td className="py-3 px-4 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
                       <button
                         onClick={() => setSelectedSub(sub)}
-                        className="p-1.5 rounded-xl text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-slate-800"
-                        title="Inspect Lines & Taxes"
+                        className="p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800"
+                        title="View Lines & Taxes"
                       >
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-3.5 h-3.5" />
                       </button>
 
                       {sub.status !== 'Closed' && (
                         <button
                           onClick={() => handleAdvanceStatus(sub)}
-                          className="px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white text-[11px] font-bold flex items-center gap-1 transition-all"
+                          className="px-2 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-semibold flex items-center gap-1 transition-colors"
                         >
                           <span>Advance</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-3 h-3" />
                         </button>
                       )}
                     </div>
@@ -280,74 +261,62 @@ export const Subscriptions: React.FC = () => {
           isOpen={!!selectedSub}
           onClose={() => setSelectedSub(null)}
           title={`Subscription ${selectedSub.subscriptionNumber}`}
-          description={`Customer: ${selectedSub.customerCompany} • Lifecycle Status: ${selectedSub.status}`}
+          description={`Customer: ${selectedSub.customerCompany} • Lifecycle Stage: ${selectedSub.status}`}
           maxWidth="lg"
         >
-          <div className="space-y-4">
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
+          <div className="space-y-3.5">
+            <div className="p-3 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 grid grid-cols-4 gap-2 text-xs">
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Status</span>
-                <span className="font-bold text-indigo-600 dark:text-indigo-400">
-                  {selectedSub.status}
-                </span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Status</span>
+                <span className="font-bold text-indigo-600">{selectedSub.status}</span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Frequency</span>
-                <span className="font-bold capitalize">{selectedSub.billingFrequency}</span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Frequency</span>
+                <span className="font-medium capitalize">{selectedSub.billingFrequency}</span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Terms</span>
-                <span className="font-bold">{selectedSub.paymentTerms}</span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Terms</span>
+                <span className="font-medium">{selectedSub.paymentTerms}</span>
               </div>
               <div>
-                <span className="text-[10px] uppercase font-bold text-slate-400 block">Quote Validity</span>
-                <span className="font-bold">{selectedSub.quotationValidityDays} days</span>
+                <span className="text-[10px] uppercase font-semibold text-slate-400 block">Quote Validity</span>
+                <span className="font-medium">{selectedSub.quotationValidityDays} days</span>
               </div>
             </div>
 
-            {/* Line items table */}
             <div>
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
-                Included Products & Service Lines
+              <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">
+                Product Lines & Calculated Taxes
               </h4>
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {selectedSub.lineItems.map((item) => (
                   <div
                     key={item.id}
-                    className="p-3 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs"
+                    className="p-2.5 rounded border border-slate-200 dark:border-slate-800 flex items-center justify-between text-xs"
                   >
                     <div>
-                      <p className="font-bold text-slate-900 dark:text-white">{item.productName}</p>
-                      {item.variantName && (
-                        <p className="text-[11px] text-indigo-600">{item.variantName}</p>
-                      )}
+                      <p className="font-semibold text-slate-900 dark:text-white">{item.productName}</p>
                       <p className="text-[10px] text-slate-400">
-                        Qty: {item.quantity} × ${item.unitPrice} | Tax: {item.taxRatePercent}%
+                        Qty {item.quantity} × ${item.unitPrice} | Tax: {item.taxRatePercent}%
                       </p>
                     </div>
                     <div className="text-right">
-                      <p className="font-black text-slate-900 dark:text-white">
+                      <p className="font-bold text-slate-900 dark:text-white">
                         ${item.total.toLocaleString()}
                       </p>
-                      {item.discountAmount > 0 && (
-                        <p className="text-[10px] text-emerald-600 font-semibold">
-                          -${item.discountAmount} promo
-                        </p>
-                      )}
                     </div>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Totals */}
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700 space-y-1.5 text-xs">
+            <div className="p-3 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-1 text-xs">
               <div className="flex justify-between text-slate-500">
                 <span>Subtotal:</span>
                 <span>${selectedSub.subtotal.toLocaleString()}</span>
               </div>
               <div className="flex justify-between text-slate-500">
-                <span>Automated Tax Rules (18%):</span>
+                <span>Tax Total (18% GST/VAT):</span>
                 <span>${selectedSub.taxTotal.toLocaleString()}</span>
               </div>
               {selectedSub.discountTotal > 0 && (
@@ -356,7 +325,7 @@ export const Subscriptions: React.FC = () => {
                   <span>-${selectedSub.discountTotal.toLocaleString()}</span>
                 </div>
               )}
-              <div className="flex justify-between text-sm font-black text-slate-900 dark:text-white pt-2 border-t border-slate-200 dark:border-slate-700">
+              <div className="flex justify-between text-sm font-bold text-slate-900 dark:text-white pt-1.5 border-t border-slate-200 dark:border-slate-700">
                 <span>Grand Total:</span>
                 <span>${selectedSub.grandTotal.toLocaleString()}</span>
               </div>
@@ -366,34 +335,34 @@ export const Subscriptions: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setSelectedSub(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+                className="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:bg-slate-100"
               >
                 Close
               </button>
               <button
                 type="button"
                 onClick={() => handleAdvanceStatus(selectedSub)}
-                className="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow-md"
+                className="px-4 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-500"
               >
-                Advance to Next Stage
+                Advance State
               </button>
             </div>
           </div>
         </Modal>
       )}
 
-      {/* New Quotation from Template Modal (Scene 3 spec) */}
+      {/* New Quotation from Template Modal */}
       <Modal
         isOpen={createModalOpen}
         onClose={() => setCreateModalOpen(false)}
-        title="Quotation Template - New Subscription Offer"
-        description="Start from pre-configured product lines and set quotation validity days."
+        title="Quotation Template - New Offer"
+        description="Start from pre-configured product lines and set quotation validity period."
         maxWidth="lg"
       >
-        <form onSubmit={handleCreateQuotation} className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <form onSubmit={handleCreateQuotation} className="space-y-3.5">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Customer Name
               </label>
               <input
@@ -401,26 +370,26 @@ export const Subscriptions: React.FC = () => {
                 required
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                Company / Organization
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Company Name
               </label>
               <input
                 type="text"
                 required
                 value={customerCompany}
                 onChange={(e) => setCustomerCompany(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Billing Email
               </label>
               <input
@@ -428,17 +397,17 @@ export const Subscriptions: React.FC = () => {
                 required
                 value={customerEmail}
                 onChange={(e) => setCustomerEmail(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                Quotation Template Plan
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Template Plan
               </label>
               <select
                 value={selectedPlanId}
                 onChange={(e) => setSelectedPlanId(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               >
                 {plans.map((p) => (
                   <option key={p.id} value={p.id}>
@@ -449,27 +418,27 @@ export const Subscriptions: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                Seats / Quantity
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Seats / Qty
               </label>
               <input
                 type="number"
                 min={1}
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Payment Terms
               </label>
               <select
                 value={paymentTerms}
                 onChange={(e) => setPaymentTerms(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               >
                 <option value="Immediate">Immediate</option>
                 <option value="Net 15">Net 15 Days</option>
@@ -477,7 +446,7 @@ export const Subscriptions: React.FC = () => {
               </select>
             </div>
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Valid for (Days)
               </label>
               <input
@@ -485,7 +454,7 @@ export const Subscriptions: React.FC = () => {
                 min={1}
                 value={validityDays}
                 onChange={(e) => setValidityDays(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
           </div>
@@ -494,15 +463,15 @@ export const Subscriptions: React.FC = () => {
             <button
               type="button"
               onClick={() => setCreateModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+              className="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:bg-slate-100"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow-md"
+              className="px-4 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-500"
             >
-              Issue Quotation Offer
+              Issue Quotation
             </button>
           </div>
         </form>

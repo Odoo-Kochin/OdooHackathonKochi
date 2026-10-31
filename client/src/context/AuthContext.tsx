@@ -38,21 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const storedToken = localStorage.getItem(TOKEN_KEY)
 
         if (storedUser && storedToken) {
-          setUser(JSON.parse(storedUser))
-          setToken(storedToken)
-        } else {
-          // Default to Admin demo session for instantaneous access to all Brightloop modules
-          const defaultAdmin = MOCK_AUTH_USERS.admin
-          setUser(defaultAdmin)
-          setToken(`demo-session-${defaultAdmin.id}`)
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultAdmin))
-          localStorage.setItem(TOKEN_KEY, `demo-session-${defaultAdmin.id}`)
-        }
-
-        // Verify with server in background
-        const res = await axios.get('/api/auth/me').catch(() => null)
-        if (res?.data?.user && !storedUser) {
-          setUser(res.data.user)
+          try {
+            setUser(JSON.parse(storedUser))
+            setToken(storedToken)
+          } catch {
+            localStorage.removeItem(STORAGE_KEY)
+            localStorage.removeItem(TOKEN_KEY)
+          }
         }
       } catch (err) {
         console.warn('Session restoration note:', err)

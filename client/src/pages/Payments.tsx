@@ -1,11 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import type { PaymentRecord, Invoice, PaymentMethod } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
-import {
-  Plus,
-  AlertTriangle,
-  ArrowRight,
-} from 'lucide-react'
+import { Plus, AlertTriangle, ArrowRight } from 'lucide-react'
 import axios from 'axios'
 
 export const Payments: React.FC = () => {
@@ -13,7 +9,7 @@ export const Payments: React.FC = () => {
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [modalOpen, setModalOpen] = useState<boolean>(false)
 
-  // Payment form state per Scene 6
+  // Payment form state
   const [selectedInvoiceId, setSelectedInvoiceId] = useState('')
   const [amount, setAmount] = useState<number>(0)
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('Bank Transfer')
@@ -82,21 +78,12 @@ export const Payments: React.FC = () => {
   const totalCollected = payments.reduce((acc, p) => acc + p.amount, 0)
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200/60 dark:border-slate-800">
+    <div className="space-y-4">
+      {/* Action Toolbar */}
+      <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">
-              Scene 6: The Money Comes In
-            </span>
-          </div>
-          <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
-            Payments Collection & Cash Flow
-          </h2>
           <p className="text-xs text-slate-500">
-            Record payments across Stripe, Cards, SWIFT Wire and Bank transfers. Never let overdue
-            turn into lost revenue.
+            Record incoming settlements and track overdue balances to prevent revenue leakage.
           </p>
         </div>
 
@@ -109,123 +96,111 @@ export const Payments: React.FC = () => {
             }
             setModalOpen(true)
           }}
-          className="px-5 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md shadow-indigo-600/20 flex items-center gap-2 self-start sm:self-auto transition-transform hover:scale-[1.02]"
+          className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs"
         >
-          <Plus className="w-4 h-4" />
-          <span>Record New Payment</span>
+          <Plus className="w-3.5 h-3.5" />
+          <span>Record Payment</span>
         </button>
       </div>
 
       {/* Top Cash Metrics */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 pill-card">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Total Cash Collected
-          </span>
-          <h3 className="mt-2 text-3xl font-black text-emerald-600 dark:text-emerald-400">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs font-medium text-slate-500">Total Cash Collected</span>
+          <div className="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
             ${totalCollected.toLocaleString()}
-          </h3>
-          <p className="text-xs text-slate-500 mt-1">Confirmed payments settled into accounts</p>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Matched and settled into bank ledger</p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 pill-card">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Overdue Balance
-          </span>
-          <h3 className="mt-2 text-3xl font-black text-amber-600 dark:text-amber-400">
+        <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs font-medium text-slate-500">Overdue Balance</span>
+          <div className="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
             ${totalOverdue.toLocaleString()}
-          </h3>
-          <p className="text-xs text-slate-500 mt-1">
-            {overdueInvoices.length} invoices needing customer chase
+          </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">
+            {overdueInvoices.length} invoices requiring follow-up
           </p>
         </div>
 
-        <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 pill-card">
-          <span className="text-xs font-bold uppercase tracking-wider text-slate-500">
-            Settlement Reliability
-          </span>
-          <h3 className="mt-2 text-3xl font-black text-indigo-600 dark:text-indigo-400">
+        <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
+          <span className="text-xs font-medium text-slate-500">Collection Rate</span>
+          <div className="mt-1 text-2xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tight">
             97.6%
-          </h3>
-          <p className="text-xs text-slate-500 mt-1">On-time recurring collection rate</p>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-0.5">Automated on-time settlement rate</p>
         </div>
       </div>
 
-      {/* Overdue Warning Alert if any exists */}
+      {/* Overdue alert if any */}
       {overdueInvoices.length > 0 && (
-        <div className="p-5 rounded-3xl bg-amber-500/10 border border-amber-500/30 text-amber-900 dark:text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="font-bold text-sm">Action Required: Overdue Invoices Flagged</h4>
-              <p className="text-xs text-amber-800/80 dark:text-amber-300">
-                Invoice {overdueInvoices[0].invoiceNumber} for {overdueInvoices[0].customerCompany} is
-                past due (${overdueInvoices[0].balanceDue.toLocaleString()}).
-              </p>
-            </div>
+        <div className="p-3.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/50 text-amber-900 dark:text-amber-200 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4 text-amber-600 flex-shrink-0" />
+            <span>
+              Invoice {overdueInvoices[0].invoiceNumber} for {overdueInvoices[0].customerCompany} is
+              overdue (${overdueInvoices[0].balanceDue.toLocaleString()}).
+            </span>
           </div>
-
           <button
             onClick={() => {
               setSelectedInvoiceId(overdueInvoices[0].id)
               setAmount(overdueInvoices[0].balanceDue)
               setModalOpen(true)
             }}
-            className="px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 transition-colors self-end sm:self-auto"
+            className="px-2.5 py-1 rounded bg-amber-600 hover:bg-amber-500 text-white font-medium text-xs flex items-center gap-1 transition-colors"
           >
-            <span>Settle Now</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <span>Settle</span>
+            <ArrowRight className="w-3 h-3" />
           </button>
         </div>
       )}
 
-      {/* Payments History Table */}
-      <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 overflow-hidden">
-        <div className="flex items-center justify-between mb-4">
-          <h3 className="text-base font-bold text-slate-900 dark:text-white">
-            Recorded Settlements Ledger
+      {/* Table */}
+      <div className="rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden">
+        <div className="px-4 py-3 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+            Recorded Transactions
           </h3>
-          <span className="text-xs text-slate-400 font-mono">{payments.length} transactions</span>
+          <span className="text-xs text-slate-400 font-mono">{payments.length} items</span>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="border-b border-slate-100 dark:border-slate-800 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                <th className="pb-3 pl-2">Payment ID</th>
-                <th className="pb-3">Invoice #</th>
-                <th className="pb-3">Customer & Payer</th>
-                <th className="pb-3">Payment Method</th>
-                <th className="pb-3">Date</th>
-                <th className="pb-3">Reference / Notes</th>
-                <th className="pb-3 pr-2 text-right">Amount</th>
+          <table className="w-full text-left text-xs">
+            <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold">
+              <tr>
+                <th className="py-2.5 px-4">Payment #</th>
+                <th className="py-2.5 px-4">Invoice #</th>
+                <th className="py-2.5 px-4">Customer</th>
+                <th className="py-2.5 px-4">Method</th>
+                <th className="py-2.5 px-4">Date</th>
+                <th className="py-2.5 px-4">Reference</th>
+                <th className="py-2.5 px-4 text-right">Amount</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
               {payments.map((p) => (
                 <tr
                   key={p.id}
-                  className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition-colors"
+                  className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors"
                 >
-                  <td className="py-4 pl-2 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                  <td className="py-3 px-4 font-mono font-medium text-indigo-600 dark:text-indigo-400">
                     {p.paymentNumber}
                   </td>
-                  <td className="py-4 font-mono font-medium">{p.invoiceNumber}</td>
-                  <td className="py-4 font-semibold text-slate-900 dark:text-white">
+                  <td className="py-3 px-4 font-mono text-slate-500">{p.invoiceNumber}</td>
+                  <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">
                     {p.customerName}
                   </td>
-                  <td className="py-4">
-                    <span className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                  <td className="py-3 px-4">
+                    <span className="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
                       {p.paymentMethod}
                     </span>
                   </td>
-                  <td className="py-4 text-slate-500">{p.paymentDate}</td>
-                  <td className="py-4 text-slate-500 max-w-xs truncate">
-                    {p.referenceId ? `Ref: ${p.referenceId}` : ''} {p.notes ? `• ${p.notes}` : ''}
+                  <td className="py-3 px-4 text-slate-500">{p.paymentDate}</td>
+                  <td className="py-3 px-4 text-slate-400 font-mono text-[11px]">
+                    {p.referenceId || 'N/A'}
                   </td>
-                  <td className="py-4 pr-2 text-right font-black text-emerald-600 dark:text-emerald-400">
+                  <td className="py-3 px-4 text-right font-bold text-emerald-600">
                     +${p.amount.toLocaleString()}
                   </td>
                 </tr>
@@ -235,23 +210,23 @@ export const Payments: React.FC = () => {
         </div>
       </div>
 
-      {/* Record Payment Modal */}
+      {/* Modal */}
       <Modal
         isOpen={modalOpen}
         onClose={() => setModalOpen(false)}
-        title="Record Incoming Payment"
-        description="Match funds against an outstanding customer invoice and update ledger."
+        title="Record Payment"
+        description="Match funds against an open customer invoice and update ledger."
         maxWidth="lg"
       >
-        <form onSubmit={handleRecordPayment} className="space-y-4">
+        <form onSubmit={handleRecordPayment} className="space-y-3.5">
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
               Select Invoice to Settle
             </label>
             <select
               value={selectedInvoiceId}
               onChange={(e) => handleInvoiceSelect(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
+              className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
             >
               {invoices.map((inv) => (
                 <option key={inv.id} value={inv.id}>
@@ -262,26 +237,26 @@ export const Payments: React.FC = () => {
             </select>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Payment Method
               </label>
               <select
                 value={paymentMethod}
                 onChange={(e) => setPaymentMethod(e.target.value as PaymentMethod)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               >
                 <option value="Stripe">Stripe Gateway</option>
                 <option value="Credit Card">Credit Card</option>
                 <option value="Bank Transfer">Bank Transfer (SWIFT / NEFT)</option>
-                <option value="UPI / Instant">UPI / Instant Settlement</option>
+                <option value="UPI / Instant">UPI / Instant</option>
                 <option value="Manual / Cash">Manual / Cash</option>
               </select>
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Amount Received ($)
               </label>
               <input
@@ -290,14 +265,14 @@ export const Payments: React.FC = () => {
                 required
                 value={amount}
                 onChange={(e) => setAmount(Number(e.target.value))}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white font-bold"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white font-bold"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
                 Payment Date
               </label>
               <input
@@ -305,34 +280,34 @@ export const Payments: React.FC = () => {
                 required
                 value={paymentDate}
                 onChange={(e) => setPaymentDate(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-                Gateway Reference / Bank UTR
+              <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+                Reference / Bank UTR
               </label>
               <input
                 type="text"
                 value={referenceId}
                 onChange={(e) => setReferenceId(e.target.value)}
-                placeholder="ch_3OdooKochiLive999"
-                className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white font-mono"
+                placeholder="TX-849204"
+                className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white font-mono"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 mb-1">
-              Internal Reconciliation Note
+            <label className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">
+              Internal Note
             </label>
             <input
               type="text"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               placeholder="SWIFT wire confirmed by finance lead"
-              className="w-full px-3.5 py-2 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
+              className="w-full px-3 py-1.5 rounded-md bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-white"
             />
           </div>
 
@@ -340,15 +315,15 @@ export const Payments: React.FC = () => {
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-semibold text-slate-600 hover:bg-slate-100"
+              className="px-3 py-1.5 rounded-md text-xs font-medium text-slate-600 hover:bg-slate-100"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold hover:bg-indigo-500 shadow-md"
+              className="px-4 py-1.5 rounded-md bg-indigo-600 text-white text-xs font-medium hover:bg-indigo-500"
             >
-              Confirm & Settle Invoice
+              Confirm Settlement
             </button>
           </div>
         </form>
