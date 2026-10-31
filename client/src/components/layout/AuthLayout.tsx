@@ -14,9 +14,13 @@ export const AuthLayout: React.FC = () => {
       style={{ backgroundColor: currentConfig.bgColor }}
     >
       {/* Top Header: Same color as rest of content, on top of z-axis (z-30) */}
-      <header
-        className="w-full flex items-center justify-between px-6 sm:px-10 lg:px-16 py-4 relative z-30 shrink-0 transition-colors duration-500"
-        style={{ backgroundColor: currentConfig.bgColor }}
+      <div
+        role="banner"
+        className="auth-topbar w-full flex items-center justify-between px-6 sm:px-10 lg:px-16 py-4 relative z-30 shrink-0 transition-colors duration-500"
+        style={{
+          backgroundColor: currentConfig.bgColor,
+          ['--auth-bg' as string]: currentConfig.bgColor,
+        }}
       >
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
@@ -40,7 +44,7 @@ export const AuthLayout: React.FC = () => {
 
         {/* Theme selection in the right top */}
         <ThemeSelector />
-      </header>
+      </div>
 
       {/* Main Content Area */}
       <div className="flex-1 w-full flex flex-col lg:flex-row overflow-hidden relative z-20">
