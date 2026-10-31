@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { useTheme, type ThemeId } from '@/context/ThemeContext'
 import {
   Repeat,
   Layers,
@@ -25,7 +26,94 @@ interface SlideItem {
   renderWidget: () => React.ReactNode
 }
 
+const themeStyles: Record<
+  ThemeId,
+  {
+    containerBg: string
+    borderColor: string
+    glow1: string
+    glow2: string
+    accentText: string
+    badgeBg: string
+    badgeBorder: string
+    activePillBg: string
+  }
+> = {
+  white: {
+    containerBg: 'bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900',
+    borderColor: 'border-blue-700/40',
+    glow1: 'bg-blue-500/25',
+    glow2: 'bg-indigo-500/20',
+    accentText: 'text-blue-300',
+    badgeBg: 'bg-blue-500/20',
+    badgeBorder: 'border-blue-400/30',
+    activePillBg: 'bg-blue-400',
+  },
+  black: {
+    containerBg: 'bg-gradient-to-br from-zinc-950 via-black to-zinc-900',
+    borderColor: 'border-zinc-700/50',
+    glow1: 'bg-zinc-500/20',
+    glow2: 'bg-white/10',
+    accentText: 'text-zinc-200',
+    badgeBg: 'bg-zinc-700/40',
+    badgeBorder: 'border-zinc-500/30',
+    activePillBg: 'bg-zinc-300',
+  },
+  emerald: {
+    containerBg: 'bg-gradient-to-br from-emerald-950 via-teal-950 to-slate-950',
+    borderColor: 'border-emerald-700/40',
+    glow1: 'bg-emerald-500/25',
+    glow2: 'bg-teal-500/20',
+    accentText: 'text-emerald-300',
+    badgeBg: 'bg-emerald-500/20',
+    badgeBorder: 'border-emerald-400/30',
+    activePillBg: 'bg-emerald-400',
+  },
+  violet: {
+    containerBg: 'bg-gradient-to-br from-purple-950 via-violet-950 to-slate-950',
+    borderColor: 'border-purple-700/40',
+    glow1: 'bg-purple-500/25',
+    glow2: 'bg-violet-500/20',
+    accentText: 'text-purple-300',
+    badgeBg: 'bg-purple-500/20',
+    badgeBorder: 'border-purple-400/30',
+    activePillBg: 'bg-purple-400',
+  },
+  ocean: {
+    containerBg: 'bg-gradient-to-br from-cyan-950 via-sky-950 to-slate-950',
+    borderColor: 'border-sky-700/40',
+    glow1: 'bg-sky-500/25',
+    glow2: 'bg-cyan-500/20',
+    accentText: 'text-sky-300',
+    badgeBg: 'bg-sky-500/20',
+    badgeBorder: 'border-sky-400/30',
+    activePillBg: 'bg-sky-400',
+  },
+  amber: {
+    containerBg: 'bg-gradient-to-br from-amber-950 via-orange-950 to-slate-950',
+    borderColor: 'border-amber-700/40',
+    glow1: 'bg-amber-500/25',
+    glow2: 'bg-orange-500/20',
+    accentText: 'text-amber-300',
+    badgeBg: 'bg-amber-500/20',
+    badgeBorder: 'border-amber-400/30',
+    activePillBg: 'bg-amber-400',
+  },
+  rose: {
+    containerBg: 'bg-gradient-to-br from-rose-950 via-pink-950 to-slate-950',
+    borderColor: 'border-rose-700/40',
+    glow1: 'bg-rose-500/25',
+    glow2: 'bg-pink-500/20',
+    accentText: 'text-rose-300',
+    badgeBg: 'bg-rose-500/20',
+    badgeBorder: 'border-rose-400/30',
+    activePillBg: 'bg-rose-400',
+  },
+}
+
 export const AuthCarousel: React.FC = () => {
+  const { theme, currentConfig } = useTheme()
+  const tStyle = themeStyles[theme] || themeStyles.white
   const [currentSlide, setCurrentSlide] = useState(0)
   const [isPaused, setIsPaused] = useState(false)
 
@@ -210,21 +298,23 @@ export const AuthCarousel: React.FC = () => {
     <div
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative h-full flex flex-col justify-between p-8 sm:p-12 overflow-hidden bg-gradient-to-br from-indigo-900 via-indigo-950 to-slate-950 text-white rounded-2xl shadow-2xl border border-indigo-800/40 select-none"
+      className={`relative h-full flex flex-col justify-between p-8 sm:p-12 overflow-hidden ${tStyle.containerBg} text-white rounded-2xl shadow-2xl border ${tStyle.borderColor} select-none transition-all duration-500`}
     >
       {/* Background Decorative Glow Blobs */}
-      <div className="absolute top-0 right-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 left-0 w-80 h-80 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+      <div className={`absolute top-0 right-0 w-80 h-80 ${tStyle.glow1} rounded-full blur-3xl pointer-events-none transition-colors duration-500`} />
+      <div className={`absolute bottom-0 left-0 w-80 h-80 ${tStyle.glow2} rounded-full blur-3xl pointer-events-none transition-colors duration-500`} />
 
       {/* Top Header */}
       <div className="relative z-10 flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <div className="w-9 h-9 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white font-bold shadow-md">
-            <Sparkles className="w-4 h-4 text-indigo-300" />
+            <Sparkles className={`w-4 h-4 ${tStyle.accentText}`} />
           </div>
           <div>
             <h3 className="font-bold text-sm tracking-tight text-white">Brightloop OS</h3>
-            <p className="text-[10px] text-indigo-200">Subscription & Revenue Engine</p>
+            <p className={`text-[10px] ${tStyle.accentText}`}>
+              {currentConfig.name} • Subscription Engine
+            </p>
           </div>
         </div>
 
@@ -238,8 +328,8 @@ export const AuthCarousel: React.FC = () => {
       <div className="relative z-10 my-8 space-y-6">
         {/* Animated Badge & Title */}
         <div className="space-y-2 transition-all duration-300">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 border border-white/20 text-indigo-200 text-xs font-semibold backdrop-blur-sm">
-            <IconComponent className="w-3.5 h-3.5 text-indigo-300" />
+          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full ${tStyle.badgeBg} border ${tStyle.badgeBorder} ${tStyle.accentText} text-xs font-semibold backdrop-blur-sm`}>
+            <IconComponent className={`w-3.5 h-3.5 ${tStyle.accentText}`} />
             <span>{activeItem.badge}</span>
           </div>
 
@@ -247,7 +337,7 @@ export const AuthCarousel: React.FC = () => {
             {activeItem.title}
           </h2>
 
-          <p className="text-xs sm:text-sm text-indigo-100/80 leading-relaxed max-w-md">
+          <p className="text-xs sm:text-sm text-slate-200/90 leading-relaxed max-w-md">
             {activeItem.description}
           </p>
         </div>
@@ -267,7 +357,7 @@ export const AuthCarousel: React.FC = () => {
               key={s.id}
               onClick={() => setCurrentSlide(idx)}
               className={`h-1.5 rounded-full transition-all duration-300 focus:outline-none ${
-                idx === currentSlide ? 'w-8 bg-indigo-400' : 'w-2 bg-white/30 hover:bg-white/50'
+                idx === currentSlide ? `w-8 ${tStyle.activePillBg}` : 'w-2 bg-white/30 hover:bg-white/50'
               }`}
               title={`Go to slide ${idx + 1}: ${s.badge}`}
               aria-label={`Go to slide ${idx + 1}`}
