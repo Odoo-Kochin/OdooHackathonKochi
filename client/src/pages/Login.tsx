@@ -279,7 +279,7 @@ export const Login: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setResetModalOpen(false)}
-                className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800"
+                className="modal-cancel-btn px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-red-600 hover:bg-red-700 active:bg-red-800 text-white shadow-xs transition-colors"
               >
                 Cancel
               </button>
