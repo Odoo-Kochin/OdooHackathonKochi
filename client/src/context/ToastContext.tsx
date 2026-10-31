@@ -47,6 +47,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const newItem: ToastItem = {
         ...options,
         id,
+        duration,
         variant: options.variant || 'default',
       }
 
@@ -89,7 +90,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
           <div
             key={item.id}
             role="alert"
-            className="pointer-events-auto flex items-start gap-3 p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-950/10 transition-all transform animate-in slide-in-from-bottom-5 fade-in duration-200"
+            className="relative overflow-hidden pointer-events-auto flex items-start gap-3 p-4 pb-4.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-950/10 transition-all transform animate-in slide-in-from-bottom-5 fade-in duration-200"
           >
             <div className="shrink-0 mt-0.5">
               {item.variant === 'success' && (
@@ -148,6 +149,28 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             >
               <X className="w-3.5 h-3.5" />
             </button>
+
+            {/* Lifespan Countdown Bar Running Down Right-to-Left */}
+            {item.duration && item.duration > 0 && (
+              <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-100 dark:bg-slate-800/90 overflow-hidden">
+                <div
+                  className={`h-full w-full toast-timer-bar ${
+                    item.variant === 'success'
+                      ? 'bg-gradient-to-r from-emerald-500 to-teal-400'
+                      : item.variant === 'error'
+                      ? 'bg-gradient-to-r from-rose-500 to-red-400'
+                      : item.variant === 'warning'
+                      ? 'bg-gradient-to-r from-amber-500 to-orange-400'
+                      : item.variant === 'info'
+                      ? 'bg-gradient-to-r from-indigo-500 to-blue-400'
+                      : 'bg-gradient-to-r from-slate-500 to-slate-400'
+                  }`}
+                  style={{
+                    animationDuration: `${item.duration}ms`,
+                  }}
+                />
+              </div>
+            )}
           </div>
         ))}
       </div>
