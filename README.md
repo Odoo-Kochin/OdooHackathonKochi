@@ -35,7 +35,7 @@ OdooKochi/
 │   ├── tsconfig.json
 │   └── package.json
 │
-├── package.json                # Root orchestration with concurrently
+├── package.json                
 └── README.md
 ```
 
