@@ -3,6 +3,7 @@ import { Outlet, NavLink, useNavigate, useLocation, Navigate } from 'react-route
 import { useAuth } from '@/context/AuthContext'
 import { useToast } from '@/context/ToastContext'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { ThemeSelector } from './ThemeSelector'
 import type { UserRole } from '@shared/contracts/auth.js'
 import {
   LayoutDashboard,
@@ -298,6 +299,9 @@ export const AppLayout: React.FC = () => {
                 </button>
               ))}
             </div>
+
+            {/* Theme Palette Selector (Right End Side) */}
+            <ThemeSelector />
           </div>
         </header>
 
