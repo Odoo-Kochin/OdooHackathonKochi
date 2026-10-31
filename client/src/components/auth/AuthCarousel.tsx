@@ -129,18 +129,25 @@ export const AuthCarousel: React.FC = () => {
 
   return (
     <div
-      className="relative w-full h-full min-h-screen flex items-center justify-center overflow-hidden select-none transition-colors duration-500"
-      style={{ backgroundColor: currentConfig.bgColor }}
+      className="relative w-full h-full flex items-center justify-center overflow-hidden select-none bg-transparent"
+      style={{
+        maskImage:
+          'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+        WebkitMaskImage:
+          'linear-gradient(to bottom, transparent 0%, black 15%, black 85%, transparent 100%)',
+      }}
     >
+      {/* Left Edge Blend: Fades carousel into root background with no visible seam */}
+      <div className="absolute left-0 top-0 bottom-0 w-[120px] z-30 pointer-events-none bg-gradient-to-r from-[#F5F7FB] dark:from-slate-950 to-transparent" />
+
       {/*
         SPEC COMPLIANT WRAPPER:
-        - One centered column of cards stacked vertically with a fixed gap (40px).
-        - The ENTIRE column (cards + connecting line) is wrapped in ONE container with transform: rotate(-8deg).
-        - Rotate the wrapper, NOT individual cards.
-        - Fixed height with overflow: hidden so cards appear to fall through a window.
+        - Tilted card column ~440px wide, height 140vh, transform: rotate(-8deg).
+        - Bleeds off the top, bottom, and right edges of the screen.
+        - Rotated wrapper taller than viewport (140vh) so no empty corners show.
       */}
       <div
-        className="relative w-[320px] h-[640px] sm:h-[720px] overflow-hidden flex justify-center [transform:rotate(-8deg)]"
+        className="relative w-[440px] h-[140vh] overflow-hidden flex justify-center [transform:rotate(-8deg)]"
         style={{ willChange: 'transform' }}
       >
         {/*
@@ -171,7 +178,7 @@ export const AuthCarousel: React.FC = () => {
             {cards.map((card, idx) => (
               <div
                 key={`col1-${card.id}-${idx}`}
-                className={`relative z-10 w-[280px] h-[160px] p-3.5 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
+                className={`relative z-10 w-[330px] h-[175px] p-4 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
                 style={{ backgroundColor: cardBg }}
               >
                 {/* Header */}
@@ -256,7 +263,7 @@ export const AuthCarousel: React.FC = () => {
             {cards.map((card, idx) => (
               <div
                 key={`col2-${card.id}-${idx}`}
-                className={`relative z-10 w-[280px] h-[160px] p-3.5 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
+                className={`relative z-10 w-[330px] h-[175px] p-4 rounded-2xl ${cardBorder} ${cardShadow} flex flex-col justify-between shrink-0 box-border`}
                 style={{ backgroundColor: cardBg }}
               >
                 {/* Header */}
@@ -336,22 +343,6 @@ export const AuthCarousel: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {/* Top Fade Gradient Mask using current theme background */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-24 z-20"
-          style={{
-            background: `linear-gradient(to bottom, ${currentConfig.bgColor}, transparent)`,
-          }}
-        />
-
-        {/* Bottom Fade Gradient Mask using current theme background */}
-        <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-24 z-20"
-          style={{
-            background: `linear-gradient(to top, ${currentConfig.bgColor}, transparent)`,
-          }}
-        />
       </div>
     </div>
   )
