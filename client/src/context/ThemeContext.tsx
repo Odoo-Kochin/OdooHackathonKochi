@@ -5,68 +5,100 @@ export type ThemeId = 'white' | 'black' | 'emerald' | 'violet' | 'ocean' | 'ambe
 export interface ThemeConfig {
   id: ThemeId
   name: string
-  color: string
-  badgeColor: string
-  description: string
+  bgName: string
+  surfaceName: string
+  accentName: string
+  bgColor: string
+  surfaceColor: string
+  accentColor: string
+  textColor: string
   isDark: boolean
 }
 
 export const PREDEFINED_THEMES: ThemeConfig[] = [
   {
     id: 'white',
-    name: 'Snow White (Default)',
-    color: '#ffffff',
-    badgeColor: '#4f46e5',
-    description: 'Crisp light enterprise workspace with royal indigo accents',
+    name: 'Snow White',
+    bgName: 'Clean Slate (#f8fafc)',
+    surfaceName: 'Pure White (#ffffff)',
+    accentName: 'Royal Indigo (#4f46e5)',
+    bgColor: '#f8fafc',
+    surfaceColor: '#ffffff',
+    accentColor: '#4f46e5',
+    textColor: '#0f172a',
     isDark: false,
   },
   {
     id: 'black',
     name: 'Obsidian Black',
-    color: '#09090b',
-    badgeColor: '#a1a1aa',
-    description: 'Deep midnight dark mode with obsidian panels and high contrast',
+    bgName: 'Pitch Black (#000000)',
+    surfaceName: 'Dark Obsidian (#121215)',
+    accentName: 'Silver Zinc (#a1a1aa)',
+    bgColor: '#000000',
+    surfaceColor: '#121215',
+    accentColor: '#a1a1aa',
+    textColor: '#ffffff',
     isDark: true,
   },
   {
     id: 'emerald',
     name: 'Fintech Emerald',
-    color: '#059669',
-    badgeColor: '#10b981',
-    description: 'Fresh mint & emerald green tailored for billing and finances',
-    isDark: false,
+    bgName: 'Deep Forest (#022c22)',
+    surfaceName: 'Pine Green (#064e3b)',
+    accentName: 'Vibrant Mint (#10b981)',
+    bgColor: '#022c22',
+    surfaceColor: '#064e3b',
+    accentColor: '#10b981',
+    textColor: '#ecfdf5',
+    isDark: true,
   },
   {
     id: 'violet',
     name: 'Royal Violet',
-    color: '#7c3aed',
-    badgeColor: '#8b5cf6',
-    description: 'Modern executive purple SaaS palette with rich contrast',
-    isDark: false,
+    bgName: 'Midnight Purple (#1e1b4b)',
+    surfaceName: 'Deep Amethyst (#2e1065)',
+    accentName: 'Electric Violet (#a855f7)',
+    bgColor: '#1e1b4b',
+    surfaceColor: '#2e1065',
+    accentColor: '#a855f7',
+    textColor: '#faf5ff',
+    isDark: true,
   },
   {
     id: 'ocean',
     name: 'Ocean Cyan',
-    color: '#0284c7',
-    badgeColor: '#0ea5e9',
-    description: 'Deep sea sapphire & cyan tones for clarity and focus',
-    isDark: false,
+    bgName: 'Deep Abyss (#082f49)',
+    surfaceName: 'Marine Blue (#0c4a6e)',
+    accentName: 'Bright Cyan (#38bdf8)',
+    bgColor: '#082f49',
+    surfaceColor: '#0c4a6e',
+    accentColor: '#38bdf8',
+    textColor: '#f0f9ff',
+    isDark: true,
   },
   {
     id: 'amber',
     name: 'Sunset Amber',
-    color: '#d97706',
-    badgeColor: '#f59e0b',
-    description: 'Warm golden amber and copper tones with high vibrancy',
-    isDark: false,
+    bgName: 'Dark Espresso (#451a03)',
+    surfaceName: 'Amber Copper (#78350f)',
+    accentName: 'Golden Honey (#fbbf24)',
+    bgColor: '#451a03',
+    surfaceColor: '#78350f',
+    accentColor: '#fbbf24',
+    textColor: '#fffbeb',
+    isDark: true,
   },
   {
     id: 'rose',
     name: 'Crimson Rose',
-    color: '#e11d48',
-    badgeColor: '#f43f5e',
-    description: 'Dynamic crimson & coral accents for energetic dashboards',
-    isDark: false,
+    bgName: 'Velvet Wine (#4c0519)',
+    surfaceName: 'Crimson Berry (#881337)',
+    accentName: 'Coral Pink (#fb7185)',
+    bgColor: '#4c0519',
+    surfaceColor: '#881337',
+    accentColor: '#fb7185',
+    textColor: '#fff1f2',
+    isDark: true,
   },
 ]
 
@@ -91,7 +123,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     } catch {
       // LocalStorage unavailable
     }
-    return 'white' // Default compulsory white theme
+    return 'white' // Default white theme
   })
 
   const setTheme = (newTheme: ThemeId) => {
@@ -110,7 +142,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     // Set data-theme attribute on root
     root.setAttribute('data-theme', theme)
 
-    // Manage compulsory dark mode class
+    // Manage dark mode class
     if (config.isDark) {
       root.classList.add('dark')
     } else {
