@@ -194,7 +194,8 @@ html[data-theme='white'] .text-slate-900,
 html[data-theme='white'] .text-slate-800 {
   color: #020617 !important;
 }
-html[data-theme='white'] .text-slate-700 {
+html[data-theme='white'] p.text-slate-700,
+html[data-theme='white'] div.text-slate-700:not([class*="rounded"]) {
   color: #0f172a !important;
 }
 html[data-theme='white'] .text-slate-600,
@@ -203,6 +204,46 @@ html[data-theme='white'] .text-slate-500 {
 }
 html[data-theme='white'] .text-slate-400 {
   color: #64748b !important;
+}
+
+/* Status & Pill Badges in White Theme (Explicit Colored Text, Never Black) */
+html[data-theme='white'] .bg-emerald-50,
+html[data-theme='white'] .bg-emerald-100 {
+  background-color: #ecfdf5 !important;
+  color: #047857 !important;
+  border: 1px solid #a7f3d0 !important;
+}
+html[data-theme='white'] .bg-blue-50,
+html[data-theme='white'] .bg-blue-100 {
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border: 1px solid #bfdbfe !important;
+}
+html[data-theme='white'] .bg-purple-50,
+html[data-theme='white'] .bg-purple-100 {
+  background-color: #faf5ff !important;
+  color: #7e22ce !important;
+  border: 1px solid #e9d5ff !important;
+}
+html[data-theme='white'] .bg-amber-50,
+html[data-theme='white'] .bg-amber-100 {
+  background-color: #fffbeb !important;
+  color: #b45309 !important;
+  border: 1px solid #fde68a !important;
+}
+html[data-theme='white'] .bg-rose-50,
+html[data-theme='white'] .bg-rose-100,
+html[data-theme='white'] .bg-red-50,
+html[data-theme='white'] .bg-red-100 {
+  background-color: #fff1f2 !important;
+  color: #be123c !important;
+  border: 1px solid #fecdd3 !important;
+}
+html[data-theme='white'] span.bg-slate-100,
+html[data-theme='white'] span.bg-slate-200,
+html[data-theme='white'] div.bg-slate-100:not(.topbar-role-container) {
+  color: #475569 !important;
+  border: 1px solid #cbd5e1 !important;
 }
 html[data-theme='white'] table th {
   color: #020617 !important;
@@ -686,47 +727,139 @@ html:not([data-theme='white']) table td {
   color: #f8fafc !important;
 }
 
-/* Sidebar Navigation Items in Dark Themes */
-html:not([data-theme='white']) aside nav a:not(.bg-indigo-50):not(.bg-indigo-600) {
-  color: #e2e8f0;
+/* ========================================================================== */
+/* SIDEBAR NAVIGATION HIGHLIGHT CONTRAST ACROSS ALL THEMES                    */
+/* ========================================================================== */
+
+.sidebar-nav-active {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
 }
+.sidebar-nav-active svg {
+  color: #ffffff !important;
+}
+html[data-theme='white'] .sidebar-nav-active {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+}
+html[data-theme='white'] .sidebar-nav-active svg {
+  color: #ffffff !important;
+}
+html[data-theme='black'] .sidebar-nav-active {
+  background-color: #e4e4e7 !important;
+  color: #09090b !important;
+}
+html[data-theme='black'] .sidebar-nav-active svg {
+  color: #09090b !important;
+}
+html[data-theme='emerald'] .sidebar-nav-active {
+  background-color: #10b981 !important;
+  color: #022c22 !important;
+}
+html[data-theme='emerald'] .sidebar-nav-active svg {
+  color: #022c22 !important;
+}
+html[data-theme='violet'] .sidebar-nav-active {
+  background-color: #a855f7 !important;
+  color: #ffffff !important;
+}
+html[data-theme='violet'] .sidebar-nav-active svg {
+  color: #ffffff !important;
+}
+html[data-theme='ocean'] .sidebar-nav-active {
+  background-color: #38bdf8 !important;
+  color: #082f49 !important;
+}
+html[data-theme='ocean'] .sidebar-nav-active svg {
+  color: #082f49 !important;
+}
+html[data-theme='amber'] .sidebar-nav-active {
+  background-color: #fbbf24 !important;
+  color: #451a03 !important;
+}
+html[data-theme='amber'] .sidebar-nav-active svg {
+  color: #451a03 !important;
+}
+html[data-theme='rose'] .sidebar-nav-active {
+  background-color: #fb7185 !important;
+  color: #4c0519 !important;
+}
+html[data-theme='rose'] .sidebar-nav-active svg {
+  color: #4c0519 !important;
+}
+
+/* Sidebar Nav Hover Highlight — NEVER go black in dark themes */
 html:not([data-theme='white']) aside nav a:hover {
   color: #ffffff !important;
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+html:not([data-theme='white']) aside nav a:hover svg {
+  color: #ffffff !important;
+}
+html[data-theme='white'] aside nav a:hover {
+  color: #020617 !important;
+  background-color: #f1f5f9 !important;
+}
+html[data-theme='white'] aside nav a:hover svg {
+  color: #2563eb !important;
 }
 
 /* ========================================================================== */
 /* TOP BAR CONTRAST GUARANTEE ACROSS ALL COLOR THEMES                        */
 /* ========================================================================== */
 
-.topbar-role-active {
-  background-color: #2563eb !important;
-  color: #ffffff !important;
-  font-weight: 700 !important;
+/* Default / White Theme Role Switcher (Active has pure WHITE background) */
+html[data-theme='white'] .topbar-role-container {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
 }
+html[data-theme='white'] .topbar-role-active {
+  background-color: #ffffff !important;
+  color: #2563eb !important;
+  font-weight: 700 !important;
+  border: 1px solid #cbd5e1 !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.06) !important;
+}
+html[data-theme='white'] .topbar-role-inactive {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+html[data-theme='white'] .topbar-role-inactive:hover {
+  color: #020617 !important;
+  background-color: #e2e8f0 !important;
+}
+
+/* Dark and Colored Themes Role Switcher */
 html[data-theme='black'] .topbar-role-active {
   background-color: #e4e4e7 !important;
   color: #09090b !important;
+  font-weight: 700 !important;
 }
 html[data-theme='emerald'] .topbar-role-active {
   background-color: #10b981 !important;
   color: #022c22 !important;
+  font-weight: 700 !important;
 }
 html[data-theme='violet'] .topbar-role-active {
   background-color: #a855f7 !important;
   color: #ffffff !important;
+  font-weight: 700 !important;
 }
 html[data-theme='ocean'] .topbar-role-active {
   background-color: #38bdf8 !important;
   color: #082f49 !important;
+  font-weight: 700 !important;
 }
 html[data-theme='amber'] .topbar-role-active {
   background-color: #fbbf24 !important;
   color: #451a03 !important;
+  font-weight: 700 !important;
 }
 html[data-theme='rose'] .topbar-role-active {
   background-color: #fb7185 !important;
   color: #4c0519 !important;
+  font-weight: 700 !important;
 }
 
 .topbar-role-inactive {
