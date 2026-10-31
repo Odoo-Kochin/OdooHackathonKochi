@@ -20,8 +20,6 @@ import {
   Zap,
   LogIn,
   KeyRound,
-  ShieldCheck,
-  Globe,
   Sparkles,
 } from 'lucide-react'
 
@@ -85,41 +83,41 @@ export const Login: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen w-full flex flex-col lg:flex-row bg-white dark:bg-slate-950 overflow-hidden">
-      {/* Left Side: Full-Height Auth Section (no card box) */}
-      <div className="w-full lg:w-[480px] xl:w-[540px] 2xl:w-[580px] flex-shrink-0 min-h-screen flex flex-col justify-between p-6 sm:p-10 lg:p-12 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
-        <div className="max-w-md w-full mx-auto my-auto py-6">
+    <div className="h-screen w-full flex flex-col lg:flex-row bg-white dark:bg-slate-950 overflow-hidden">
+      {/* Left Side: 2/3rd Width Auth Section without vertical scrolling */}
+      <div className="w-full lg:w-2/3 h-full flex flex-col justify-center px-6 sm:px-12 lg:px-20 py-4 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 overflow-y-auto">
+        <div className="max-w-xl w-full mx-auto my-auto py-2">
           {/* Brand Header */}
-            <div className="mb-6 text-left">
-              <div className="flex items-center justify-between mb-2.5">
-                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Brightloop Cloud Edition</span>
-                </div>
-                <ThemeSelector />
+          <div className="mb-4 text-left">
+            <div className="flex items-center justify-between mb-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Brightloop Cloud Edition</span>
               </div>
-              <div className="flex items-center gap-2.5 mb-1.5">
-                <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
-                  <Layers className="w-5 h-5" />
-                </div>
-                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                  Brightloop Software
-                </h1>
-              </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Enterprise Subscription Management & Automated Billing Gateway
-              </p>
+              <ThemeSelector />
             </div>
+            <div className="flex items-center gap-2.5 mb-1">
+              <div className="w-8 h-8 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
+                <Layers className="w-4 h-4" />
+              </div>
+              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Brightloop Software
+              </h1>
+            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Enterprise Subscription Management & Automated Billing Gateway
+            </p>
+          </div>
 
-            {/* Navigation Tabs */}
-            <div className="mb-6 flex border-b border-slate-200 dark:border-slate-800">
-            <span className="pb-3 px-2 border-b-2 border-indigo-600 text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
+          {/* Navigation Tabs */}
+          <div className="mb-4 flex border-b border-slate-200 dark:border-slate-800">
+            <span className="pb-2.5 px-2 border-b-2 border-indigo-600 text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
               <LogIn className="w-4 h-4 text-indigo-600" />
               <span>Sign In</span>
             </span>
             <Link
               to="/register"
-              className="pb-3 px-4 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors flex items-center gap-1.5"
+              className="pb-2.5 px-4 text-sm font-medium text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors flex items-center gap-1.5"
             >
               <User className="w-4 h-4" />
               <span>Create Account</span>
@@ -127,8 +125,8 @@ export const Login: React.FC = () => {
           </div>
 
           {/* Quick Role Sign-in Tiles with Vector Badges */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
+          <div className="mb-4">
+            <div className="flex items-center justify-between mb-1.5">
               <span className="text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
                 <Zap className="w-3.5 h-3.5 text-amber-500" />
                 Quick Role Sign-In
@@ -264,7 +262,7 @@ export const Login: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-6 text-center text-xs text-slate-500">
+          <div className="mt-4 text-center text-xs text-slate-500">
             Don&apos;t have an account?{' '}
             <Link
               to="/register"
@@ -275,28 +273,10 @@ export const Login: React.FC = () => {
             </Link>
           </div>
         </div>
-
-        {/* Security Footer with Vector Icons */}
-        <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex items-center justify-center gap-4 text-[11px] text-slate-400">
-          <div className="flex items-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            <span>256-Bit SSL</span>
-          </div>
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Lock className="w-3.5 h-3.5 text-slate-400" />
-            <span>SOC2 Type II</span>
-          </div>
-          <span>•</span>
-          <div className="flex items-center gap-1">
-            <Globe className="w-3.5 h-3.5 text-indigo-500" />
-            <span>Multi-Tenant Cloud</span>
-          </div>
-        </div>
       </div>
 
-      {/* Right Side: Full-Screen Slanted Card Column */}
-      <div className="hidden lg:flex flex-1 min-h-screen relative overflow-hidden">
+      {/* Right Side: 1/3rd Slanted Card Column */}
+      <div className="hidden lg:flex lg:w-1/3 h-full relative overflow-hidden">
         <AuthCarousel />
       </div>
 
