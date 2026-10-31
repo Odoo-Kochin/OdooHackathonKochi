@@ -271,6 +271,13 @@ export const Payments: React.FC = () => {
                   </td>
                 </tr>
               ))}
+              {payments.length === 0 && (
+                <tr>
+                  <td colSpan={6} className="py-8 text-center text-xs text-slate-400">
+                    No payment records found in database.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

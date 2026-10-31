@@ -295,7 +295,9 @@ export const Subscriptions: React.FC = () => {
               {filteredSubs.length === 0 && (
                 <tr>
                   <td colSpan={7} className="py-8 text-center text-xs text-slate-400">
-                    No subscriptions matching the filter.
+                    {subscriptions.length === 0
+                      ? 'No subscriptions found in database.'
+                      : 'No subscriptions matching the filter.'}
                   </td>
                 </tr>
               )}

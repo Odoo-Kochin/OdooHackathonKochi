@@ -19,15 +19,7 @@ export const Products: React.FC = () => {
   const [notes, setNotes] = useState('')
 
   // Variants (e.g. Odoo brand +$560)
-  const [variants, setVariants] = useState<ProductVariant[]>([
-    {
-      id: 'var-demo-1',
-      name: 'Odoo Edition Sync',
-      attributeName: 'Brand',
-      attributeValue: 'Odoo Brand Connector',
-      priceAdjustment: 560,
-    },
-  ])
+  const [variants, setVariants] = useState<ProductVariant[]>([])
 
   const fetchProducts = async () => {
     try {
@@ -106,7 +98,18 @@ export const Products: React.FC = () => {
 
       {/* Product Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {products.map((prod) => {
+        {products.length === 0 ? (
+          <div className="col-span-full py-12 text-center rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+            <Package className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+            <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+              No products found in database.
+            </p>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Add a new software or service product to build your catalog.
+            </p>
+          </div>
+        ) : (
+          products.map((prod) => {
           const margin = prod.salesPrice - prod.costPrice
           const marginPercent = Math.round((margin / prod.salesPrice) * 100)
 
@@ -201,7 +204,7 @@ export const Products: React.FC = () => {
               </div>
             </div>
           )
-        })}
+        }))}
       </div>
 
       {/* Modal */}

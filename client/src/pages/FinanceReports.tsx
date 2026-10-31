@@ -74,7 +74,7 @@ export const FinanceReports: React.FC = () => {
             <Repeat className="w-4 h-4 text-slate-400" />
           </div>
           <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
-            {summary?.activeSubscriptionsCount || 142}
+            {summary?.activeSubscriptionsCount ?? 0}
           </div>
           <p className="text-[11px] text-emerald-600 font-medium mt-0.5 flex items-center gap-1">
             <ArrowUpRight className="w-3 h-3" />
@@ -88,7 +88,7 @@ export const FinanceReports: React.FC = () => {
             <TrendingUp className="w-4 h-4 text-emerald-500" />
           </div>
           <div className="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
-            ${summary?.totalRevenueCollected?.toLocaleString() || '194,320'}
+            ${summary?.totalRevenueCollected?.toLocaleString() ?? '0'}
           </div>
           <p className="text-[11px] text-slate-400 mt-0.5">Verified settlements</p>
         </div>
@@ -99,10 +99,10 @@ export const FinanceReports: React.FC = () => {
             <AlertTriangle className="w-4 h-4 text-amber-500" />
           </div>
           <div className="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
-            ${summary?.outstandingOverdueAmount?.toLocaleString() || '5,310'}
+            ${summary?.outstandingOverdueAmount?.toLocaleString() ?? '0'}
           </div>
           <p className="text-[11px] text-slate-400 mt-0.5">
-            {summary?.overdueInvoicesCount || 1} invoice pending
+            {summary?.overdueInvoicesCount ?? 0} invoice(s) pending
           </p>
         </div>
 
@@ -112,10 +112,10 @@ export const FinanceReports: React.FC = () => {
             <DollarSign className="w-4 h-4 text-indigo-500" />
           </div>
           <div className="mt-1 text-2xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tight">
-            ${summary?.mrr?.toLocaleString() || '18,450'}
+            ${summary?.mrr?.toLocaleString() ?? '0'}
           </div>
           <p className="text-[11px] text-slate-400 mt-0.5">
-            ARR: ${summary?.arr?.toLocaleString() || '221,400'}
+            ARR: ${summary?.arr?.toLocaleString() ?? '0'}
           </p>
         </div>
       </div>
@@ -128,32 +128,51 @@ export const FinanceReports: React.FC = () => {
               Monthly Recurring Revenue Pace
             </h3>
             <span className="text-xs font-semibold text-emerald-600">
-              +{summary?.monthlyGrowthRatePercent || 14.8}% MoM
+              +{summary?.monthlyGrowthRatePercent ?? 0}% MoM
             </span>
           </div>
 
           <div className="space-y-3 pt-2">
-            {[
-              { month: 'July', amount: 12400, percent: 65 },
-              { month: 'August', amount: 14200, percent: 74 },
-              { month: 'September', amount: 16100, percent: 85 },
-              { month: 'October (Current)', amount: 18450, percent: 100 },
-            ].map((m) => (
-              <div key={m.month} className="space-y-1">
-                <div className="flex justify-between text-xs">
-                  <span className="text-slate-600 dark:text-slate-400">{m.month}</span>
-                  <span className="font-semibold text-slate-900 dark:text-white">
-                    ${m.amount.toLocaleString()}
-                  </span>
-                </div>
-                <div className="w-full h-2 rounded bg-slate-100 dark:bg-slate-800 overflow-hidden">
-                  <div
-                    className="h-full bg-indigo-600 rounded transition-all"
-                    style={{ width: `${m.percent}%` }}
-                  />
-                </div>
-              </div>
-            ))}
+            {(() => {
+              const monthMap: Record<string, number> = {}
+              invoices.forEach((inv) => {
+                const monthKey = inv.issueDate
+                  ? new Date(inv.issueDate).toLocaleDateString('en-US', {
+                      month: 'short',
+                      year: 'numeric',
+                    })
+                  : 'Current'
+                monthMap[monthKey] = (monthMap[monthKey] || 0) + (inv.totalAmount || 0)
+              })
+              const entries = Object.entries(monthMap)
+              if (entries.length === 0) {
+                return (
+                  <div className="py-8 text-center text-xs text-slate-400">
+                    No historical revenue data found in database.
+                  </div>
+                )
+              }
+              const maxAmount = Math.max(...entries.map(([, amt]) => amt), 1)
+              return entries.map(([month, amount]) => {
+                const percent = Math.min(100, Math.round((amount / maxAmount) * 100))
+                return (
+                  <div key={month} className="space-y-1">
+                    <div className="flex justify-between text-xs">
+                      <span className="text-slate-600 dark:text-slate-400">{month}</span>
+                      <span className="font-semibold text-slate-900 dark:text-white">
+                        ${amount.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="w-full h-2 rounded bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div
+                        className="h-full bg-indigo-600 rounded transition-all"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+                  </div>
+                )
+              })
+            })()}
           </div>
 
           <div className="mt-4 p-3 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 text-xs text-slate-600 dark:text-slate-400">

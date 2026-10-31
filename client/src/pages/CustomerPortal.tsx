@@ -71,7 +71,7 @@ export const CustomerPortal: React.FC = () => {
           <div className="flex items-center gap-2">
             <Building2 className="w-4 h-4 text-indigo-600" />
             <span className="text-xs font-bold text-slate-900 dark:text-white">
-              {user?.company || 'Acme Retail & Logistics'}
+              {user?.company || user?.name || 'Client Account'}
             </span>
             <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300 flex items-center gap-1">
               <CheckCircle2 className="w-3 h-3" />
@@ -89,13 +89,14 @@ export const CustomerPortal: React.FC = () => {
             <span>Next Cycle</span>
           </span>
           <span className="text-xs font-bold text-slate-900 dark:text-white">
-            {primarySub?.expiryDate || '2026-11-01'}
+            {primarySub?.expiryDate || 'No active cycle'}
           </span>
         </div>
       </div>
 
       {/* Active Subscription Details Card */}
-      {primarySub && (
+      {/* Active Subscription Details Card */}
+      {primarySub ? (
         <div className="p-5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs space-y-4">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100 dark:border-slate-800">
             <div>
@@ -147,6 +148,13 @@ export const CustomerPortal: React.FC = () => {
               ))}
             </div>
           </div>
+        </div>
+      ) : (
+        <div className="p-8 text-center rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+          <Layers className="w-8 h-8 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+          <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
+            No active subscriptions found for your account.
+          </p>
         </div>
       )}
 
@@ -264,7 +272,12 @@ export const CustomerPortal: React.FC = () => {
         </div>
 
         <div className="p-4 space-y-2.5">
-          {invoices.map((inv) => (
+          {invoices.length === 0 ? (
+            <div className="py-8 text-center text-xs text-slate-400">
+              No invoices recorded in database for your account.
+            </div>
+          ) : (
+            invoices.map((inv) => (
             <div
               key={inv.id}
               className="p-3.5 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-200/80 dark:border-slate-700/60 flex items-center justify-between text-xs"
@@ -313,7 +326,7 @@ export const CustomerPortal: React.FC = () => {
                 </button>
               </div>
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </div>

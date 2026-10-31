@@ -6,7 +6,6 @@ import type {
   LoginRequest,
   RegisterRequest,
 } from '@shared/contracts/auth.js'
-import { MOCK_AUTH_USERS } from '@shared/contracts/auth.js'
 
 interface AuthContextType {
   user: AuthUser | null
@@ -112,12 +111,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.setItem(STORAGE_KEY, JSON.stringify(response.data.user))
         localStorage.setItem(TOKEN_KEY, response.data.token)
       }
-    } catch (err) {
-      // Fallback directly to mock role in client if network is interrupted
-      const mock = MOCK_AUTH_USERS[role]
-      setUser(mock)
-      setToken(`fallback-${role}`)
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(mock))
+    } catch (err: any) {
+      console.error('Quick login failed:', err)
+      throw err
     } finally {
       setIsLoading(false)
     }
