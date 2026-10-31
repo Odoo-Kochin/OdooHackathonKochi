@@ -49,19 +49,19 @@ export const AuthLayout: React.FC = () => {
       {/* Main Content Area */}
       <div className="flex-1 w-full flex flex-col lg:flex-row overflow-hidden relative z-20">
         {/* Left Side: Form area that scrolls vertically when needed (e.g. Create Account) */}
-        <div className="flex-1 h-full overflow-y-auto px-6 sm:px-10 lg:px-16 py-4 flex flex-col items-start">
+        <div className="flex-1 h-full overflow-y-auto px-6 sm:px-10 lg:px-12 py-4 flex flex-col items-start">
           <div className="w-full max-w-xl my-auto py-2">
             <Outlet />
           </div>
         </div>
 
-        {/* Spacer for the right side so form layout respects the carousel area */}
-        <div className="hidden lg:block w-[420px] xl:w-[480px] 2xl:w-[540px] shrink-0" />
+        {/* Spacer for the right side so form layout respects the dual-column carousel area */}
+        <div className="hidden lg:block w-[560px] xl:w-[640px] 2xl:w-[720px] shrink-0" />
       </div>
 
-      {/* Right Side: Persistent Carousel spanning full height top-0 to bottom-0, UNDER the header in z-axis (z-10) */}
+      {/* Right Side: Persistent Dual-Column Carousel spanning full height top-0 to bottom-0, UNDER topbar in z-axis (z-10) */}
       <div
-        className="hidden lg:flex w-[420px] xl:w-[480px] 2xl:w-[540px] absolute top-0 right-0 h-screen z-10 items-center justify-center overflow-hidden select-none transition-colors duration-500"
+        className="hidden lg:flex w-[560px] xl:w-[640px] 2xl:w-[720px] absolute top-0 right-0 h-screen z-10 items-center justify-center overflow-hidden select-none transition-colors duration-500"
         style={{ backgroundColor: currentConfig.bgColor }}
       >
         <AuthCarousel />
