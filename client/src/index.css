@@ -128,6 +128,32 @@ body {
   will-change: transform;
 }
 
+/* Continuous vertical merry-go-round dropping stream (slanted waterfall) */
+@keyframes continuousDrop {
+  0% {
+    transform: translateY(-50%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+.animate-drop-continuous-slow {
+  animation: continuousDrop 32s linear infinite;
+  will-change: transform;
+}
+
+.animate-drop-continuous-fast {
+  animation: continuousDrop 24s linear infinite;
+  will-change: transform;
+}
+
+/* Pause merry-go-round dropping cards when hovering */
+.group-merry-go-round:hover .animate-drop-continuous-slow,
+.group-merry-go-round:hover .animate-drop-continuous-fast {
+  animation-play-state: paused;
+}
+
 /* ========================================================================== */
 /* DYNAMIC FULL-PALETTE THEMES CONFIGURATION WITH HIGH CONTRAST TYPOGRAPHY    */
 /* ========================================================================== */
