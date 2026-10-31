@@ -626,3 +626,52 @@ html:not([data-theme='white']) aside nav a:hover {
   background-color: rgba(255, 255, 255, 0.1) !important;
 }
 
+/* ========================================================================== */
+/* TOP BAR CONTRAST GUARANTEE ACROSS ALL COLOR THEMES                        */
+/* ========================================================================== */
+
+.topbar-role-active {
+  background-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 700 !important;
+}
+html[data-theme='black'] .topbar-role-active {
+  background-color: #e4e4e7 !important;
+  color: #09090b !important;
+}
+html[data-theme='emerald'] .topbar-role-active {
+  background-color: #10b981 !important;
+  color: #022c22 !important;
+}
+html[data-theme='violet'] .topbar-role-active {
+  background-color: #a855f7 !important;
+  color: #ffffff !important;
+}
+html[data-theme='ocean'] .topbar-role-active {
+  background-color: #38bdf8 !important;
+  color: #082f49 !important;
+}
+html[data-theme='amber'] .topbar-role-active {
+  background-color: #fbbf24 !important;
+  color: #451a03 !important;
+}
+html[data-theme='rose'] .topbar-role-active {
+  background-color: #fb7185 !important;
+  color: #4c0519 !important;
+}
+
+.topbar-role-inactive {
+  color: #475569 !important;
+}
+.topbar-role-inactive:hover {
+  color: #0f172a !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+html:not([data-theme='white']) .topbar-role-inactive {
+  color: #cbd5e1 !important;
+}
+html:not([data-theme='white']) .topbar-role-inactive:hover {
+  color: #ffffff !important;
+  background-color: rgba(255, 255, 255, 0.12) !important;
+}
+

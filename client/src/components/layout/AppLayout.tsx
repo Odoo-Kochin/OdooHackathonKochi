@@ -260,9 +260,9 @@ export const AppLayout: React.FC = () => {
 
             {/* Prominent Page Title in the Top Bar */}
             <div className="flex items-center gap-2">
-              <span className="text-xs text-slate-400 font-medium">Brightloop</span>
-              <span className="text-slate-300">/</span>
-              <h2 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+              <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">Brightloop</span>
+              <span className="text-slate-300 dark:text-slate-600 font-bold">/</span>
+              <h2 className="text-sm font-extrabold text-slate-900 dark:text-white tracking-tight">
                 {getPageTitle()}
               </h2>
             </div>
@@ -283,21 +283,24 @@ export const AppLayout: React.FC = () => {
             )}
 
             {/* Quick Role Switcher in Top Bar */}
-            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-md border border-slate-200 dark:border-slate-700">
-              <span className="text-[10px] font-semibold text-slate-400 px-2 uppercase">Role:</span>
-              {(['admin', 'staff', 'customer'] as UserRole[]).map((r) => (
-                <button
-                  key={r}
-                  onClick={() => handleRoleSwitch(r)}
-                  className={`px-2.5 py-1 text-xs font-medium rounded capitalize transition-all ${
-                    user?.role === r
-                      ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-white shadow-xs font-semibold'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-200'
-                  }`}
-                >
-                  {r}
-                </button>
-              ))}
+            <div className="flex items-center bg-slate-200/80 dark:bg-slate-800 p-0.5 rounded-md border border-slate-300 dark:border-slate-700 shadow-2xs">
+              <span className="text-[10px] font-bold text-slate-600 dark:text-slate-300 px-2 uppercase tracking-wider">Role:</span>
+              {(['admin', 'staff', 'customer'] as UserRole[]).map((r) => {
+                const isActive = user?.role === r
+                return (
+                  <button
+                    key={r}
+                    onClick={() => handleRoleSwitch(r)}
+                    className={`px-2.5 py-1 text-xs rounded capitalize transition-all ${
+                      isActive
+                        ? 'topbar-role-active shadow-xs'
+                        : 'topbar-role-inactive'
+                    }`}
+                  >
+                    {r}
+                  </button>
+                )
+              })}
             </div>
 
             {/* Theme Palette Selector (Right End Side) */}
