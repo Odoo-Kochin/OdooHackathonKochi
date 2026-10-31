@@ -120,14 +120,14 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               )}
             </div>
 
-            <div className="flex-1 min-w-0 pr-1">
-              <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-tight">
+            <div className="flex-1 min-w-0 pr-1 break-words">
+              <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100 leading-snug break-words">
                 {item.title}
               </h4>
               {item.description && (
-                <p className="mt-1 text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                <div className="mt-1 text-[11.5px] text-slate-600 dark:text-slate-300 leading-relaxed break-words whitespace-pre-wrap max-h-60 overflow-y-auto pr-0.5">
                   {item.description}
-                </p>
+                </div>
               )}
               {item.action && (
                 <button
@@ -144,7 +144,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
             <button
               onClick={() => dismiss(item.id)}
-              className="shrink-0 p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+              className="shrink-0 -mt-0.5 -mr-1 p-1 rounded text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
               aria-label="Close notification"
             >
               <X className="w-3.5 h-3.5" />
