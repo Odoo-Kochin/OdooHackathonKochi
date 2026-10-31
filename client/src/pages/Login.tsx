@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import type { UserRole } from '@shared/contracts/auth.js'
 import { Modal } from '@/components/ui/modal'
+import { AuthCarousel } from '@/components/auth/AuthCarousel'
 import {
   Layers,
   Shield,
@@ -83,31 +84,32 @@ export const Login: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* Brand Header */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-3">
-          <Sparkles className="w-3.5 h-3.5" />
-          <span>Brightloop Cloud Edition</span>
-        </div>
-        <div className="flex items-center justify-center gap-2.5 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
-            <Layers className="w-5 h-5" />
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-            Brightloop Software
-          </h1>
-        </div>
-        <p className="text-xs text-slate-500 dark:text-slate-400">
-          Enterprise Subscription Management & Automated Billing Gateway
-        </p>
-      </div>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center py-10 px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        {/* Left Side: Auth Card */}
+        <div className="lg:col-span-7 flex flex-col justify-center">
+          <div className="bg-white dark:bg-slate-900 py-7 px-6 sm:px-8 shadow-sm border border-slate-200 dark:border-slate-800 rounded-2xl">
+            {/* Brand Header */}
+            <div className="mb-6 text-left">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-2.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Brightloop Cloud Edition</span>
+              </div>
+              <div className="flex items-center gap-2.5 mb-1.5">
+                <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
+                  <Layers className="w-5 h-5" />
+                </div>
+                <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+                  Brightloop Software
+                </h1>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Enterprise Subscription Management & Automated Billing Gateway
+              </p>
+            </div>
 
-      {/* Main Card */}
-      <div className="mt-6 sm:mx-auto sm:w-full sm:max-w-md px-4">
-        <div className="bg-white dark:bg-slate-900 py-7 px-6 sm:px-8 shadow-sm border border-slate-200 dark:border-slate-800 rounded-xl">
-          {/* Navigation Tabs */}
-          <div className="mb-6 flex border-b border-slate-200 dark:border-slate-800">
+            {/* Navigation Tabs */}
+            <div className="mb-6 flex border-b border-slate-200 dark:border-slate-800">
             <span className="pb-3 px-2 border-b-2 border-indigo-600 text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-1.5">
               <LogIn className="w-4 h-4 text-indigo-600" />
               <span>Sign In</span>
@@ -289,6 +291,12 @@ export const Login: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Right Side: Animated Feature Carousel */}
+      <div className="hidden lg:flex lg:col-span-5 flex-col">
+        <AuthCarousel />
+      </div>
+    </div>
 
       {/* Forgot Password Reset Modal */}
       <Modal
