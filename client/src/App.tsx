@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/context/ThemeContext'
 import { AuthProvider } from '@/context/AuthContext'
 import { ToastProvider } from '@/context/ToastContext'
 import { AppLayout } from '@/components/layout/AppLayout'
+import { AuthLayout } from '@/components/layout/AuthLayout'
 
 // Pages
 import { Login } from '@/pages/Login'
@@ -26,9 +27,11 @@ export function App() {
         <ToastProvider>
           <BrowserRouter>
             <Routes>
-              {/* Public Auth Routes */}
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              {/* Public Auth Routes with Persistent Carousel Layout */}
+              <Route element={<AuthLayout />}>
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+              </Route>
 
               {/* Main App with Persistent Sidebar & Topbar Layout */}
               <Route path="/" element={<AppLayout />}>
