@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import type { DiscountRule, Product } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
 import { useToast } from '@/context/ToastContext'
-import { Plus } from 'lucide-react'
+import { Plus, Tag, Percent, DollarSign, Calendar, Users, TrendingUp, CheckCircle2 } from 'lucide-react'
 import axios from 'axios'
 
 export const Discounts: React.FC = () => {
@@ -111,11 +111,17 @@ export const Discounts: React.FC = () => {
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">
-                    {disc.code}
+                  <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 flex items-center gap-1">
+                    <Tag className="w-3 h-3 text-indigo-500" />
+                    <span>{disc.code}</span>
                   </span>
-                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                    {disc.type}
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded uppercase bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 flex items-center gap-1">
+                    {disc.type === 'percentage' ? (
+                      <Percent className="w-3 h-3 text-emerald-500" />
+                    ) : (
+                      <DollarSign className="w-3 h-3 text-indigo-500" />
+                    )}
+                    <span>{disc.type}</span>
                   </span>
                 </div>
 
@@ -139,14 +145,20 @@ export const Discounts: React.FC = () => {
                         : disc.targetProductName || 'Product'}
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-500">
-                    <span>Min Seats:</span>
+                  <div className="flex justify-between text-slate-500 items-center">
+                    <span className="flex items-center">
+                      <Users className="w-3 h-3 mr-1 text-slate-400" />
+                      Min Seats:
+                    </span>
                     <span className="font-medium text-slate-800 dark:text-slate-200">
                       {disc.minimumQuantity} units
                     </span>
                   </div>
-                  <div className="flex justify-between text-slate-500">
-                    <span>Min Spend:</span>
+                  <div className="flex justify-between text-slate-500 items-center">
+                    <span className="flex items-center">
+                      <TrendingUp className="w-3 h-3 mr-1 text-slate-400" />
+                      Min Spend:
+                    </span>
                     <span className="font-medium text-slate-800 dark:text-slate-200">
                       ${disc.minimumPurchase}
                     </span>
@@ -171,8 +183,14 @@ export const Discounts: React.FC = () => {
               </div>
 
               <div className="mt-4 pt-2.5 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-[11px] text-slate-400">
-                <span>Valid: {disc.startDate} to {disc.endDate}</span>
-                <span className="text-emerald-600 font-medium">Active Rule</span>
+                <span className="flex items-center">
+                  <Calendar className="w-3 h-3 mr-1 text-slate-400" />
+                  {disc.startDate} to {disc.endDate}
+                </span>
+                <span className="text-emerald-600 font-medium flex items-center">
+                  <CheckCircle2 className="w-3 h-3 mr-1 text-emerald-500" />
+                  Active Rule
+                </span>
               </div>
             </div>
           )

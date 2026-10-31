@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import type { FinanceSummary, Invoice } from '@shared/contracts/subscriptions.js'
-import { Clock, Download } from 'lucide-react'
+import {
+  Clock,
+  Download,
+  Repeat,
+  TrendingUp,
+  AlertTriangle,
+  DollarSign,
+  ArrowUpRight,
+} from 'lucide-react'
 import axios from 'axios'
 import { useToast } from '@/context/ToastContext'
 
@@ -61,15 +69,24 @@ export const FinanceReports: React.FC = () => {
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-          <span className="text-xs font-medium text-slate-500">Active Subscriptions</span>
+          <div className="flex items-center justify-between text-slate-500 mb-1">
+            <span className="text-xs font-medium">Active Subscriptions</span>
+            <Repeat className="w-4 h-4 text-slate-400" />
+          </div>
           <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white tracking-tight">
             {summary?.activeSubscriptionsCount || 142}
           </div>
-          <p className="text-[11px] text-emerald-600 font-medium mt-0.5">Automated tracking</p>
+          <p className="text-[11px] text-emerald-600 font-medium mt-0.5 flex items-center gap-1">
+            <ArrowUpRight className="w-3 h-3" />
+            <span>Automated tracking</span>
+          </p>
         </div>
 
         <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-          <span className="text-xs font-medium text-slate-500">Total Cash Inflow</span>
+          <div className="flex items-center justify-between text-slate-500 mb-1">
+            <span className="text-xs font-medium">Total Cash Inflow</span>
+            <TrendingUp className="w-4 h-4 text-emerald-500" />
+          </div>
           <div className="mt-1 text-2xl font-bold text-emerald-600 dark:text-emerald-400 tracking-tight">
             ${summary?.totalRevenueCollected?.toLocaleString() || '194,320'}
           </div>
@@ -77,7 +94,10 @@ export const FinanceReports: React.FC = () => {
         </div>
 
         <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-          <span className="text-xs font-medium text-slate-500">Overdue Pending Cash</span>
+          <div className="flex items-center justify-between text-slate-500 mb-1">
+            <span className="text-xs font-medium">Overdue Pending Cash</span>
+            <AlertTriangle className="w-4 h-4 text-amber-500" />
+          </div>
           <div className="mt-1 text-2xl font-bold text-amber-600 dark:text-amber-400 tracking-tight">
             ${summary?.outstandingOverdueAmount?.toLocaleString() || '5,310'}
           </div>
@@ -87,7 +107,10 @@ export const FinanceReports: React.FC = () => {
         </div>
 
         <div className="p-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
-          <span className="text-xs font-medium text-slate-500">MRR / ARR Run Rate</span>
+          <div className="flex items-center justify-between text-slate-500 mb-1">
+            <span className="text-xs font-medium">MRR / ARR Run Rate</span>
+            <DollarSign className="w-4 h-4 text-indigo-500" />
+          </div>
           <div className="mt-1 text-2xl font-bold text-indigo-600 dark:text-indigo-400 tracking-tight">
             ${summary?.mrr?.toLocaleString() || '18,450'}
           </div>
