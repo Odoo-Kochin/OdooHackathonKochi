@@ -195,7 +195,7 @@ export const AppLayout: React.FC = () => {
           {/* User profile & collapse control footer */}
           <div className="p-2 border-t border-slate-200 dark:border-slate-800 bg-transparent">
             {!collapsed ? (
-              <div className="flex items-center justify-between p-2 rounded-lg bg-transparent hover:bg-slate-100/70 dark:hover:bg-slate-800/60 transition-colors">
+              <div className="flex items-center justify-between p-2 rounded-lg bg-transparent">
                 <div className="flex items-center gap-2 overflow-hidden">
                   <div className="w-7 h-7 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs flex items-center justify-center flex-shrink-0">
                     {user?.name?.[0] || 'U'}
@@ -212,9 +212,9 @@ export const AppLayout: React.FC = () => {
                 <button
                   onClick={logout}
                   title="Sign out"
-                  className="p-1.5 text-slate-400 hover:text-red-600 rounded-md transition-colors"
+                  className="p-1.5 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md transition-colors"
                 >
-                  <LogOut className="w-3.5 h-3.5" />
+                  <LogOut className="w-3.5 h-3.5 text-red-500" />
                 </button>
               </div>
             ) : (
@@ -222,9 +222,9 @@ export const AppLayout: React.FC = () => {
                 <button
                   onClick={logout}
                   title="Sign out"
-                  className="p-2 text-slate-400 hover:text-red-600 rounded-md transition-colors"
+                  className="p-2 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-md transition-colors"
                 >
-                  <LogOut className="w-4 h-4" />
+                  <LogOut className="w-4 h-4 text-red-500" />
                 </button>
               </div>
             )}
