@@ -220,13 +220,17 @@ html[data-theme='white'] .bg-blue-100 {
   border: 1px solid #bfdbfe !important;
 }
 html[data-theme='white'] .bg-purple-50,
-html[data-theme='white'] .bg-purple-100 {
+html[data-theme='white'] .bg-purple-100,
+html[data-theme='white'] .bg-violet-50,
+html[data-theme='white'] .bg-violet-100 {
   background-color: #faf5ff !important;
   color: #7e22ce !important;
   border: 1px solid #e9d5ff !important;
 }
 html[data-theme='white'] .bg-amber-50,
-html[data-theme='white'] .bg-amber-100 {
+html[data-theme='white'] .bg-amber-100,
+html[data-theme='white'] .bg-yellow-50,
+html[data-theme='white'] .bg-yellow-100 {
   background-color: #fffbeb !important;
   color: #b45309 !important;
   border: 1px solid #fde68a !important;
@@ -234,17 +238,54 @@ html[data-theme='white'] .bg-amber-100 {
 html[data-theme='white'] .bg-rose-50,
 html[data-theme='white'] .bg-rose-100,
 html[data-theme='white'] .bg-red-50,
-html[data-theme='white'] .bg-red-100 {
+html[data-theme='white'] .bg-red-100,
+html[data-theme='white'] .bg-pink-50,
+html[data-theme='white'] .bg-pink-100 {
   background-color: #fff1f2 !important;
   color: #be123c !important;
   border: 1px solid #fecdd3 !important;
 }
+html[data-theme='white'] .bg-sky-50,
+html[data-theme='white'] .bg-sky-100,
+html[data-theme='white'] .bg-cyan-50,
+html[data-theme='white'] .bg-cyan-100 {
+  background-color: #f0f9ff !important;
+  color: #0369a1 !important;
+  border: 1px solid #bae6fd !important;
+}
+html[data-theme='white'] .bg-orange-50,
+html[data-theme='white'] .bg-orange-100 {
+  background-color: #fff7ed !important;
+  color: #c2410c !important;
+  border: 1px solid #fed7aa !important;
+}
+/* Slate / gray badges — text must stay legible */
 html[data-theme='white'] span.bg-slate-100,
 html[data-theme='white'] span.bg-slate-200,
-html[data-theme='white'] div.bg-slate-100:not(.topbar-role-container) {
-  color: #475569 !important;
+html[data-theme='white'] div.inline-flex.bg-slate-100,
+html[data-theme='white'] div.inline-flex.bg-slate-200,
+html[data-theme='white'] div.bg-slate-100:not(.topbar-role-container):not(nav):not(header),
+html[data-theme='white'] div.bg-slate-200:not(.topbar-role-container):not(nav):not(header) {
+  background-color: #f1f5f9 !important;
+  color: #334155 !important;
   border: 1px solid #cbd5e1 !important;
 }
+/* Text colour helpers for badge text in white theme */
+html[data-theme='white'] .text-emerald-600,
+html[data-theme='white'] .text-emerald-700 { color: #047857 !important; }
+html[data-theme='white'] .text-emerald-500,
+html[data-theme='white'] .text-emerald-400 { color: #059669 !important; }
+html[data-theme='white'] .text-blue-600,
+html[data-theme='white'] .text-blue-700  { color: #1d4ed8 !important; }
+html[data-theme='white'] .text-amber-600,
+html[data-theme='white'] .text-amber-700 { color: #b45309 !important; }
+html[data-theme='white'] .text-rose-600,
+html[data-theme='white'] .text-red-600   { color: #be123c !important; }
+html[data-theme='white'] .text-purple-600,
+html[data-theme='white'] .text-violet-600 { color: #7e22ce !important; }
+html[data-theme='white'] .text-sky-600,
+html[data-theme='white'] .text-cyan-600  { color: #0369a1 !important; }
+
 html[data-theme='white'] table th {
   color: #020617 !important;
   font-weight: 700 !important;
