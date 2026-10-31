@@ -8,6 +8,7 @@ import {
   type UserRole,
 } from '@shared/contracts/auth.js'
 import { prisma } from '../lib/prisma.js'
+import { signToken, verifyToken } from '../lib/jwt.js'
 import { z } from 'zod'
 
 export const authRouter = Router()
@@ -50,9 +51,17 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       updatedAt: toIso(dbUser.updatedAt),
     }
 
+    const token = signToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+      company: user.company,
+    })
+
     res.json({
       success: true,
-      token: `db-token-${user.id}`,
+      token,
       user,
       message: 'Signed in successfully',
     })
@@ -102,9 +111,17 @@ authRouter.post('/register', async (req: Request, res: Response) => {
       updatedAt: toIso(created.updatedAt),
     }
 
+    const token = signToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+      company: user.company,
+    })
+
     res.status(201).json({
       success: true,
-      token: `db-token-${user.id}`,
+      token,
       user,
       message: 'Account registered and persisted successfully',
     })
@@ -122,17 +139,34 @@ authRouter.post('/quick-login', async (req: Request, res: Response) => {
   try {
     const { role } = QuickLoginRequestSchema.parse(req.body)
 
-    const dbUser = await prisma.user.findFirst({
+    let dbUser = await prisma.user.findFirst({
       where: { role },
       orderBy: { createdAt: 'asc' },
     })
 
     if (!dbUser) {
-      res.status(404).json({
-        success: false,
-        message: `No active user with role '${role}' exists in the database.`,
+      const defaultData: Record<string, { email: string; name: string; company: string }> = {
+        admin: { email: 'admin@brightloop.com', name: 'Brightloop Admin', company: 'Brightloop HQ' },
+        staff: { email: 'operations@brightloop.com', name: 'Ops Staff Lead', company: 'Brightloop Internal' },
+        customer: { email: 'david@acmeretail.com', name: 'David Miller', company: 'Acme Retail & Logistics' },
+      }
+
+      const seedData = defaultData[role] || {
+        email: `${role}@brightloop.demo`,
+        name: `${role.toUpperCase()} User`,
+        company: 'Brightloop Demo Org',
+      }
+
+      dbUser = await prisma.user.upsert({
+        where: { email: seedData.email },
+        update: { role },
+        create: {
+          email: seedData.email,
+          name: seedData.name,
+          role,
+          company: seedData.company,
+        },
       })
-      return
     }
 
     const user: AuthUser = {
@@ -145,9 +179,17 @@ authRouter.post('/quick-login', async (req: Request, res: Response) => {
       updatedAt: toIso(dbUser.updatedAt),
     }
 
+    const token = signToken({
+      id: user.id,
+      email: user.email,
+      role: user.role,
+      name: user.name,
+      company: user.company,
+    })
+
     res.json({
       success: true,
-      token: `quick-db-token-${user.role}-${user.id}`,
+      token,
       user,
       message: `Signed in as ${user.name} (${user.role.toUpperCase()}) from database`,
     })
@@ -156,60 +198,44 @@ authRouter.post('/quick-login', async (req: Request, res: Response) => {
   }
 })
 
-// GET /api/auth/me - Get current active profile from DB
+// GET /api/auth/me - Get current active profile from DB using verified JWT
 authRouter.get('/me', async (req: Request, res: Response) => {
   try {
     const authHeader = req.headers.authorization
-    let userId: string | null = null
-
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const rawToken = authHeader.replace('Bearer ', '')
-      // Token format: db-token-<userId> or quick-db-token-<role>-<userId>
-      const parts = rawToken.split('-')
-      userId = parts[parts.length - 1]
-    }
-
-    if (userId) {
-      const dbUser = await prisma.user.findUnique({
-        where: { id: userId },
-      })
-
-      if (dbUser) {
-        const user: AuthUser = {
-          id: dbUser.id,
-          email: dbUser.email,
-          name: dbUser.name || dbUser.email.split('@')[0],
-          role: (dbUser.role as UserRole) || 'customer',
-          company: dbUser.company ?? undefined,
-          createdAt: toIso(dbUser.createdAt),
-          updatedAt: toIso(dbUser.updatedAt),
-        }
-        res.json({ success: true, user })
-        return
-      }
-    }
-
-    // Default to the first admin or user if no token provided
-    const defaultUser = await prisma.user.findFirst({
-      where: { role: 'admin' },
-    })
-
-    if (defaultUser) {
-      const user: AuthUser = {
-        id: defaultUser.id,
-        email: defaultUser.email,
-        name: defaultUser.name || defaultUser.email.split('@')[0],
-        role: (defaultUser.role as UserRole) || 'admin',
-        company: defaultUser.company ?? undefined,
-        createdAt: toIso(defaultUser.createdAt),
-        updatedAt: toIso(defaultUser.updatedAt),
-      }
-      res.json({ success: true, user })
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ success: false, message: 'Authentication required. No token provided.' })
       return
     }
 
-    res.status(401).json({ success: false, message: 'No active session' })
-  } catch (err: any) {
+    const rawToken = authHeader.substring(7).trim()
+    const payload = verifyToken(rawToken)
+
+    if (!payload) {
+      res.status(401).json({ success: false, message: 'Invalid or expired authentication token.' })
+      return
+    }
+
+    const dbUser = await prisma.user.findUnique({
+      where: { id: payload.id },
+    })
+
+    if (!dbUser) {
+      res.status(404).json({ success: false, message: 'User not found in database.' })
+      return
+    }
+
+    const user: AuthUser = {
+      id: dbUser.id,
+      email: dbUser.email,
+      name: dbUser.name || dbUser.email.split('@')[0],
+      role: (dbUser.role as UserRole) || 'customer',
+      company: dbUser.company ?? undefined,
+      createdAt: toIso(dbUser.createdAt),
+      updatedAt: toIso(dbUser.updatedAt),
+    }
+
+    res.json({ success: true, user })
+  } catch (_err: any) {
     res.status(500).json({ success: false, message: 'Failed to verify session' })
   }
 })
@@ -219,23 +245,21 @@ authRouter.post('/reset-password', async (req: Request, res: Response) => {
   try {
     const { email } = ResetPasswordRequestSchema.parse(req.body)
 
-    const dbUser = await prisma.user.findUnique({
+    const user = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
     })
 
-    if (!dbUser) {
-      res.status(404).json({
-        success: false,
-        message: 'No account registered with this email address.',
-      })
-      return
-    }
-
     res.json({
       success: true,
-      message: `Password reset verification link has been dispatched to ${email}.`,
+      message: user
+        ? `Password reset verification link has been dispatched to ${email}.`
+        : `If this email is registered, a password reset link has been dispatched.`,
     })
   } catch (error: any) {
-    res.status(400).json({ success: false, message: 'Invalid email address provided.' })
+    if (error instanceof z.ZodError || error?.name === 'ZodError') {
+      res.status(400).json({ success: false, errors: error.errors || error.issues })
+      return
+    }
+    res.status(500).json({ success: false, message: 'Reset password failed' })
   }
 })
