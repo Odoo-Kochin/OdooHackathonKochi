@@ -3,7 +3,19 @@ import type { Invoice, InvoiceStatus } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
 import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import { useToast } from '@/context/ToastContext'
-import { Zap, Printer } from 'lucide-react'
+import {
+  Zap,
+  Printer,
+  FileText,
+  Repeat,
+  User,
+  Calendar,
+  Activity,
+  DollarSign,
+  Settings,
+  Building2,
+  Filter,
+} from 'lucide-react'
 import axios from 'axios'
 
 export const Invoices: React.FC = () => {
@@ -99,6 +111,10 @@ export const Invoices: React.FC = () => {
       {/* Action Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
         <div className="flex flex-wrap items-center gap-1.5">
+          <div className="flex items-center gap-1 text-slate-400 text-xs mr-1">
+            <Filter className="w-3.5 h-3.5" />
+            <span className="hidden sm:inline">Filter:</span>
+          </div>
           {['all', 'Draft', 'Confirmed', 'Paid', 'Overdue'].map((tab) => (
             <button
               key={tab}
@@ -130,13 +146,48 @@ export const Invoices: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold">
               <tr>
-                <th className="py-2.5 px-4">Invoice #</th>
-                <th className="py-2.5 px-4">Sub Origin</th>
-                <th className="py-2.5 px-4">Customer</th>
-                <th className="py-2.5 px-4">Issue / Due Date</th>
-                <th className="py-2.5 px-4">Status</th>
-                <th className="py-2.5 px-4 text-right">Balance Due / Total</th>
-                <th className="py-2.5 px-4 text-right">Action</th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1.5">
+                    <FileText className="w-3 h-3 text-slate-400" />
+                    <span>Invoice #</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1.5">
+                    <Repeat className="w-3 h-3 text-slate-400" />
+                    <span>Sub Origin</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1.5">
+                    <User className="w-3 h-3 text-slate-400" />
+                    <span>Customer</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1.5">
+                    <Calendar className="w-3 h-3 text-slate-400" />
+                    <span>Issue / Due Date</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1.5">
+                    <Activity className="w-3 h-3 text-slate-400" />
+                    <span>Status</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4 text-right">
+                  <span className="inline-flex items-center gap-1">
+                    <DollarSign className="w-3 h-3 text-slate-400" />
+                    <span>Balance / Total</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4 text-right">
+                  <span className="inline-flex items-center gap-1">
+                    <Settings className="w-3 h-3 text-slate-400" />
+                    <span>Action</span>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -146,12 +197,18 @@ export const Invoices: React.FC = () => {
                   className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors"
                 >
                   <td className="py-3 px-4 font-mono font-medium text-indigo-600 dark:text-indigo-400">
-                    {inv.invoiceNumber}
+                    <span className="flex items-center gap-1">
+                      <FileText className="w-3 h-3 opacity-60" />
+                      <span>{inv.invoiceNumber}</span>
+                    </span>
                   </td>
                   <td className="py-3 px-4 font-mono text-slate-400">{inv.subscriptionNumber}</td>
                   <td className="py-3 px-4">
                     <p className="font-semibold text-slate-900 dark:text-white">{inv.customerName}</p>
-                    <p className="text-[11px] text-slate-400">{inv.customerCompany}</p>
+                    <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                      <Building2 className="w-3 h-3 opacity-70" />
+                      <span>{inv.customerCompany}</span>
+                    </p>
                   </td>
                   <td className="py-3 px-4 text-slate-600 dark:text-slate-400">
                     <p className="font-medium">{inv.issueDate}</p>
