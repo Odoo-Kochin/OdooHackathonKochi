@@ -330,29 +330,6 @@ export const AuthCarousel: React.FC = React.memo(() => {
         className="relative w-[600px] sm:w-[640px] xl:w-[680px] h-[680px] sm:h-[760px] overflow-hidden flex justify-center items-center [transform:rotate(-8deg)]"
         style={{ willChange: 'transform' }}
       >
-        {/*
-          Top Connecting Crossover Line:
-          Curved dashed bridge connecting the top of the Left Column (exiting UP)
-          over to the top of the Right Column (entering DOWN).
-        */}
-        <svg
-          className="absolute -top-3 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-20"
-          viewBox="0 0 340 48"
-        >
-          <path
-            d="M 16 48 C 16 4, 324 4, 324 48"
-            fill="none"
-            stroke={dashedLineColor}
-            strokeWidth="2.5"
-            strokeDasharray="5 5"
-            strokeLinecap="round"
-          />
-          {/* Directional arrow indicating motion from Left Column (UP) to Right Column (DOWN) */}
-          <polygon points="175,5 165,1 165,9" fill={dashedLineColor} />
-          <circle cx="16" cy="48" r="3.5" fill={dashedLineColor} />
-          <circle cx="324" cy="48" r="3.5" fill={dashedLineColor} />
-        </svg>
-
         {/* Dual Columns Container with gap between them */}
         <div className="relative flex items-center gap-7 sm:gap-8 z-10">
           {/*
@@ -366,29 +343,6 @@ export const AuthCarousel: React.FC = React.memo(() => {
           */}
           {renderCardColumn(rightColumnCards, 'col-right', 'animate-infinite-column')}
         </div>
-
-        {/*
-          Bottom Connecting Crossover Line:
-          Curved dashed bridge connecting the bottom of the Right Column (exiting DOWN)
-          over to the bottom of the Left Column (entering UP).
-        */}
-        <svg
-          className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-[340px] h-12 pointer-events-none overflow-visible z-20"
-          viewBox="0 0 340 48"
-        >
-          <path
-            d="M 324 0 C 324 44, 16 44, 16 0"
-            fill="none"
-            stroke={dashedLineColor}
-            strokeWidth="2.5"
-            strokeDasharray="5 5"
-            strokeLinecap="round"
-          />
-          {/* Directional arrow indicating motion from Right Column (DOWN) to Left Column (UP) */}
-          <polygon points="165,43 175,47 175,39" fill={dashedLineColor} />
-          <circle cx="324" cy="0" r="3.5" fill={dashedLineColor} />
-          <circle cx="16" cy="0" r="3.5" fill={dashedLineColor} />
-        </svg>
 
         {/* Top Fade Gradient Mask using current theme background */}
         <div
