@@ -18,7 +18,7 @@ const toIso = (d: Date | string): string => (d instanceof Date ? d.toISOString()
 // POST /api/auth/login
 authRouter.post('/login', async (req: Request, res: Response) => {
   try {
-    const { email } = LoginRequestSchema.parse(req.body)
+    const { email, password } = LoginRequestSchema.parse(req.body)
 
     const dbUser = await prisma.user.findUnique({
       where: { email: email.toLowerCase() },
@@ -28,6 +28,14 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       res.status(401).json({
         success: false,
         message: 'No account found with this email address.',
+      })
+      return
+    }
+
+    if (dbUser.passwordHash && dbUser.passwordHash !== password) {
+      res.status(401).json({
+        success: false,
+        message: 'Invalid password. Please check your credentials.',
       })
       return
     }
@@ -49,8 +57,8 @@ authRouter.post('/login', async (req: Request, res: Response) => {
       message: 'Signed in successfully',
     })
   } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({ success: false, errors: error.errors })
+    if (error instanceof z.ZodError || error?.name === 'ZodError') {
+      res.status(400).json({ success: false, message: error.message || 'Validation error', errors: error.errors || error.issues })
       return
     }
     res.status(500).json({ success: false, message: error?.message || 'Login failed' })
@@ -80,6 +88,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
         name: validated.name,
         role: validated.role || 'customer',
         company: validated.company || null,
+        passwordHash: validated.password,
       },
     })
 
@@ -100,8 +109,8 @@ authRouter.post('/register', async (req: Request, res: Response) => {
       message: 'Account registered and persisted successfully',
     })
   } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({ success: false, errors: error.errors })
+    if (error instanceof z.ZodError || error?.name === 'ZodError') {
+      res.status(400).json({ success: false, message: error.message || 'Validation error', errors: error.errors || error.issues })
       return
     }
     res.status(500).json({ success: false, message: error?.message || 'Registration failed' })

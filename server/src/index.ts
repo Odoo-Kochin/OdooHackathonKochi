@@ -13,7 +13,7 @@ import { authRouter } from './routes/auth.js'
 import { subscriptionsRouter } from './routes/subscriptions.js'
 import { seedDatabaseIfEmpty } from './lib/seed.js'
 
-const app = express()
+export const app = express()
 const PORT = process.env.PORT || 5000
 
 // Middleware
@@ -42,7 +42,9 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   res.status(500).json({ error: 'Internal server error' })
 })
 
-app.listen(PORT, async () => {
-  console.log(`🚀 Express server running on http://localhost:${PORT}`)
-  await seedDatabaseIfEmpty()
-})
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    console.log(`🚀 Express server running on http://localhost:${PORT}`)
+    await seedDatabaseIfEmpty()
+  })
+}

@@ -102,6 +102,7 @@ npm run dev:server   # Backend only (port 5000) with auto-reload (tsx)
 | `npm run dev:client` | Start frontend development server only (Vite) |
 | `npm run dev:server` | Start backend development server only (Express + TSX) |
 | `npm run build` | Build both backend (`tsc`) and frontend (`vite build`) for production |
+| `npm test` | Run automated backend integration test suites (Node Test Runner + Supertest) |
 
 ---
 

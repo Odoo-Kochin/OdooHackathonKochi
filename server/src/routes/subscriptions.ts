@@ -26,7 +26,7 @@ subscriptionsRouter.get('/products', async (_req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     })
 
-    const formatted: Product[] = products.map((p) => ({
+    const formatted: Product[] = products.map((p: any) => ({
       id: p.id,
       name: p.name,
       code: p.code,
@@ -34,7 +34,7 @@ subscriptionsRouter.get('/products', async (_req: Request, res: Response) => {
       salesPrice: p.salesPrice,
       costPrice: p.costPrice,
       notes: p.notes ?? undefined,
-      variants: p.variants.map((v) => ({
+      variants: p.variants.map((v: any) => ({
         id: v.id,
         name: v.name,
         attributeName: v.attributeName,
@@ -87,7 +87,7 @@ subscriptionsRouter.post('/products', async (req: Request, res: Response) => {
       salesPrice: created.salesPrice,
       costPrice: created.costPrice,
       notes: created.notes ?? undefined,
-      variants: created.variants.map((v) => ({
+      variants: created.variants.map((v: any) => ({
         id: v.id,
         name: v.name,
         attributeName: v.attributeName,
@@ -115,7 +115,7 @@ subscriptionsRouter.get('/plans', async (_req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     })
 
-    const formatted: SubscriptionPlan[] = plans.map((p) => ({
+    const formatted: SubscriptionPlan[] = plans.map((p: any) => ({
       id: p.id,
       name: p.name,
       code: p.code,
@@ -300,7 +300,7 @@ subscriptionsRouter.get('/subscriptions', async (req: Request, res: Response) =>
       orderBy: { createdAt: 'desc' },
     })
 
-    const formatted: Subscription[] = subscriptions.map((s) => ({
+    const formatted: Subscription[] = subscriptions.map((s: any) => ({
       id: s.id,
       subscriptionNumber: s.subscriptionNumber,
       customerId: s.customerId,
@@ -315,7 +315,7 @@ subscriptionsRouter.get('/subscriptions', async (req: Request, res: Response) =>
       expiryDate: s.expiryDate,
       paymentTerms: s.paymentTerms,
       quotationValidityDays: s.quotationValidityDays,
-      lineItems: s.lineItems.map((li) => ({
+      lineItems: s.lineItems.map((li: any) => ({
         id: li.id,
         productId: li.productId,
         productName: li.productName,
@@ -370,7 +370,7 @@ subscriptionsRouter.get('/subscriptions/:id', async (req: Request, res: Response
       expiryDate: sub.expiryDate,
       paymentTerms: sub.paymentTerms,
       quotationValidityDays: sub.quotationValidityDays,
-      lineItems: sub.lineItems.map((li) => ({
+      lineItems: sub.lineItems.map((li: any) => ({
         id: li.id,
         productId: li.productId,
         productName: li.productName,
@@ -403,11 +403,14 @@ subscriptionsRouter.post('/subscriptions', async (req: Request, res: Response) =
     const body = req.body
     const rawLineItems = body.lineItems || []
 
-    const subtotal = rawLineItems.reduce((acc: number, item: any) => acc + (Number(item.subtotal) || 0), 0)
-    const taxTotal = rawLineItems.reduce(
-      (acc: number, item: any) => acc + ((Number(item.subtotal) * Number(item.taxRatePercent || 18)) / 100),
-      0
-    )
+    const subtotal = rawLineItems.reduce((acc: number, item: any) => {
+      const itemSubtotal = item.subtotal !== undefined ? Number(item.subtotal) : (Number(item.quantity || 1) * Number(item.unitPrice || 0))
+      return acc + itemSubtotal
+    }, 0)
+    const taxTotal = rawLineItems.reduce((acc: number, item: any) => {
+      const itemSubtotal = item.subtotal !== undefined ? Number(item.subtotal) : (Number(item.quantity || 1) * Number(item.unitPrice || 0))
+      return acc + ((itemSubtotal * Number(item.taxRatePercent || 18)) / 100)
+    }, 0)
     const discountTotal = rawLineItems.reduce((acc: number, item: any) => acc + (Number(item.discountAmount) || 0), 0)
     const grandTotal = subtotal + taxTotal - discountTotal
 
@@ -469,8 +472,8 @@ subscriptionsRouter.post('/subscriptions', async (req: Request, res: Response) =
             unitPrice: Number(li.unitPrice) || 100,
             taxRatePercent: Number(li.taxRatePercent) || 18,
             discountAmount: Number(li.discountAmount) || 0,
-            subtotal: Number(li.subtotal) || 100,
-            total: Number(li.total) || 118,
+            subtotal: li.subtotal !== undefined ? Number(li.subtotal) : (Number(li.quantity || 1) * Number(li.unitPrice || 100)),
+            total: li.total !== undefined ? Number(li.total) : Math.round((Number(li.quantity || 1) * Number(li.unitPrice || 100) * 1.18) * 100) / 100,
           })),
         },
       },
@@ -492,7 +495,7 @@ subscriptionsRouter.post('/subscriptions', async (req: Request, res: Response) =
       expiryDate: created.expiryDate,
       paymentTerms: created.paymentTerms,
       quotationValidityDays: created.quotationValidityDays,
-      lineItems: created.lineItems.map((li) => ({
+      lineItems: created.lineItems.map((li: any) => ({
         id: li.id,
         productId: li.productId,
         productName: li.productName,
@@ -604,7 +607,7 @@ subscriptionsRouter.put('/subscriptions/:id', async (req: Request, res: Response
       expiryDate: updated.expiryDate,
       paymentTerms: updated.paymentTerms,
       quotationValidityDays: updated.quotationValidityDays,
-      lineItems: updated.lineItems.map((li) => ({
+      lineItems: updated.lineItems.map((li: any) => ({
         id: li.id,
         productId: li.productId,
         productName: li.productName,
@@ -679,7 +682,7 @@ subscriptionsRouter.patch('/subscriptions/:id/status', async (req: Request, res:
             balanceDue: sub.grandTotal,
             pdfUrl: `/invoices/${sub.subscriptionNumber}.pdf`,
             lineItems: {
-              create: sub.lineItems.map((li) => ({
+              create: sub.lineItems.map((li: any) => ({
                 description: `${li.productName} (${sub.billingFrequency})`,
                 quantity: li.quantity,
                 unitPrice: li.unitPrice,
@@ -736,7 +739,7 @@ subscriptionsRouter.get('/invoices', async (req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     })
 
-    const formatted: Invoice[] = invoices.map((inv) => ({
+    const formatted: Invoice[] = invoices.map((inv: any) => ({
       id: inv.id,
       invoiceNumber: inv.invoiceNumber,
       subscriptionId: inv.subscriptionId,
@@ -748,7 +751,7 @@ subscriptionsRouter.get('/invoices', async (req: Request, res: Response) => {
       issueDate: inv.issueDate,
       dueDate: inv.dueDate,
       status: inv.status as any,
-      lineItems: inv.lineItems.map((li) => ({
+      lineItems: inv.lineItems.map((li: any) => ({
         id: li.id,
         description: li.description,
         quantity: li.quantity,
@@ -799,7 +802,7 @@ subscriptionsRouter.get('/invoices/:id', async (req: Request, res: Response) => 
       issueDate: inv.issueDate,
       dueDate: inv.dueDate,
       status: inv.status as any,
-      lineItems: inv.lineItems.map((li) => ({
+      lineItems: inv.lineItems.map((li: any) => ({
         id: li.id,
         description: li.description,
         quantity: li.quantity,
@@ -869,7 +872,7 @@ subscriptionsRouter.post('/invoices/generate-billing', async (_req: Request, res
             balanceDue: sub.grandTotal,
             pdfUrl: `/invoices/${sub.subscriptionNumber}.pdf`,
             lineItems: {
-              create: sub.lineItems.map((li) => ({
+              create: sub.lineItems.map((li: any) => ({
                 description: `${li.productName} (${sub.billingFrequency})`,
                 quantity: li.quantity,
                 unitPrice: li.unitPrice,
@@ -895,7 +898,7 @@ subscriptionsRouter.post('/invoices/generate-billing', async (_req: Request, res
           issueDate: created.issueDate,
           dueDate: created.dueDate,
           status: created.status as any,
-          lineItems: created.lineItems.map((li) => ({
+          lineItems: created.lineItems.map((li: any) => ({
             id: li.id,
             description: li.description,
             quantity: li.quantity,
@@ -978,7 +981,7 @@ subscriptionsRouter.get('/discounts', async (_req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     })
 
-    const formatted: DiscountRule[] = discounts.map((d) => ({
+    const formatted: DiscountRule[] = discounts.map((d: any) => ({
       id: d.id,
       code: d.code,
       description: d.description,
@@ -1101,7 +1104,7 @@ subscriptionsRouter.get('/payments', async (_req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     })
 
-    const formatted: PaymentRecord[] = payments.map((p) => ({
+    const formatted: PaymentRecord[] = payments.map((p: any) => ({
       id: p.id,
       paymentNumber: p.paymentNumber,
       invoiceId: p.invoiceId || 'inv-unknown',
@@ -1204,7 +1207,7 @@ subscriptionsRouter.get('/finance/summary', async (_req: Request, res: Response)
       where: { status: 'Active' },
     })
 
-    const mrr = activeSubs.reduce((acc, s) => {
+    const mrr = activeSubs.reduce((acc: number, s: any) => {
       if (s.billingFrequency === 'monthly') return acc + s.grandTotal
       if (s.billingFrequency === 'yearly') return acc + s.grandTotal / 12
       if (s.billingFrequency === 'weekly') return acc + s.grandTotal * 4.33
@@ -1214,7 +1217,7 @@ subscriptionsRouter.get('/finance/summary', async (_req: Request, res: Response)
     const overdueInvoices = await prisma.invoice.findMany({
       where: { status: 'Overdue' },
     })
-    const overdueAmount = overdueInvoices.reduce((acc, i) => acc + i.balanceDue, 0)
+    const overdueAmount = overdueInvoices.reduce((acc: number, i: any) => acc + i.balanceDue, 0)
 
     const paidInvoicesCount = await prisma.invoice.count({
       where: { status: 'Paid' },

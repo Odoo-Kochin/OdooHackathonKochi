@@ -8,6 +8,7 @@
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
     "build": "npm --prefix server run build && npm --prefix client run build",
+    "test": "npm --prefix server run test",
     "prisma:generate": "cd server && npx prisma generate",
     "prisma:migrate": "cd server && npx prisma migrate dev",
     "prisma:push": "cd server && npx prisma db push",
