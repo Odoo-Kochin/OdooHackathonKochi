@@ -12,7 +12,14 @@ const connectionString =
   process.env.DATABASE_URL ||
   'postgresql://postgres:postgres@localhost:5432/postgres'
 
-const pool = new pg.Pool({ connectionString })
+const isRemote =
+  connectionString.includes('supabase.com') ||
+  connectionString.includes('sslmode=require')
+
+const pool = new pg.Pool({
+  connectionString,
+  ssl: isRemote ? { rejectUnauthorized: false } : undefined,
+})
 const adapter = new PrismaPg(pool)
 
 const globalForPrisma = globalThis as unknown as {
