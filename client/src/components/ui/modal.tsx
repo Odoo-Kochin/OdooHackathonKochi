@@ -37,7 +37,7 @@ export const Modal: React.FC<ModalProps> = ({
 
       {/* Modal Dialog */}
       <div
-        className={`relative w-full ${maxWidthClasses} bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200/80 dark:border-slate-800 p-6 sm:p-8 z-10 transition-all transform animate-in fade-in zoom-in-95 duration-150`}
+        className={`relative w-full ${maxWidthClasses} bg-white dark:bg-slate-900 rounded-xl shadow-2xl border border-slate-200 dark:border-slate-800 p-6 sm:p-7 z-10 transition-all transform animate-in fade-in zoom-in-95 duration-150`}
       >
         <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800/80">
           <div>

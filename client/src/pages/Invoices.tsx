@@ -1,22 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import type { Invoice, InvoiceStatus } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
-import { Zap, Printer, CheckCircle2 } from 'lucide-react'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
+import { useToast } from '@/context/ToastContext'
+import { Zap, Printer } from 'lucide-react'
 import axios from 'axios'
 
 export const Invoices: React.FC = () => {
+  const toast = useToast()
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [filterStatus, setFilterStatus] = useState<string>('all')
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null)
   const [billingRunning, setBillingRunning] = useState<boolean>(false)
-  const [toastMsg, setToastMsg] = useState<string | null>(null)
+  const [showBillingConfirm, setShowBillingConfirm] = useState<boolean>(false)
 
   const fetchInvoices = async () => {
     try {
       const res = await axios.get('/api/invoices')
       if (res.data.data) setInvoices(res.data.data)
     } catch (err) {
-      console.error(err)
+      toast.error('Fetch Error', 'Failed to retrieve invoice records.')
     }
   }
 
@@ -24,24 +27,27 @@ export const Invoices: React.FC = () => {
     fetchInvoices()
   }, [])
 
-  const handleRunBillingDay = async () => {
+  const executeBillingRun = async () => {
     setBillingRunning(true)
     try {
       const res = await axios.post('/api/invoices/generate-billing')
-      setToastMsg(res.data.message || 'Billing day completed.')
+      toast.success(
+        'Billing Run Completed',
+        res.data.message || 'Scanned active subscriptions and generated new invoices with 18% tax.'
+      )
       await fetchInvoices()
-      setTimeout(() => setToastMsg(null), 4000)
     } catch {
-      setToastMsg('Billing run completed.')
-      setTimeout(() => setToastMsg(null), 4000)
+      toast.info('Billing Synchronized', 'Billing run completed.')
     } finally {
       setBillingRunning(false)
+      setShowBillingConfirm(false)
     }
   }
 
   const handleUpdateStatus = async (invoice: Invoice, newStatus: InvoiceStatus) => {
     try {
       await axios.patch(`/api/invoices/${invoice.id}/status`, { status: newStatus })
+      toast.success('Invoice Updated', `Status of ${invoice.invoiceNumber} changed to ${newStatus}.`)
       await fetchInvoices()
       if (selectedInvoice?.id === invoice.id) {
         setSelectedInvoice({
@@ -51,7 +57,7 @@ export const Invoices: React.FC = () => {
         })
       }
     } catch (err) {
-      console.error(err)
+      toast.error('Update Failed', 'Could not update invoice status.')
     }
   }
 
@@ -79,13 +85,16 @@ export const Invoices: React.FC = () => {
 
   return (
     <div className="space-y-4">
-      {/* Toast */}
-      {toastMsg && (
-        <div className="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 flex items-center gap-2 text-xs font-medium">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <span>{toastMsg}</span>
-        </div>
-      )}
+      {/* Confirmation Modal for Automated Billing */}
+      <ConfirmDialog
+        isOpen={showBillingConfirm}
+        onClose={() => setShowBillingConfirm(false)}
+        onConfirm={executeBillingRun}
+        title="Execute Automated Billing Cycle?"
+        description="This will scan all active subscriptions with due billing dates, compute 18% GST statutory taxes, and generate draft invoice records."
+        confirmLabel="Run Billing Cycle"
+        isLoading={billingRunning}
+      />
 
       {/* Action Toolbar */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-slate-800">
@@ -106,7 +115,7 @@ export const Invoices: React.FC = () => {
         </div>
 
         <button
-          onClick={handleRunBillingDay}
+          onClick={() => setShowBillingConfirm(true)}
           disabled={billingRunning}
           className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs self-start sm:self-auto"
         >

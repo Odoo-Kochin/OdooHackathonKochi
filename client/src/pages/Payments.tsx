@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import type { PaymentRecord, Invoice, PaymentMethod } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
+import { useToast } from '@/context/ToastContext'
 import { Plus, AlertTriangle, ArrowRight } from 'lucide-react'
 import axios from 'axios'
 
 export const Payments: React.FC = () => {
+  const toast = useToast()
   const [payments, setPayments] = useState<PaymentRecord[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [modalOpen, setModalOpen] = useState<boolean>(false)
@@ -67,9 +69,13 @@ export const Payments: React.FC = () => {
       setModalOpen(false)
       setNotes('')
       setReferenceId('')
+      toast.success(
+        'Payment Recorded',
+        `Successfully logged receipt of $${amount} via ${paymentMethod} for ${inv?.invoiceNumber}.`
+      )
       fetchData()
     } catch (err) {
-      console.error(err)
+      toast.error('Payment Error', 'Failed to record transaction.')
     }
   }
 

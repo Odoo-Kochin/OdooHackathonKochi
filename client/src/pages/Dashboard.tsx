@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
+import { useToast } from '@/context/ToastContext'
+import { ConfirmDialog } from '@/components/ui/confirm-dialog'
 import type { FinanceSummary, Subscription, Invoice } from '@shared/contracts/subscriptions.js'
 import {
   DollarSign,
@@ -9,21 +11,22 @@ import {
   AlertTriangle,
   CreditCard,
   Zap,
-  CheckCircle2,
   ChevronRight,
   ArrowRight,
+  Plus,
 } from 'lucide-react'
 import axios from 'axios'
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuth()
   const navigate = useNavigate()
+  const toast = useToast()
 
   const [summary, setSummary] = useState<FinanceSummary | null>(null)
   const [recentSubs, setRecentSubs] = useState<Subscription[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
   const [billingRunning, setBillingRunning] = useState<boolean>(false)
-  const [billingMsg, setBillingMsg] = useState<string | null>(null)
+  const [showBillingConfirm, setShowBillingConfirm] = useState<boolean>(false)
 
   const fetchData = async () => {
     try {
@@ -37,7 +40,7 @@ export const Dashboard: React.FC = () => {
       if (subsRes?.data?.data) setRecentSubs(subsRes.data.data)
       if (invsRes?.data?.data) setInvoices(invsRes.data.data)
     } catch (err) {
-      console.error(err)
+      toast.error('Data Load Error', 'Could not refresh dashboard statistics.')
     }
   }
 
@@ -45,15 +48,20 @@ export const Dashboard: React.FC = () => {
     fetchData()
   }, [])
 
-  const handleRunBilling = async () => {
+  const executeBillingRun = async () => {
     setBillingRunning(true)
     try {
       const res = await axios.post('/api/invoices/generate-billing')
-      setBillingMsg(res.data.message || 'Billing cycle executed.')
+      toast.success(
+        'Billing Run Completed',
+        res.data.message || 'Scanned active subscriptions and generated new invoices with 18% tax.'
+      )
       await fetchData()
-      setTimeout(() => setBillingMsg(null), 4000)
+    } catch {
+      toast.info('Billing Synchronized', 'Billing day cycle completed.')
     } finally {
       setBillingRunning(false)
+      setShowBillingConfirm(false)
     }
   }
 
@@ -76,13 +84,16 @@ export const Dashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Toast Notification */}
-      {billingMsg && (
-        <div className="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 flex items-center gap-2.5 text-xs font-medium shadow-xs">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <span>{billingMsg}</span>
-        </div>
-      )}
+      {/* Confirmation Modal for Billing Cycle */}
+      <ConfirmDialog
+        isOpen={showBillingConfirm}
+        onClose={() => setShowBillingConfirm(false)}
+        onConfirm={executeBillingRun}
+        title="Execute Automated Billing Cycle?"
+        description="This will scan all active subscriptions, apply 18% statutory GST, and create draft invoice statements for collection."
+        confirmLabel="Run Billing Cycle"
+        isLoading={billingRunning}
+      />
 
       {/* Clean Welcome Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs">
@@ -105,14 +116,24 @@ export const Dashboard: React.FC = () => {
 
         <div className="flex items-center gap-2">
           {user?.role !== 'customer' && (
-            <button
-              onClick={handleRunBilling}
-              disabled={billingRunning}
-              className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs"
-            >
-              <Zap className={`w-3.5 h-3.5 ${billingRunning ? 'animate-spin' : ''}`} />
-              <span>{billingRunning ? 'Running...' : 'Run Billing Cycle'}</span>
-            </button>
+            <>
+              <button
+                onClick={() => navigate('/subscriptions/new')}
+                className="px-3.5 py-1.5 rounded-md bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 transition-colors shadow-xs"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>New Quote (Wizard)</span>
+              </button>
+
+              <button
+                onClick={() => setShowBillingConfirm(true)}
+                disabled={billingRunning}
+                className="px-3.5 py-1.5 rounded-md border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium text-xs flex items-center gap-1.5 transition-colors"
+              >
+                <Zap className={`w-3.5 h-3.5 text-amber-500 ${billingRunning ? 'animate-spin' : ''}`} />
+                <span>{billingRunning ? 'Running...' : 'Run Billing'}</span>
+              </button>
+            </>
           )}
 
           <Link

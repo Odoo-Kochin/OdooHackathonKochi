@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import type { Product, ProductVariant } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
+import { useToast } from '@/context/ToastContext'
 import { Plus, Trash2 } from 'lucide-react'
 import axios from 'axios'
 
 export const Products: React.FC = () => {
+  const toast = useToast()
   const [products, setProducts] = useState<Product[]>([])
   const [modalOpen, setModalOpen] = useState<boolean>(false)
 
@@ -70,12 +72,16 @@ export const Products: React.FC = () => {
         variants,
       })
       setModalOpen(false)
+      toast.success(
+        'Product Added',
+        `Product "${name}" (${code}) was created and added to the catalog.`
+      )
       setName('')
       setCode('')
       setNotes('')
       fetchProducts()
     } catch (err) {
-      console.error(err)
+      toast.error('Creation Failed', 'Could not create product record.')
     }
   }
 

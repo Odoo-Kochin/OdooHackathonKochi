@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useAuth } from '@/context/AuthContext'
+import { useToast } from '@/context/ToastContext'
 import type { Subscription, Invoice } from '@shared/contracts/subscriptions.js'
-import { Download, CheckCircle2, ToggleLeft, ToggleRight } from 'lucide-react'
+import { Download, ToggleLeft, ToggleRight } from 'lucide-react'
 import axios from 'axios'
 
 export const CustomerPortal: React.FC = () => {
   const { user } = useAuth()
+  const toast = useToast()
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([])
   const [invoices, setInvoices] = useState<Invoice[]>([])
-  const [toastMsg, setToastMsg] = useState<string | null>(null)
 
   // Self-service toggles
   const [addons, setAddons] = useState({
@@ -41,23 +42,16 @@ export const CustomerPortal: React.FC = () => {
   const toggleAddon = (key: keyof typeof addons, name: string) => {
     const updated = !addons[key]
     setAddons({ ...addons, [key]: updated })
-    setToastMsg(
+    toast.success(
+      'Add-on Setting Updated',
       `${name} has been ${updated ? 'activated and added to' : 'removed from'} your next recurring invoice.`
     )
-    setTimeout(() => setToastMsg(null), 3500)
   }
 
   const primarySub = subscriptions[0]
 
   return (
     <div className="space-y-4">
-      {/* Toast Alert */}
-      {toastMsg && (
-        <div className="p-3.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 text-emerald-800 dark:text-emerald-200 flex items-center gap-2.5 text-xs font-medium shadow-xs">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 flex-shrink-0" />
-          <span>{toastMsg}</span>
-        </div>
-      )}
 
       {/* Account Info Banner */}
       <div className="p-5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -281,7 +275,12 @@ export const CustomerPortal: React.FC = () => {
                 </div>
 
                 <button
-                  onClick={() => alert(`Downloaded receipt for ${inv.invoiceNumber}.`)}
+                  onClick={() =>
+                    toast.success(
+                      'Receipt Downloaded',
+                      `PDF invoice receipt for ${inv.invoiceNumber} has been saved.`
+                    )
+                  }
                   className="px-2.5 py-1 rounded bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 text-slate-700 dark:text-slate-300 text-xs font-medium flex items-center gap-1.5 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />
