@@ -9,12 +9,268 @@ datasource db {
   provider = "postgresql"
 }
 
-// Starter User model
+// ============================================================================
+// 1. AUTH & USERS (Scene 1)
+// ============================================================================
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  name      String?
-  role      String   @default("user")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String          @id @default(uuid())
+  email         String          @unique
+  name          String?
+  company       String?
+  role          String          @default("customer") // "admin" | "staff" | "customer"
+  passwordHash  String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  subscriptions Subscription[]
+  invoices      Invoice[]
+  payments      PaymentRecord[]
+
+  @@index([role])
+}
+
+// ============================================================================
+// 2. PRODUCTS & VARIANTS (Scene 2)
+// ============================================================================
+model Product {
+  id          String                 @id @default(uuid())
+  name        String
+  code        String                 @unique
+  type        String                 @default("software") // "software" | "service" | "addon"
+  salesPrice  Float                  @default(0)
+  costPrice   Float                  @default(0)
+  notes       String?
+  isActive    Boolean                @default(true)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+  variants    ProductVariant[]
+  plans       SubscriptionPlan[]
+  lineItems   SubscriptionLineItem[]
+
+  @@index([type])
+  @@index([isActive])
+}
+
+model ProductVariant {
+  id              String   @id @default(uuid())
+  productId       String
+  product         Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  name            String
+  attributeName   String   // e.g. "Brand Variant", "Tier", "Support Level"
+  attributeValue  String   // e.g. "Odoo Brand Connector", "Enterprise"
+  priceAdjustment Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([productId])
+}
+
+// ============================================================================
+// 3. SUBSCRIPTION PLANS (Scene 2)
+// ============================================================================
+model SubscriptionPlan {
+  id               String         @id @default(uuid())
+  name             String
+  code             String         @unique
+  productId        String
+  product          Product        @relation(fields: [productId], references: [id])
+  productName      String
+  price            Float
+  billingFrequency String         @default("monthly") // "daily" | "weekly" | "monthly" | "yearly"
+  minimumQuantity  Int            @default(1)
+  startDate        String         // ISO date string YYYY-MM-DD
+  endDate          String?
+  autoCloseOnEnd   Boolean        @default(false)
+  canBeClosedEarly Boolean        @default(true)
+  canBePaused      Boolean        @default(true)
+  canBeRenewed     Boolean        @default(true)
+  description      String?
+  isActive         Boolean        @default(true)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  subscriptions    Subscription[]
+
+  @@index([productId])
+  @@index([billingFrequency])
+  @@index([isActive])
+}
+
+// ============================================================================
+// 4. QUOTATIONS & SUBSCRIPTIONS (Scene 3)
+// Lifecycle: Draft -> Quotation -> Confirmed -> Active -> Closed
+// ============================================================================
+model Subscription {
+  id                    String                 @id @default(uuid())
+  subscriptionNumber    String                 @unique // e.g. "SUB-2026-001"
+  customerId            String
+  customer              User                   @relation(fields: [customerId], references: [id])
+  customerName          String
+  customerEmail         String
+  customerCompany       String
+  planId                String
+  plan                  SubscriptionPlan       @relation(fields: [planId], references: [id])
+  planName              String
+  billingFrequency      String                 @default("monthly")
+  status                String                 @default("Draft") // "Draft" | "Quotation" | "Confirmed" | "Active" | "Closed" | "Paused"
+  startDate             String                 // YYYY-MM-DD
+  expiryDate            String                 // YYYY-MM-DD
+  paymentTerms          String                 @default("Immediate") // "Immediate" | "Net 15" | "Net 30"
+  quotationValidityDays Int                    @default(15)
+  subtotal              Float                  @default(0)
+  taxTotal              Float                  @default(0)
+  discountTotal         Float                  @default(0)
+  grandTotal            Float                  @default(0)
+  notes                 String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  lineItems             SubscriptionLineItem[]
+  invoices              Invoice[]
+
+  @@index([customerId])
+  @@index([planId])
+  @@index([status])
+  @@index([subscriptionNumber])
+}
+
+model SubscriptionLineItem {
+  id             String       @id @default(uuid())
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  productId      String
+  product        Product      @relation(fields: [productId], references: [id])
+  productName    String
+  variantName    String?
+  quantity       Int          @default(1)
+  unitPrice      Float
+  taxRatePercent Float        @default(18)
+  discountAmount Float        @default(0)
+  subtotal       Float
+  total          Float
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  @@index([subscriptionId])
+  @@index([productId])
+}
+
+// ============================================================================
+// 5. INVOICES & 18% TAX ENGINE (Scene 4)
+// Lifecycle: Draft -> Confirmed -> Paid (or Cancelled)
+// ============================================================================
+model Invoice {
+  id                 String            @id @default(uuid())
+  invoiceNumber      String            @unique // e.g. "INV-2026-1042"
+  subscriptionId     String
+  subscription       Subscription      @relation(fields: [subscriptionId], references: [id])
+  subscriptionNumber String
+  customerId         String
+  customer           User              @relation(fields: [customerId], references: [id])
+  customerName       String
+  customerEmail      String
+  customerCompany    String
+  issueDate          String            // YYYY-MM-DD
+  dueDate            String            // YYYY-MM-DD
+  status             String            @default("Draft") // "Draft" | "Confirmed" | "Paid" | "Cancelled" | "Overdue"
+  subtotal           Float             @default(0)
+  taxTotal           Float             @default(0)
+  discountTotal      Float             @default(0)
+  totalAmount        Float             @default(0)
+  amountPaid         Float             @default(0)
+  balanceDue         Float             @default(0)
+  pdfUrl             String?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+  lineItems          InvoiceLineItem[]
+  payments           PaymentRecord[]
+
+  @@index([subscriptionId])
+  @@index([customerId])
+  @@index([status])
+  @@index([invoiceNumber])
+}
+
+model InvoiceLineItem {
+  id             String   @id @default(uuid())
+  invoiceId      String
+  invoice        Invoice  @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  description    String
+  quantity       Int      @default(1)
+  unitPrice      Float
+  taxPercent     Float    @default(18)
+  taxAmount      Float
+  discountAmount Float    @default(0)
+  total          Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([invoiceId])
+}
+
+// ============================================================================
+// 6. DISCOUNT RULES & SMART VOUCHERS (Scene 5)
+// ============================================================================
+model DiscountRule {
+  id                String   @id @default(uuid())
+  code              String   @unique // e.g. "VOLUME10", "GROWTH2026"
+  description       String
+  type              String   @default("percentage") // "percentage" | "fixed"
+  value             Float    @default(0)
+  appliesTo         String   @default("whole_subscription") // "whole_subscription" | "specific_product"
+  targetProductId   String?
+  targetProductName String?
+  minimumPurchase   Float    @default(0)
+  minimumQuantity   Int      @default(1)
+  startDate         String   // YYYY-MM-DD
+  endDate           String   // YYYY-MM-DD
+  usageLimit        Int      @default(100)
+  usageCount        Int      @default(0)
+  isActive          Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([code])
+  @@index([isActive])
+}
+
+// ============================================================================
+// 7. PAYMENTS & GATEWAYS (Scene 6)
+// ============================================================================
+model PaymentRecord {
+  id            String   @id @default(uuid())
+  paymentNumber String   @unique // e.g. "PAY-2026-089"
+  invoiceId     String?
+  invoice       Invoice? @relation(fields: [invoiceId], references: [id], onDelete: SetNull)
+  invoiceNumber String?
+  customerId    String?
+  customer      User?    @relation(fields: [customerId], references: [id], onDelete: SetNull)
+  customerName  String
+  amount        Float
+  paymentMethod String   @default("Stripe") // "Stripe" | "Credit Card" | "Bank Transfer" | "UPI / Instant" | "Manual / Cash"
+  paymentDate   String   // YYYY-MM-DD
+  notes         String?
+  referenceId   String?
+  status        String   @default("Completed") // "Completed" | "Pending" | "Failed"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([invoiceId])
+  @@index([customerId])
+  @@index([status])
+  @@index([paymentNumber])
+}
+
+// ============================================================================
+// 8. AUDIT TRAILS & EVENT LOGS
+// ============================================================================
+model AuditLog {
+  id         String   @id @default(uuid())
+  action     String   // e.g. "BILLING_CYCLE_RUN", "SUBSCRIPTION_CONFIRMED"
+  entityType String   // e.g. "subscription", "invoice", "payment"
+  entityId   String?
+  actorId    String?
+  actorEmail String?
+  details    String?  // JSON formatted or plain details
+  createdAt  DateTime @default(now())
+
+  @@index([action])
+  @@index([entityType])
 }
