@@ -84,13 +84,13 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       {/* Toast Viewport */}
       <div
         aria-live="polite"
-        className="fixed bottom-5 right-5 z-[9999] flex flex-col gap-2.5 max-w-md w-full pointer-events-none px-4 sm:px-0"
+        className="fixed bottom-5 right-5 z-[9999] flex flex-col items-end gap-2.5 pointer-events-none max-w-[calc(100vw-1.5rem)]"
       >
         {toasts.map((item) => (
           <div
             key={item.id}
             role="alert"
-            className="relative overflow-hidden pointer-events-auto flex items-start gap-3 p-4 pb-4.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-950/10 transition-all transform animate-in slide-in-from-bottom-5 fade-in duration-200"
+            className="relative overflow-hidden pointer-events-auto flex items-start gap-2.5 p-3.5 pb-4 w-[320px] sm:w-[340px] max-w-full rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-950/12 transition-all transform animate-in slide-in-from-bottom-5 fade-in duration-200"
           >
             <div className="shrink-0 mt-0.5">
               {item.variant === 'success' && (
