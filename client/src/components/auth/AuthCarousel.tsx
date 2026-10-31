@@ -280,7 +280,8 @@ export const AuthCarousel: React.FC = React.memo(() => {
     </div>
   )
 
-  // Helper to render a complete moving card track with duplicated card stacks
+  // Helper to render a complete moving card track with 3 duplicated card stacks
+  // so the window is already 100% filled with cards right at the start!
   const renderCardColumn = (
     cardsList: typeof baseCards,
     columnId: string,
@@ -289,24 +290,31 @@ export const AuthCarousel: React.FC = React.memo(() => {
     <div className={`relative flex flex-col items-center ${animClass} w-[280px]`}>
       {/* Continuous background vertical dashed line running the full length + buffer */}
       <div
-        className="absolute left-1/2 -top-[1200px] -bottom-[1200px] -translate-x-1/2 w-0 pointer-events-none -z-20"
+        className="absolute left-1/2 -top-[1600px] -bottom-[1600px] -translate-x-1/2 w-0 pointer-events-none -z-20"
         style={{
-          height: 'calc(100% + 2400px)',
+          height: 'calc(100% + 3200px)',
           borderLeft: `2px dashed ${dashedLineColor}`,
         }}
       />
 
-      {/* List 1: Original Card Stack with 40px gap and 40px bottom padding */}
+      {/* List 1: Top Buffer Stack (scrolls down into view for scrollDown, or exits for scrollUp) */}
       <div className="flex flex-col gap-[40px] pb-[40px]">
         {cardsList.map((card, idx) =>
           renderCard(card, `${columnId}-list1-${card.id}-${idx}`)
         )}
       </div>
 
-      {/* List 2: Duplicate Card Stack for mathematically seamless translateY(-50%) loop */}
+      {/* List 2: Center Stack - ALREADY 100% FILLING THE ENTIRE PAGE AT T = 0 */}
       <div className="flex flex-col gap-[40px] pb-[40px]">
         {cardsList.map((card, idx) =>
           renderCard(card, `${columnId}-list2-${card.id}-${idx}`)
+        )}
+      </div>
+
+      {/* List 3: Bottom Buffer Stack (scrolls up into view for scrollUp, or exits for scrollDown) */}
+      <div className="flex flex-col gap-[40px] pb-[40px]">
+        {cardsList.map((card, idx) =>
+          renderCard(card, `${columnId}-list3-${card.id}-${idx}`)
         )}
       </div>
     </div>
@@ -325,13 +333,14 @@ export const AuthCarousel: React.FC = React.memo(() => {
         - When a card reaches the bottom of the right column, it curves to the left and ascends up the left column.
         - When a card reaches the top of the left column, it curves to the right and descends down the right column.
         - The ENTIRE circular loop is wrapped in ONE container with transform: rotate(-8deg).
+        - Extended height (920px-980px) ensuring cards fill the full page seamlessly right at the start.
       */}
       <div
-        className="relative w-[600px] sm:w-[640px] xl:w-[680px] h-[680px] sm:h-[760px] overflow-hidden flex justify-center items-center [transform:rotate(-8deg)]"
+        className="relative w-[600px] sm:w-[640px] xl:w-[680px] h-[840px] sm:h-[920px] xl:h-[980px] overflow-hidden flex justify-center items-start [transform:rotate(-8deg)]"
         style={{ willChange: 'transform' }}
       >
-        {/* Dual Columns Container with gap between them */}
-        <div className="relative flex items-center gap-7 sm:gap-8 z-10">
+        {/* Dual Columns Container aligned to top with gap between them */}
+        <div className="relative flex items-start gap-7 sm:gap-8 z-10">
           {/*
             Left Column: Cards move BACK UP (animate-infinite-column-up).
             When cards in the right carousel go down, they travel back up here!
@@ -346,7 +355,7 @@ export const AuthCarousel: React.FC = React.memo(() => {
 
         {/* Top Fade Gradient Mask using current theme background */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-28 z-20"
+          className="pointer-events-none absolute inset-x-0 top-0 h-36 z-20"
           style={{
             background: `linear-gradient(to bottom, ${currentConfig.bgColor}, transparent)`,
           }}
@@ -354,7 +363,7 @@ export const AuthCarousel: React.FC = React.memo(() => {
 
         {/* Bottom Fade Gradient Mask using current theme background */}
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-28 z-20"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-36 z-20"
           style={{
             background: `linear-gradient(to top, ${currentConfig.bgColor}, transparent)`,
           }}

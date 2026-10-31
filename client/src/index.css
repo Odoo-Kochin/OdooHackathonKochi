@@ -131,10 +131,10 @@ body {
 /* Continuous vertical infinite-scrolling card column (top to bottom) */
 @keyframes scrollDown {
   0% {
-    transform: translateY(-50%);
+    transform: translateY(calc(-100% / 3));
   }
   100% {
-    transform: translateY(0);
+    transform: translateY(0%);
   }
 }
 
@@ -146,10 +146,10 @@ body {
 /* Continuous vertical infinite-scrolling card column (bottom to top for circular loop) */
 @keyframes scrollUp {
   0% {
-    transform: translateY(0);
+    transform: translateY(calc(-100% / 3));
   }
   100% {
-    transform: translateY(-50%);
+    transform: translateY(calc(-100% * 2 / 3));
   }
 }
 
