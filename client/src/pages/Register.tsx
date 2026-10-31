@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import type { UserRole } from '@shared/contracts/auth.js'
 import { AuthCarousel } from '@/components/auth/AuthCarousel'
+import { ThemeSelector } from '@/components/layout/ThemeSelector'
 import {
   Layers,
   CheckCircle2,
@@ -90,9 +91,12 @@ export const Register: React.FC = () => {
           <div className="bg-white dark:bg-slate-900 py-7 px-6 sm:px-8 shadow-sm border border-slate-200 dark:border-slate-800 rounded-2xl">
             {/* Brand Header */}
             <div className="mb-6 text-left">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold mb-2.5">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>New Account Onboarding</span>
+              <div className="flex items-center justify-between mb-2.5">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-semibold">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>New Account Onboarding</span>
+                </div>
+                <ThemeSelector />
               </div>
               <div className="flex items-center gap-2.5 mb-1.5">
                 <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white shadow-md flex items-center justify-center font-bold">
