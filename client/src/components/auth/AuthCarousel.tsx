@@ -336,11 +336,11 @@ export const AuthCarousel: React.FC = React.memo(() => {
         - Extended height (920px-980px) ensuring cards fill the full page seamlessly right at the start.
       */}
       <div
-        className="relative w-[600px] sm:w-[640px] xl:w-[680px] h-[840px] sm:h-[920px] xl:h-[980px] overflow-hidden flex justify-center items-center [transform:rotate(-8deg)]"
+        className="relative w-[600px] sm:w-[640px] xl:w-[680px] h-[840px] sm:h-[920px] xl:h-[980px] overflow-hidden flex justify-center items-start [transform:rotate(-8deg)]"
         style={{ willChange: 'transform' }}
       >
-        {/* Dual Columns Container with gap between them */}
-        <div className="relative flex items-center gap-7 sm:gap-8 z-10">
+        {/* Dual Columns Container aligned to top with gap between them */}
+        <div className="relative flex items-start gap-7 sm:gap-8 z-10">
           {/*
             Left Column: Cards move BACK UP (animate-infinite-column-up).
             When cards in the right carousel go down, they travel back up here!
@@ -355,7 +355,7 @@ export const AuthCarousel: React.FC = React.memo(() => {
 
         {/* Top Fade Gradient Mask using current theme background */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-28 z-20"
+          className="pointer-events-none absolute inset-x-0 top-0 h-36 z-20"
           style={{
             background: `linear-gradient(to bottom, ${currentConfig.bgColor}, transparent)`,
           }}
@@ -363,7 +363,7 @@ export const AuthCarousel: React.FC = React.memo(() => {
 
         {/* Bottom Fade Gradient Mask using current theme background */}
         <div
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-28 z-20"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-36 z-20"
           style={{
             background: `linear-gradient(to top, ${currentConfig.bgColor}, transparent)`,
           }}
