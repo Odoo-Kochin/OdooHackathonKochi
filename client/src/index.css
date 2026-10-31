@@ -111,3 +111,19 @@ body {
   border: 1px solid hsl(var(--border));
   border-radius: 0.5rem;
 }
+
+/* Toast alert lifespan countdown bar running down from right to left */
+@keyframes toastProgress {
+  0% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+.toast-timer-bar {
+  transform-origin: left center;
+  animation: toastProgress linear forwards;
+  will-change: transform;
+}
