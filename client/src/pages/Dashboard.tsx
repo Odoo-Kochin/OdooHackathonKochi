@@ -14,6 +14,13 @@ import {
   ChevronRight,
   ArrowRight,
   Plus,
+  Hash,
+  User,
+  Layers,
+  Activity,
+  Building2,
+  FileText,
+  Clock,
 } from 'lucide-react'
 import axios from 'axios'
 
@@ -223,11 +230,36 @@ export const Dashboard: React.FC = () => {
             <table className="w-full text-left text-xs">
               <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold">
                 <tr>
-                  <th className="py-2.5 px-4">Subscription #</th>
-                  <th className="py-2.5 px-4">Customer</th>
-                  <th className="py-2.5 px-4">Plan</th>
-                  <th className="py-2.5 px-4">Status</th>
-                  <th className="py-2.5 px-4 text-right">Total</th>
+                  <th className="py-2.5 px-4">
+                    <span className="flex items-center gap-1">
+                      <Hash className="w-3 h-3 text-slate-400" />
+                      <span>Subscription #</span>
+                    </span>
+                  </th>
+                  <th className="py-2.5 px-4">
+                    <span className="flex items-center gap-1">
+                      <User className="w-3 h-3 text-slate-400" />
+                      <span>Customer</span>
+                    </span>
+                  </th>
+                  <th className="py-2.5 px-4">
+                    <span className="flex items-center gap-1">
+                      <Layers className="w-3 h-3 text-slate-400" />
+                      <span>Plan</span>
+                    </span>
+                  </th>
+                  <th className="py-2.5 px-4">
+                    <span className="flex items-center gap-1">
+                      <Activity className="w-3 h-3 text-slate-400" />
+                      <span>Status</span>
+                    </span>
+                  </th>
+                  <th className="py-2.5 px-4 text-right">
+                    <span className="inline-flex items-center gap-1">
+                      <DollarSign className="w-3 h-3 text-slate-400" />
+                      <span>Total</span>
+                    </span>
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -238,11 +270,17 @@ export const Dashboard: React.FC = () => {
                     className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 cursor-pointer transition-colors"
                   >
                     <td className="py-3 px-4 font-mono font-medium text-indigo-600 dark:text-indigo-400">
-                      {sub.subscriptionNumber}
+                      <span className="flex items-center gap-1">
+                        <Hash className="w-3 h-3 opacity-60" />
+                        <span>{sub.subscriptionNumber}</span>
+                      </span>
                     </td>
                     <td className="py-3 px-4">
                       <p className="font-semibold text-slate-900 dark:text-white">{sub.customerName}</p>
-                      <p className="text-[11px] text-slate-400">{sub.customerCompany}</p>
+                      <p className="text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
+                        <Building2 className="w-3 h-3 opacity-70" />
+                        <span>{sub.customerCompany}</span>
+                      </p>
                     </td>
                     <td className="py-3 px-4">
                       <p className="font-medium text-slate-700 dark:text-slate-300">{sub.planName}</p>
@@ -271,14 +309,16 @@ export const Dashboard: React.FC = () => {
         <div className="lg:col-span-4 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xs flex flex-col justify-between overflow-hidden">
           <div>
             <div className="px-5 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
-                Invoices & Overdue
+              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
+                <FileText className="w-3.5 h-3.5 text-indigo-500" />
+                <span>Invoices & Overdue</span>
               </h3>
               <Link
                 to="/invoices"
-                className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
+                className="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-medium flex items-center gap-1"
               >
-                Invoices
+                <span>View All</span>
+                <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
 
@@ -290,6 +330,7 @@ export const Dashboard: React.FC = () => {
                 >
                   <div>
                     <div className="flex items-center gap-1.5">
+                      <FileText className="w-3.5 h-3.5 text-slate-400" />
                       <span className="font-mono font-medium text-slate-900 dark:text-white">
                         {inv.invoiceNumber}
                       </span>
@@ -305,8 +346,14 @@ export const Dashboard: React.FC = () => {
                         {inv.status}
                       </span>
                     </div>
-                    <p className="text-[11px] text-slate-500 mt-0.5">{inv.customerCompany}</p>
-                    <p className="text-[10px] text-slate-400">Due: {inv.dueDate}</p>
+                    <p className="text-[11px] text-slate-500 flex items-center gap-1 mt-1">
+                      <Building2 className="w-3 h-3 opacity-60" />
+                      <span>{inv.customerCompany}</span>
+                    </p>
+                    <p className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                      <Clock className="w-3 h-3 opacity-60" />
+                      <span>Due: {inv.dueDate}</span>
+                    </p>
                   </div>
                   <div className="text-right">
                     <p className="font-bold text-slate-900 dark:text-white">
