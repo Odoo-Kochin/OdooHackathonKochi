@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import type { SubscriptionPlan } from '@shared/contracts/subscriptions.js'
-import { Plus, Edit2, CheckCircle2 } from 'lucide-react'
+import { Plus, Edit2, CheckCircle2, Hash, Calendar, Users, Layers, ShieldCheck } from 'lucide-react'
 import axios from 'axios'
 import { useToast } from '@/context/ToastContext'
 
@@ -51,16 +51,19 @@ export const Plans: React.FC = () => {
           >
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono font-medium text-slate-400">
-                  {plan.code}
+                <span className="text-[10px] font-mono font-medium text-slate-400 flex items-center gap-1">
+                  <Hash className="w-3 h-3 opacity-60" />
+                  <span>{plan.code}</span>
                 </span>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded capitalize bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                  {plan.billingFrequency}
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded capitalize bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center gap-1">
+                  <Calendar className="w-3 h-3 text-indigo-500" />
+                  <span>{plan.billingFrequency}</span>
                 </span>
               </div>
 
-              <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                {plan.name}
+              <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white leading-snug flex items-center gap-1.5">
+                <Layers className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" />
+                <span>{plan.name}</span>
               </h3>
               {plan.description && (
                 <p className="mt-1.5 text-xs text-slate-500 line-clamp-2">{plan.description}</p>
@@ -74,7 +77,10 @@ export const Plans: React.FC = () => {
                   </span>
                   <span className="text-xs text-slate-400 ml-1">/{plan.billingFrequency}</span>
                 </div>
-                <span className="text-[11px] text-slate-500">Min {plan.minimumQuantity} seat(s)</span>
+                <span className="text-[11px] text-slate-500 flex items-center">
+                  <Users className="w-3 h-3 text-slate-400 mr-1" />
+                  Min {plan.minimumQuantity} seat(s)
+                </span>
               </div>
 
               {/* Lifecycle Rules Flags */}
@@ -85,8 +91,11 @@ export const Plans: React.FC = () => {
                     {plan.autoCloseOnEnd ? 'Yes' : 'No'}
                   </span>
                 </div>
-                <div className="flex justify-between">
-                  <span>Early termination:</span>
+                <div className="flex justify-between items-center">
+                  <span className="flex items-center">
+                    <ShieldCheck className="w-3 h-3 text-slate-400 mr-1" />
+                    Early termination:
+                  </span>
                   <span className="font-medium text-slate-900 dark:text-slate-200">
                     {plan.canBeClosedEarly ? 'Allowed' : 'Locked'}
                   </span>

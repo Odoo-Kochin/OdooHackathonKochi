@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import type { Product, ProductVariant } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
 import { useToast } from '@/context/ToastContext'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, Package, Hash, Sparkles, DollarSign, Tag, TrendingUp } from 'lucide-react'
 import axios from 'axios'
 
 export const Products: React.FC = () => {
@@ -117,11 +117,12 @@ export const Products: React.FC = () => {
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono font-medium text-slate-400">
-                    {prod.code}
+                  <span className="text-[10px] font-mono font-medium text-slate-400 flex items-center gap-1">
+                    <Hash className="w-3 h-3 opacity-60" />
+                    <span>{prod.code}</span>
                   </span>
                   <span
-                    className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${
+                    className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize flex items-center gap-1 ${
                       prod.type === 'software'
                         ? 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300'
                         : prod.type === 'service'
@@ -129,12 +130,14 @@ export const Products: React.FC = () => {
                         : 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'
                     }`}
                   >
-                    {prod.type}
+                    <Package className="w-3 h-3" />
+                    <span>{prod.type}</span>
                   </span>
                 </div>
 
-                <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white leading-snug">
-                  {prod.name}
+                <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-white leading-snug flex items-center gap-1.5">
+                  <Tag className="w-3.5 h-3.5 text-indigo-500 flex-shrink-0" />
+                  <span>{prod.name}</span>
                 </h3>
                 {prod.notes && (
                   <p className="mt-1 text-xs text-slate-500 line-clamp-2">{prod.notes}</p>
@@ -143,13 +146,19 @@ export const Products: React.FC = () => {
                 {/* Pricing summary */}
                 <div className="mt-3 p-2.5 rounded-md bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-700/60 flex items-center justify-between text-xs">
                   <div>
-                    <span className="text-[10px] text-slate-400 block font-medium">Sales Price</span>
+                    <span className="text-[10px] text-slate-400 flex items-center font-medium">
+                      <DollarSign className="w-3 h-3 text-slate-400 mr-0.5" />
+                      Sales Price
+                    </span>
                     <span className="text-base font-bold text-slate-900 dark:text-white">
                       ${prod.salesPrice}
                     </span>
                   </div>
                   <div className="text-right">
-                    <span className="text-[10px] text-slate-400 block font-medium">Margin</span>
+                    <span className="text-[10px] text-slate-400 flex items-center justify-end font-medium">
+                      <TrendingUp className="w-3 h-3 text-emerald-500 mr-0.5" />
+                      Margin
+                    </span>
                     <span className="text-xs font-semibold text-emerald-600">
                       ${costPrice} ({marginPercent}%)
                     </span>
@@ -158,7 +167,8 @@ export const Products: React.FC = () => {
 
                 {/* Variants breakdown */}
                 <div className="mt-3">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 block mb-1">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400 flex items-center mb-1">
+                    <Sparkles className="w-3 h-3 text-indigo-500 mr-1" />
                     Variants ({prod.variants.length})
                   </span>
                   {prod.variants.length === 0 ? (

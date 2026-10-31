@@ -2,7 +2,19 @@ import React, { useState, useEffect } from 'react'
 import type { PaymentRecord, Invoice, PaymentMethod } from '@shared/contracts/subscriptions.js'
 import { Modal } from '@/components/ui/modal'
 import { useToast } from '@/context/ToastContext'
-import { Plus, AlertTriangle, ArrowRight } from 'lucide-react'
+import {
+  Plus,
+  AlertTriangle,
+  ArrowRight,
+  Hash,
+  FileText,
+  User,
+  CreditCard,
+  Calendar,
+  Tag,
+  DollarSign,
+  Landmark,
+} from 'lucide-react'
 import axios from 'axios'
 
 export const Payments: React.FC = () => {
@@ -175,13 +187,48 @@ export const Payments: React.FC = () => {
           <table className="w-full text-left text-xs">
             <thead className="bg-slate-50 dark:bg-slate-800/50 text-slate-500 border-b border-slate-200 dark:border-slate-800 text-[11px] font-semibold">
               <tr>
-                <th className="py-2.5 px-4">Payment #</th>
-                <th className="py-2.5 px-4">Invoice #</th>
-                <th className="py-2.5 px-4">Customer</th>
-                <th className="py-2.5 px-4">Method</th>
-                <th className="py-2.5 px-4">Date</th>
-                <th className="py-2.5 px-4">Reference</th>
-                <th className="py-2.5 px-4 text-right">Amount</th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1">
+                    <Hash className="w-3 h-3 text-slate-400" />
+                    <span>Payment #</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1">
+                    <FileText className="w-3 h-3 text-slate-400" />
+                    <span>Invoice #</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1">
+                    <User className="w-3 h-3 text-slate-400" />
+                    <span>Customer</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1">
+                    <CreditCard className="w-3 h-3 text-slate-400" />
+                    <span>Method</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1">
+                    <Calendar className="w-3 h-3 text-slate-400" />
+                    <span>Date</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4">
+                  <span className="flex items-center gap-1">
+                    <Tag className="w-3 h-3 text-slate-400" />
+                    <span>Reference</span>
+                  </span>
+                </th>
+                <th className="py-2.5 px-4 text-right">
+                  <span className="inline-flex items-center gap-1">
+                    <DollarSign className="w-3 h-3 text-slate-400" />
+                    <span>Amount</span>
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
@@ -191,15 +238,28 @@ export const Payments: React.FC = () => {
                   className="hover:bg-slate-50/70 dark:hover:bg-slate-800/50 transition-colors"
                 >
                   <td className="py-3 px-4 font-mono font-medium text-indigo-600 dark:text-indigo-400">
-                    {p.paymentNumber}
+                    <span className="flex items-center gap-1">
+                      <Hash className="w-3 h-3 opacity-60" />
+                      <span>{p.paymentNumber}</span>
+                    </span>
                   </td>
-                  <td className="py-3 px-4 font-mono text-slate-500">{p.invoiceNumber}</td>
+                  <td className="py-3 px-4 font-mono text-slate-500">
+                    <span className="flex items-center gap-1">
+                      <FileText className="w-3 h-3 opacity-60" />
+                      <span>{p.invoiceNumber}</span>
+                    </span>
+                  </td>
                   <td className="py-3 px-4 font-semibold text-slate-900 dark:text-white">
                     {p.customerName}
                   </td>
                   <td className="py-3 px-4">
-                    <span className="inline-block px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
-                      {p.paymentMethod}
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                      {p.paymentMethod === 'Bank Transfer' ? (
+                        <Landmark className="w-3 h-3 text-emerald-500" />
+                      ) : (
+                        <CreditCard className="w-3 h-3 text-indigo-500" />
+                      )}
+                      <span>{p.paymentMethod}</span>
                     </span>
                   </td>
                   <td className="py-3 px-4 text-slate-500">{p.paymentDate}</td>
