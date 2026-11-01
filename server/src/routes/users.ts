@@ -81,8 +81,8 @@ usersRouter.post('/', async (req: Request, res: Response) => {
       },
     })
   } catch (error: any) {
-    if (error instanceof z.ZodError) {
-      res.status(400).json({ success: false, errors: error.errors })
+    if (error instanceof z.ZodError || error?.name === 'ZodError') {
+      res.status(400).json({ success: false, errors: error.errors || error.issues })
       return
     }
     res.status(500).json({
